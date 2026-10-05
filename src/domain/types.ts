@@ -84,6 +84,8 @@ export interface ComboItem extends ItemBase {
   /** Native spelling; a leading hyphen marks a suffix (e.g. "-ск"). */
   native: string;
   reading: string;
+  /** Further accepted readings (scripts whose readings are listed explicitly, e.g. Thai, Bengali). */
+  accepted?: string[];
   note?: L10n;
   /** A reading unit of its own (e.g. a Greek digraph like ου). Words containing it need it to be decodable. */
   unit?: boolean;
@@ -115,7 +117,7 @@ export interface PlaceItem extends ItemBase {
   accepted: string[];
   countryId: string;
   regionId?: string;
-  regionType?: 'oblast' | 'krai' | 'republic' | 'okrug' | 'federal-city' | 'periphery' | 'district' | 'island';
+  regionType?: 'oblast' | 'krai' | 'republic' | 'okrug' | 'federal-city' | 'periphery' | 'district' | 'island' | 'province' | 'division';
   tier: 1 | 2 | 3;
   hint?: L10n;
   tags?: string[];

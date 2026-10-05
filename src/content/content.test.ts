@@ -2,14 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { buildIndex } from '../domain/courseIndex';
 import { accepts } from '../domain/evaluate';
 import { normalize } from '../domain/normalize';
+import bn from './bn';
 import el from './el';
+import th from './th';
 import ru from './ru';
 
 /**
  * Content validation (spec section 14). These tests are the quality gate for
  * every course: they run in CI before each deployment.
  */
-const courses = [ru, el];
+const courses = [ru, el, th, bn];
 
 describe.each(courses)('course $id', (course) => {
   const index = buildIndex(course);

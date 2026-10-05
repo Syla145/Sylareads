@@ -92,8 +92,10 @@ function letterLesson(index: CourseIndex, lesson: Lesson, items: Items, rng: Rng
 
   // D – combinations built from new and known letters
   const comboCount = n === 3 ? 3 : 2;
+  // Only plain syllables: combos taught in a later rules lesson (endings, finals, composite vowels) wait for it.
+  const lessonNo = (id: string) => index.content.lessons.find((l) => l.id === index.lessonOf.get(id))?.number ?? 0;
   const combos = (index.byKind.combo as ComboItem[]).filter(
-    (c) => !c.native.startsWith('-') && isDecodable(index, c.id, known),
+    (c) => !c.native.startsWith('-') && !c.unit && lessonNo(c.id) <= lesson.number && isDecodable(index, c.id, known),
   );
   const focusCombos = shuffle(combos, rng).sort((a, b) => {
     const fa = (index.required.get(a.id) ?? []).some((x) => lesson.newIds.includes(x)) ? 0 : 1;
@@ -105,7 +107,9 @@ function letterLesson(index: CourseIndex, lesson: Lesson, items: Items, rng: Rng
   // E – first real words (geographic ones preferred)
   const used = new Set<string>();
   const wordCount = n >= 5 ? 2 : 3;
-  const words = pickReadables(index, known, lesson.newIds, wordCount, rng, used);
+  // Curated words first (scripts where only a hand-picked list is safe to read at this stage).
+  const curated = (lesson.wordIds ?? []).map((id) => index.byId.get(id)!).filter((it) => it && isDecodable(index, it.id, known));
+  const words = curated.length ? shuffle(curated, rng).slice(0, wordCount) : pickReadables(index, known, lesson.newIds, wordCount, rng, used);
   words.forEach((w) => {
     used.add(w.id);
     tasks.push(readTask(w, rng));
@@ -116,7 +120,9 @@ function letterLesson(index: CourseIndex, lesson: Lesson, items: Items, rng: Rng
   shuffle(letters, rng)
     .slice(0, closing)
     .forEach((l) => {
-      const word = pickReadables(index, known, [l.id], 1, rng, used)[0];
+      const word = curated.length
+        ? shuffle(curated, rng).find((w) => !used.has(w.id) && (index.required.get(w.id) ?? []).includes(l.id))
+        : pickReadables(index, known, [l.id], 1, rng, used)[0];
       if (word && (index.required.get(word.id) ?? []).includes(l.id)) {
         used.add(word.id);
         tasks.push(readTask(word, rng));

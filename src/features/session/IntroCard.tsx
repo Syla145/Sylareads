@@ -25,7 +25,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
         <>
           <div className="plate plate-intro">
             <span className="glyph glyph-xl">{item.upper}</span>
-            <span className="glyph glyph-l intro-lower">{item.lower}</span>
+            {item.lower !== item.upper && <span className="glyph glyph-l intro-lower">{item.lower}</span>}
           </div>
           <p className="intro-reading">
             <span className="muted">{t('session.reads')}</span> <strong>{item.reading || t('session.noSound')}</strong>

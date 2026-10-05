@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import bn from '../content/bn';
 import el from '../content/el';
+import th from '../content/th';
 import ru from '../content/ru';
 import { buildIndex, readingOf, type CourseIndex } from './courseIndex';
 import { evaluateTyped } from './evaluate';
@@ -45,7 +47,7 @@ function simulate(index: CourseIndex, tasks: Task[], mode: SessionMode, errorRat
   return s;
 }
 
-describe.each([ru, el])('end-to-end simulation $id', (course) => {
+describe.each([ru, el, th, bn])('end-to-end simulation $id', (course) => {
   const index = buildIndex(course);
   it('every lesson can be completed, with and without mistakes', () => {
     for (const lesson of course.lessons) {

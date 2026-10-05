@@ -58,7 +58,8 @@ export const COURSES: CourseMeta[] = [
     countryIds: ['BD'],
     sampleGlyphs: 'অ আ ই ঈ',
     fontClass: 'font-native-bengali',
-    status: 'soon',
+    status: 'available',
+    load: () => import('./bn').then((m) => m.default),
   },
   {
     id: 'th',
@@ -69,7 +70,8 @@ export const COURSES: CourseMeta[] = [
     countryIds: ['TH'],
     sampleGlyphs: 'ก ข ค ง',
     fontClass: 'font-native-thai',
-    status: 'soon',
+    status: 'available',
+    load: () => import('./th').then((m) => m.default),
   },
 ];
 

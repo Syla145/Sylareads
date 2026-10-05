@@ -1,3 +1,4 @@
+import { letterGlyphs } from '../../domain/courseIndex';
 import { useState } from 'react';
 import { masteryState } from '../../domain/srs';
 import type { LetterItem } from '../../domain/types';
@@ -6,18 +7,24 @@ import { useProgress } from '../../store/progressStore';
 import { Modal, StateDot } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 
+/** Stable fallback: a fresh `{}` inside the selector would re-render forever. */
+const NO_ITEMS = {};
+
 /** All reading units with reading and mastery – also a quick reference while playing. */
 export function ScriptPage() {
   const { meta, index } = useCourse();
   const t = useT();
   const lang = useLang();
-  const items = useProgress((s) => s.root.courses[meta.id]?.items ?? {});
+  const items = useProgress((s) => s.root.courses[meta.id]?.items) ?? NO_ITEMS;
   const [open, setOpen] = useState<LetterItem | null>(null);
-  // Alphabetical order here (the lesson path teaches in didactic order).
-  const letters = [...index.content.letters].sort((a, b) => a.upper.localeCompare(b.upper, index.content.id));
+  // Alphabetical order here (the lesson path teaches in didactic order). Scripts
+  // without case (Thai, Bengali) list their units in traditional order already.
+  const letters = index.content.hasCase
+    ? [...index.content.letters].sort((a, b) => a.upper.localeCompare(b.upper, index.content.id))
+    : index.content.letters;
   const endings = index.content.combos.filter((c) => c.native.startsWith('-'));
   const pairs = index.content.combos.filter((c) => c.unit);
-  const plain = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const plain = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f\u25cc]/g, '').toLowerCase();
 
   const examples = (l: LetterItem) =>
     [...index.byKind.city, ...index.byKind.term]
@@ -33,9 +40,9 @@ export function ScriptPage() {
       <div className="letter-grid">
         {letters.map((l) => (
           <button key={l.id} type="button" className="letter-tile" onClick={() => setOpen(l)}>
-            <span className="glyph letter-tile-glyph">
+            <span className={`glyph letter-tile-glyph${[...l.upper].length > 4 ? ' letter-tile-glyph--long' : ''}`}>
               {l.upper}
-              <span className="letter-tile-lower">{l.lower}</span>
+              {l.lower !== l.upper && <span className="letter-tile-lower">{l.lower}</span>}
             </span>
             <span className="letter-tile-reading">{l.reading || '–'}</span>
             <StateDot state={masteryState(items[l.id])} />
@@ -73,12 +80,12 @@ export function ScriptPage() {
         </>
       )}
 
-      <Modal open={!!open} onClose={() => setOpen(null)} title={open ? `${open.upper} ${open.lower}` : ''}>
+      <Modal open={!!open} onClose={() => setOpen(null)} title={open ? letterGlyphs(open, ' ') : ''}>
         {open && (
           <div className="letter-detail">
             <div className="plate plate-intro">
               <span className="glyph glyph-xl">{open.upper}</span>
-              <span className="glyph glyph-l intro-lower">{open.lower}</span>
+              {open.lower !== open.upper && <span className="glyph glyph-l intro-lower">{open.lower}</span>}
             </div>
             <p className="intro-reading">
               <span className="muted">{t('session.reads')}</span> <strong>{open.reading || t('session.noSound')}</strong>
@@ -94,8 +101,7 @@ export function ScriptPage() {
                     const o = index.byId.get(id) as LetterItem;
                     return (
                       <span key={id} className="glyph-chip">
-                        {o.upper}
-                        {o.lower} <span className="muted">{o.reading || '–'}</span>
+                        {letterGlyphs(o)} <span className="muted">{o.reading || '–'}</span>
                       </span>
                     );
                   })}

@@ -97,16 +97,12 @@ kbd {
   font-family: var(--font-ui);
 }
 
-.font-native-bengali .glyph,
-.font-native-bengali .native,
-.font-native-bengali .course-card-glyphs {
+.font-native-bengali :is(.glyph, .native, .course-card-glyphs, .glyph-chip, .lesson-preview, .choice-native, .first-run-glyphs, .retry-input) {
   font-family: var(--font-bengali);
   line-height: 1.5;
 }
 
-.font-native-thai .glyph,
-.font-native-thai .native,
-.font-native-thai .course-card-glyphs {
+.font-native-thai :is(.glyph, .native, .course-card-glyphs, .glyph-chip, .lesson-preview, .choice-native, .first-run-glyphs, .retry-input) {
   font-family: var(--font-thai);
   line-height: 1.6;
 }

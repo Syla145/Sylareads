@@ -249,8 +249,7 @@ function RetryHint({ index, task, evaluation, input }: { index: CourseIndex; tas
   } else if (task.kind === 'meaning') {
     hint = t('session.hintMeaning');
   } else if (item && (item.kind === 'city' || item.kind === 'region')) {
-    const segs = index.segments.get(item.id) ?? [];
-    hint = t('session.hintStartsWith', { s: segs.slice(0, 2).map((s) => s.alts[0]).join('') });
+    hint = t('session.hintStartsWith', { s: item.translit.slice(0, 2) });
   } else if (evaluation?.mismatchAt !== undefined) {
     hint = t('session.hintCheckChar', { n: evaluation.mismatchAt + 1 });
   }

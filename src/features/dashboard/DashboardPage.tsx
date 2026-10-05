@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { nativeOf } from '../../domain/courseIndex';
+import { letterGlyphs, nativeOf } from '../../domain/courseIndex';
 import { courseStats } from '../../domain/stats';
 import type { Category } from '../../domain/types';
 import { formatPercent, useLang, useT } from '../../i18n';
@@ -114,7 +114,7 @@ export function DashboardPage() {
               <div className="chip-row">
                 {weakItems.map((it) => (
                   <span key={it.id} className="glyph-chip">
-                    {it.kind === 'letter' ? `${it.upper}${it.lower}` : nativeOf(it)}
+                    {it.kind === 'letter' ? letterGlyphs(it) : nativeOf(it)}
                   </span>
                 ))}
               </div>

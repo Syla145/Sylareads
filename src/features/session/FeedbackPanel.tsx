@@ -1,5 +1,5 @@
 import { COUNTRIES } from '../../content/registry';
-import { readingOf, type CourseIndex } from '../../domain/courseIndex';
+import { letterGlyphs, readingOf, type CourseIndex } from '../../domain/courseIndex';
 import type { SessionState } from '../../domain/sessionEngine';
 import type { GradedTask } from '../../domain/tasks';
 import type { PlaceItem } from '../../domain/types';
@@ -32,8 +32,7 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
         <div className="fb-body">
           <div className="fb-native">
             <span className="glyph glyph-m">
-              {item.upper}
-              {item.lower}
+              {letterGlyphs(item)}
             </span>
             <span className="fb-reading">{item.reading || t('session.noSound')}</span>
           </div>

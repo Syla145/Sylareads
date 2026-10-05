@@ -1825,3 +1825,8 @@
   font-weight: 600;
   margin-bottom: var(--s-3);
 }
+
+.letter-tile-glyph--long {
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}

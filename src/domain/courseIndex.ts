@@ -61,7 +61,7 @@ export function buildIndex(content: CourseContent): CourseIndex {
     // A unit combo requires itself (a digraph is learned as one unit).
     required.set(it.id, it.kind === 'combo' && it.unit ? [...new Set([...req, it.id])] : req);
     if (it.kind === 'combo') {
-      answers.set(it.id, answerSet([it.reading]));
+      answers.set(it.id, answerSet([it.reading, ...(it.accepted ?? [])]));
     } else if (it.kind === 'city' || it.kind === 'region') {
       answers.set(it.id, answerSet([...it.accepted, it.names.de, it.names.en, it.translit]));
       if (it.core) extraSegments.set(it.id, [content.segments(it.core)]);
@@ -121,6 +121,11 @@ export function readingOf(index: CourseIndex, item: Item): string {
   if (item.kind === 'combo') return item.reading;
   if (item.kind === 'city' || item.kind === 'region') return item.translit;
   return item.translit || canonical(index.segments.get(item.id) ?? []);
+}
+
+/** Both forms for cased scripts (Аа), the single glyph otherwise (ก). */
+export function letterGlyphs(l: LetterItem, sep = ''): string {
+  return l.lower && l.lower !== l.upper ? `${l.upper}${sep}${l.lower}` : l.upper;
 }
 
 export function isLetter(item: Item): item is LetterItem {
