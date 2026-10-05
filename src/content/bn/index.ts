@@ -22,7 +22,7 @@ const content: CourseContent = {
   segments: () => [],
   requiredLetters: requiredUnitsBn,
   hasCase: false,
-  loadMap: () => import('./map.json').then((m) => m.default as CourseMap),
+  loadMap: () => import('./map.json').then((m) => m.default as unknown as CourseMap),
 };
 
 export default content;

@@ -36,7 +36,8 @@ export function parsePracticeParams(params: URLSearchParams): PracticeRequest {
       scope: params.get('scope') === 'all' ? 'all' : 'learned',
       prioritizeWeak: params.get('weak') !== '0',
       count,
-      layer: params.get('layer') === 'district' ? 'district' : undefined,
+      // 'district' was the first name of the map layer; old links keep working
+      layer: params.get('layer') === 'map' || params.get('layer') === 'district' ? 'map' : undefined,
     },
   };
 }

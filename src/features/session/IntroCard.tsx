@@ -4,6 +4,7 @@ import { readingOf, type CourseIndex } from '../../domain/courseIndex';
 import type { PlaceItem } from '../../domain/types';
 import { placeNameLine, useLang, useT } from '../../i18n';
 import { Button } from '../../ui/primitives';
+import { mapGroupOf } from '../map/layer';
 import { MapView } from '../map/MapView';
 
 /** First contact with an item: a learning card. Enter continues. */
@@ -75,7 +76,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
   );
 
   function PlaceIntro({ place }: { place: PlaceItem }) {
-    const region = place.regionId && index.mapShapes.has(place.id) ? (index.byId.get(place.regionId) as PlaceItem | undefined) : undefined;
+    const group = index.mapShapes.has(place.id) ? mapGroupOf(index, place.id) : undefined;
     return (
       <>
         <div className="plate plate-intro">
@@ -87,7 +88,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
         <p className="intro-names">{placeNameLine(place, lang)}</p>
         <p className="intro-text muted">
           {COUNTRIES[place.countryId].name[lang]}
-          {region ? ` · ${lang === 'de' ? region.names.de : region.names.en}` : ''}
+          {group?.name ? ` · ${group.name[lang]}` : ''}
           {place.hint ? ` · ${place.hint[lang]}` : ''}
         </p>
         {index.map && index.mapShapes.has(place.id) && (

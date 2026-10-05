@@ -1,4 +1,4 @@
-import type { CourseContent } from '../../domain/types';
+import type { CourseContent, CourseMap } from '../../domain/types';
 import { CONTRAST_SETS, LETTERS } from './letters';
 import { LESSONS, PHASES } from './lessons';
 import { CITIES, REGIONS } from './places';
@@ -18,6 +18,7 @@ const content: CourseContent = {
   lessons: LESSONS,
   segments: segmentRu,
   requiredLetters: requiredLettersRu,
+  loadMap: () => import('./map.json').then((m) => m.default as unknown as CourseMap),
   hasCase: true,
 };
 

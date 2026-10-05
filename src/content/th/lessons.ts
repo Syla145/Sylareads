@@ -1,5 +1,5 @@
-import type { Lesson, PhaseDef, PlaceItem } from '../../domain/types';
-import { CITIES, PROVINCES } from './places';
+import type { L10n, Lesson, PhaseDef, PlaceItem } from '../../domain/types';
+import { CITIES } from './places';
 import { unitId } from './units';
 
 export const PHASES: PhaseDef[] = [
@@ -172,16 +172,31 @@ const cityLessons: Omit<Lesson, 'number'>[] = chunk(byTier(CITIES), 9).map((grou
   newIds: group.map((p) => p.id),
 }));
 
-const provinceLessons: Omit<Lesson, 'number'>[] = chunk(byTier(PROVINCES), 9).map((group, i) => ({
+/** Provinces are taught on the map, region by region, so neighbours are learned together. */
+const PROVINCE_GROUPS: { title: L10n; slugs: string[] }[] = [
+  { title: { de: 'Der Norden', en: 'The North' }, slugs: ['chiang-mai', 'chiang-rai', 'mae-hong-son', 'lamphun', 'lampang', 'phayao', 'nan', 'phrae', 'uttaradit'] },
+  { title: { de: 'Bangkok & Umland', en: 'Bangkok & Surroundings' }, slugs: ['bangkok', 'nonthaburi', 'pathum-thani', 'samut-prakan', 'samut-sakhon', 'samut-songkhram', 'nakhon-pathom'] },
+  { title: { de: 'Ayutthaya & die Ebene', en: 'Ayutthaya & the Plain' }, slugs: ['phra-nakhon-si-ayutthaya', 'ang-thong', 'sing-buri', 'chai-nat', 'lop-buri', 'saraburi', 'nakhon-nayok', 'suphan-buri'] },
+  { title: { de: 'Unterer Norden', en: 'The Lower North' }, slugs: ['nakhon-sawan', 'uthai-thani', 'kamphaeng-phet', 'sukhothai', 'phitsanulok', 'phichit', 'phetchabun'] },
+  { title: { de: 'Der Westen', en: 'The West' }, slugs: ['tak', 'kanchanaburi', 'ratchaburi', 'phetchaburi', 'prachuap-khiri-khan'] },
+  { title: { de: 'Der Osten', en: 'The East' }, slugs: ['chon-buri', 'rayong', 'chanthaburi', 'trat', 'chachoengsao', 'prachin-buri', 'sa-kaeo'] },
+  { title: { de: 'Isan: am Mekong', en: 'Isan: Along the Mekong' }, slugs: ['loei', 'nong-bua-lam-phu', 'udon-thani', 'nong-khai', 'bueng-kan', 'sakon-nakhon', 'nakhon-phanom'] },
+  { title: { de: 'Isan: die Mitte', en: 'Isan: the Centre' }, slugs: ['khon-kaen', 'kalasin', 'mukdahan', 'maha-sarakham', 'roi-et', 'yasothon', 'chaiyaphum'] },
+  { title: { de: 'Isan: der Süden', en: 'Isan: the South' }, slugs: ['nakhon-ratchasima', 'buri-ram', 'surin', 'si-sa-ket', 'ubon-ratchathani', 'amnat-charoen'] },
+  { title: { de: 'Der Süden: Andamanen & Golf', en: 'The South: Andaman & Gulf' }, slugs: ['chumphon', 'ranong', 'surat-thani', 'phang-nga', 'phuket', 'krabi', 'nakhon-si-thammarat'] },
+  { title: { de: 'Der tiefe Süden', en: 'The Deep South' }, slugs: ['trang', 'phatthalung', 'satun', 'songkhla', 'pattani', 'yala', 'narathiwat'] },
+];
+
+const provinceLessons: Omit<Lesson, 'number'>[] = PROVINCE_GROUPS.map((g, i) => ({
   id: `th-province-${i + 1}`,
   phaseId: 'regions',
   type: 'places',
-  title: { de: `Provinzen ${i + 1}`, en: `Provinces ${i + 1}` },
+  title: g.title,
   goal: {
-    de: 'Alle 77 Provinzen. Der Name der Provinz ist meist auch der Name ihrer Hauptstadt.',
-    en: 'All 77 provinces. A province usually shares its name with its capital.',
+    de: `${g.slugs.length} Provinzen lesen und auf der Karte finden. Die Provinz heißt fast immer wie ihre Hauptstadt.`,
+    en: `Read ${g.slugs.length} provinces and find them on the map. A province is almost always named after its capital.`,
   },
-  newIds: group.map((p) => p.id),
+  newIds: g.slugs.map((s) => `th:region:${s}`),
 }));
 
 export const LESSONS: Lesson[] = [...core, ...cityLessons, ...provinceLessons].map((l, i) => ({ ...l, number: i + 1 }));

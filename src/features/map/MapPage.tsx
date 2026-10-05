@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { COUNTRIES } from '../../content/registry';
-import { placeLayer } from '../../domain/courseIndex';
 import { masteryState } from '../../domain/srs';
 import type { PlaceItem } from '../../domain/types';
 import { placeNameLine, useLang, useT } from '../../i18n';
@@ -8,6 +7,7 @@ import { useProgress } from '../../store/progressStore';
 import { ButtonLink, Card, StateDot } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { MapLabelToggle, useMapLabels } from './MapLabelToggle';
+import { isWideMap, mapGroupOf, mapLayer } from './layer';
 import { MapView } from './MapView';
 
 const NO_ITEMS = {};
@@ -22,23 +22,22 @@ export function MapPage() {
   const [selected, setSelected] = useState<string | null>(null);
   if (!index.map) return null;
 
+  const layer = mapLayer(index);
   const place = selected ? (index.byId.get(selected) as PlaceItem | undefined) : undefined;
-  const group = place?.regionId ? (index.byId.get(place.regionId) as PlaceItem | undefined) : undefined;
-  // Legend in the course's order of divisions; the tint follows the map's group order.
-  const tintOf = new Map(index.map.groups.map((g, i) => [g.id, i]));
-  const groups = index.byKind.region.filter((r) => tintOf.has(r.id)) as PlaceItem[];
+  const group = selected ? mapGroupOf(index, selected) : undefined;
+  const map = index.map;
 
   return (
     <div className="map-page">
       <header className="section-head">
         <h1 className="page-title">{t('map.title')}</h1>
-        <p className="muted">{t('map.subtitle', { n: index.mapShapes.size })}</p>
+        <p className="muted">{t('map.subtitle', { n: index.mapShapes.size, what: t(`map.what.${layer}`) })}</p>
       </header>
       <div className="map-page-tools">
         <MapLabelToggle which="mapLabels" />
-        <ButtonLink to={`/${meta.slug}/practice/run?${districtPracticeQuery()}`}>{t('map.practice')}</ButtonLink>
+        <ButtonLink to={`/${meta.slug}/practice/run?${mapPracticeQuery()}`}>{t(`map.practice.${layer}`)}</ButtonLink>
       </div>
-      <div className="map-page-body">
+      <div className={`map-page-body${isWideMap(index) ? ' is-wide' : ''}`}>
         <MapView
           index={index}
           label={t('map.label')}
@@ -51,15 +50,17 @@ export function MapPage() {
         <aside className="map-side">
           {place ? (
             <Card className="map-info">
-              <span className="glyph glyph-m native">{place.native}</span>
+              <span className={`glyph glyph-${Array.from(place.native).length > 12 ? 's' : 'm'} native`}>{place.native}</span>
               <p className="map-info-translit">{place.translit}</p>
               <p className="muted">{placeNameLine(place, lang)}</p>
               <dl className="fb-facts">
                 {group && (
                   <div>
-                    <dt>{t('map.division')}</dt>
+                    <dt>{t(`map.group.${layer}`)}</dt>
                     <dd>
-                      <span className="native">{group.native}</span> · {lang === 'de' ? group.names.de : group.names.en}
+                      {group.native && <span className="native">{group.native}</span>}
+                      {group.native && group.name && ' · '}
+                      {group.name?.[lang]}
                     </dd>
                   </div>
                 )}
@@ -79,16 +80,17 @@ export function MapPage() {
             <p className="muted map-hint">{t('map.tapHint')}</p>
           )}
           <ul className="map-legend">
-            {groups.map((g) => (
-              <li key={g.id}>
-                <span className={`map-swatch map-tint-${tintOf.get(g.id)! % 8}`} aria-hidden="true" />
-                <span className="native">{g.core ?? g.native}</span>
-                <span className="muted">{lang === 'de' ? g.names.de : g.names.en}</span>
-                <span className="muted tabular">
-                  {index.map!.shapes.filter((s) => s.group === g.id).length}
-                </span>
-              </li>
-            ))}
+            {map.groups.map((g, i) => {
+              const info = mapGroupOf(index, map.shapes.find((s) => s.group === g.id)!.id);
+              return (
+                <li key={g.id}>
+                  <span className={`map-swatch map-tint-${i % 8}`} aria-hidden="true" />
+                  <span className="native">{info?.native}</span>
+                  <span className="muted">{info?.name?.[lang]}</span>
+                  <span className="muted tabular">{map.shapes.filter((s) => s.group === g.id).length}</span>
+                </li>
+              );
+            })}
           </ul>
           <p className="muted small map-source">
             {t('map.source')}{' '}
@@ -103,32 +105,33 @@ export function MapPage() {
   );
 }
 
-/** Practice only the map areas (districts), smart selection over all of them. */
-export function districtPracticeQuery(count = 20): string {
-  return `c=regions&scope=all&weak=1&n=${count}&layer=district`;
+/** Practice only the map areas (districts, provinces, regions), smart selection over all of them. */
+export function mapPracticeQuery(count = 20): string {
+  return `c=regions&scope=all&weak=1&n=${count}&layer=map`;
 }
 
-/** Goal card on the dashboard: how many districts are recognised reliably. */
-export function DistrictGoal() {
+/** Goal card on the dashboard: how many map areas are recognised reliably. */
+export function MapGoal() {
   const { meta, index } = useCourse();
   const t = useT();
   const items = useProgress((s) => s.root.courses[meta.id]?.items) ?? NO_ITEMS;
   if (!index.map) return null;
-  const ids = index.items.filter((it) => placeLayer(it) === 'district').map((it) => it.id);
+  const layer = mapLayer(index);
+  const ids = [...index.mapShapes.keys()];
   const sure = ids.filter((id) => ((items as Record<string, { box: number }>)[id]?.box ?? 0) >= 3).length;
   const seen = ids.filter((id) => (items as Record<string, unknown>)[id]).length;
   const base = `/${meta.slug}`;
   return (
     <Card className="goal-card">
-      <h2 className="card-label">{t('map.goalTitle', { n: ids.length })}</h2>
+      <h2 className="card-label">{t('map.goalTitle', { n: ids.length, what: t(`map.what.${layer}`) })}</h2>
       <div className="goal-bar" role="progressbar" aria-valuemin={0} aria-valuemax={ids.length} aria-valuenow={sure}>
         <div className="goal-bar-seen" style={{ width: `${(seen / ids.length) * 100}%` }} />
         <div className="goal-bar-sure" style={{ width: `${(sure / ids.length) * 100}%` }} />
       </div>
       <p className="muted small">{t('map.goalBody', { sure, seen })}</p>
       <div className="actions">
-        <ButtonLink variant="primary" to={`${base}/practice/run?${districtPracticeQuery()}`}>
-          {t('map.practice')}
+        <ButtonLink variant="primary" to={`${base}/practice/run?${mapPracticeQuery()}`}>
+          {t(`map.practice.${layer}`)}
         </ButtonLink>
         <ButtonLink to={`${base}/map`}>{t('map.open')}</ButtonLink>
       </div>

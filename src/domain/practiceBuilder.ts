@@ -1,4 +1,4 @@
-import { placeLayer, type CourseIndex } from './courseIndex';
+import type { CourseIndex } from './courseIndex';
 import { dayKey } from './dates';
 import { isDue, isWeak, priority, type ItemProgress } from './srs';
 import {
@@ -23,8 +23,8 @@ export interface PracticeConfig {
   scope: 'learned' | 'all';
   prioritizeWeak: boolean;
   count: number;
-  /** Restrict places to one layer (e.g. only the districts of Bangladesh). */
-  layer?: 'district';
+  /** Only the places that are areas on the course map (districts, provinces, regions). */
+  layer?: 'map';
 }
 
 export const ALL_CATEGORIES: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
@@ -59,7 +59,7 @@ export function poolFor(index: CourseIndex, config: PracticeConfig, ctx: Practic
   const kinds = new Set(cats.flatMap((c) => CATEGORY_KINDS[c]));
   return index.items.filter((it) => {
     if (!kinds.has(it.kind)) return false;
-    if (config.layer && placeLayer(it) !== config.layer) return false;
+    if (config.layer === 'map' && !index.mapShapes.has(it.id)) return false;
     if (config.weakOnly) return weak.has(it.id);
     if (config.scope === 'learned') return (ctx.items[it.id]?.box ?? 0) >= 1;
     return true;

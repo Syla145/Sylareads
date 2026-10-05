@@ -1,6 +1,6 @@
-import type { Lesson, PhaseDef, PlaceItem } from '../../domain/types';
+import type { L10n, Lesson, PhaseDef, PlaceItem } from '../../domain/types';
 import { letterId } from './translit';
-import { CITIES, REGIONS } from './places';
+import { CITIES } from './places';
 
 export const PHASES: PhaseDef[] = [
   { id: 'easy', title: { de: 'Easy Wins', en: 'Easy Wins' } },
@@ -153,16 +153,36 @@ const cityLessons: Omit<Lesson, 'number'>[] = chunk(byTier(CITIES), 9).map((grou
   newIds: group.map((p) => p.id),
 }));
 
-const regionLessons: Omit<Lesson, 'number'>[] = chunk(byTier(REGIONS), 9).map((group, i) => ({
+/**
+ * Regions are taught on the map, federal district by federal district, so
+ * neighbours are learned together. The type word (oblast, krai) is optional.
+ */
+const REGION_GROUPS: { title: L10n; slugs: string[] }[] = [
+  { title: { de: 'Moskau & Goldener Ring', en: 'Moscow & the Golden Ring' }, slugs: ['moskva', 'moskovskaya', 'tverskaya', 'yaroslavskaya', 'vladimirskaya', 'ivanovskaya', 'kostromskaya', 'ryazanskaya', 'tulskaya'] },
+  { title: { de: 'Zentralrussland: Westen & Süden', en: 'Central Russia: West & South' }, slugs: ['smolenskaya', 'kaluzhskaya', 'bryanskaya', 'orlovskaya', 'kurskaya', 'belgorodskaya', 'voronezhskaya', 'lipetskaya', 'tambovskaya'] },
+  { title: { de: 'Nordwesten: St. Petersburg bis Kaliningrad', en: 'Northwest: St Petersburg to Kaliningrad' }, slugs: ['sankt-peterburg', 'leningradskaya', 'novgorodskaya', 'pskovskaya', 'kaliningradskaya', 'karelia'] },
+  { title: { de: 'Der hohe Norden', en: 'The Far North' }, slugs: ['murmanskaya', 'arkhangelskaya', 'nenetsky', 'komi', 'vologodskaya'] },
+  { title: { de: 'Südrussland', en: 'Southern Russia' }, slugs: ['krasnodarsky', 'adygea', 'rostovskaya', 'volgogradskaya', 'astrakhanskaya', 'kalmykia'] },
+  { title: { de: 'Nordkaukasus', en: 'North Caucasus' }, slugs: ['stavropolsky', 'karachay-cherkessia', 'kabardino-balkaria', 'north-ossetia', 'ingushetia', 'chechnya', 'dagestan'] },
+  { title: { de: 'Wolga: Nischni Nowgorod bis Kasan', en: 'Volga: Nizhny Novgorod to Kazan' }, slugs: ['nizhegorodskaya', 'chuvashia', 'mari-el', 'mordovia', 'penzenskaya', 'ulyanovskaya', 'tatarstan'] },
+  { title: { de: 'Wolga & Vorural', en: 'Volga & the Cis-Urals' }, slugs: ['samarskaya', 'saratovskaya', 'orenburgskaya', 'bashkortostan', 'udmurtia', 'permsky', 'kirovskaya'] },
+  { title: { de: 'Ural', en: 'Urals' }, slugs: ['sverdlovskaya', 'chelyabinskaya', 'kurganskaya', 'tyumenskaya', 'khanty-mansiysky', 'yamalo-nenetsky'] },
+  { title: { de: 'Westsibirien', en: 'Western Siberia' }, slugs: ['omskaya', 'novosibirskaya', 'tomskaya', 'kemerovskaya', 'altaysky'] },
+  { title: { de: 'Südsibirien & Krasnojarsk', en: 'Southern Siberia & Krasnoyarsk' }, slugs: ['altai-republic', 'khakassia', 'tuva', 'krasnoyarsky', 'irkutskaya'] },
+  { title: { de: 'Ferner Osten: Baikal bis Pazifik', en: 'Far East: Baikal to the Pacific' }, slugs: ['buryatia', 'zabaykalsky', 'amurskaya', 'yevreyskaya', 'khabarovsky', 'primorsky'] },
+  { title: { de: 'Ferner Osten: Jakutien bis Tschukotka', en: 'Far East: Yakutia to Chukotka' }, slugs: ['sakha', 'magadanskaya', 'chukotsky', 'kamchatsky', 'sakhalinskaya'] },
+];
+
+const regionLessons: Omit<Lesson, 'number'>[] = REGION_GROUPS.map((g, i) => ({
   id: `ru-region-${i + 1}`,
   phaseId: 'regions',
   type: 'places',
-  title: { de: `Regionen ${i + 1}`, en: `Regions ${i + 1}` },
+  title: g.title,
   goal: {
-    de: 'Oblaste, Krais und Republiken erkennen. Das Typwort ist optional.',
-    en: 'Recognise oblasts, krais and republics. The type word is optional.',
+    de: `${g.slugs.length} Regionen lesen und auf der Karte finden. Das Typwort (Oblast, Krai) ist optional.`,
+    en: `Read ${g.slugs.length} regions and find them on the map. The type word (oblast, krai) is optional.`,
   },
-  newIds: group.map((p) => p.id),
+  newIds: g.slugs.map((s) => `ru:region:${s}`),
 }));
 
 export const LESSONS: Lesson[] = [...letterLessons, ...cityLessons, ...regionLessons].map((l, i) => ({ ...l, number: i + 1 }));

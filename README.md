@@ -6,7 +6,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 
 ## Was drin ist
 
-- 37 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen, 11 Städte- und 9 Regionslektionen
+- 41 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen, 11 Städte- und 13 Regionslektionen (auf der Karte)
 - 100 Städte (die größten nach Einwohnerzahl) und alle 83 international anerkannten Föderationssubjekte (ohne Krim und Sewastopol), 51 GeoGuessr-Begriffe mit Abkürzungen, 35 Übungswörter, 56 Kombinationen
 - Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
@@ -23,7 +23,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 
 ### Thai
 
-- 39 Lektionen: 42 Konsonanten, 15 Vokalzeichen und 5 Sonderzeichen (Tonzeichen, Karan, Mai Taikhu, Mai Yamok, Paiyannoi) in 11 Buchstabenlektionen, 3 Regellektionen (Silbenende, zusammengesetzte Vokale, unsichtbare Vokale), Namensbausteine, 4 Begriffslektionen, 11 Städte- und 9 Provinzlektionen
+- 41 Lektionen: 42 Konsonanten, 15 Vokalzeichen und 5 Sonderzeichen (Tonzeichen, Karan, Mai Taikhu, Mai Yamok, Paiyannoi) in 11 Buchstabenlektionen, 3 Regellektionen (Silbenende, zusammengesetzte Vokale, unsichtbare Vokale), Namensbausteine, 4 Begriffslektionen, 11 Städte- und 11 Provinzlektionen (auf der Karte)
 - 100 Städte (alle 77 Provinzhauptstädte plus die 23 größten weiteren Städte wie Hat Yai, Pattaya, Ko Samui), alle 77 Provinzen (inkl. Bangkok), 36 Schilderbegriffe, 52 Übungswörter
 - Thai wird in Silben gelesen, nicht Buchstabe für Buchstabe. Deshalb gibt es keine regelbasierte Transliteration: Jedes Wort hat eine Liste erlaubter Lesungen nach RTGS (der Umschrift auf thailändischen Schildern), dazu verbreitete Varianten (Phuket, Chiang Mai, Ayutthaya). Tonhöhen werden nicht abgefragt – sie helfen beim Lesen von Schildern nicht.
 - Vokalzeichen erscheinen mit Platzhalterkreis (◌า), damit sichtbar ist, wo sie am Konsonanten sitzen.
@@ -34,13 +34,21 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - 100 Städte (alle 64 Distrikthauptstädte plus 36 große Orte wie Savar, Sreemangal, Teknaf, Benapole), alle 8 Divisionen und alle 64 Distrikte, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
 - Englische Namen nach der offiziellen Schreibweise von 2018 (Chattogram, Cumilla, Barishal, Jashore, Bogura); die älteren Formen (Chittagong, Comilla, Barisal, Jessore, Bogra) gelten ebenfalls. Ligaturen sind eigene Leseeinheiten, weil man sie als Ganzes erkennt.
 
-### Karte (Bengali)
+### Karten (Bengali, Russian Cyrillic, Thai)
 
-- Alle 64 Distrikte Bangladeschs als eigene Lernobjekte, in 10 Lektionen nach Divisionen geordnet (Dhaka & Umgebung, Südlich der Padma, Cumilla bis Noakhali, Chattogram & Bergland, Sylhet & Mymensingh, Rajshahi, Rangpur, Khulna & Sundarbans, Kushtia bis Magura, Barishal).
-- Neue Aufgaben: **Wo liegt …?** (bengalischen Namen lesen, Distrikt auf der Karte anklicken) und **Welcher Distrikt ist markiert?** (markierte Fläche, Auswahl aus vier Nachbardistrikten in bengalischer Schrift). Dazu wie gewohnt den Namen tippen.
-- Tab **Karte** zum Erkunden mit Zoom (Mausrad, Ziehen, zwei Finger, +/−) und Beschriftung wahlweise in Originalschrift, Latein oder aus. In Kartenaufgaben ist die Beschriftung standardmäßig aus und lässt sich zuschalten; der gesuchte Distrikt ist nie beschriftet.
-- Auf der Übersicht zeigt eine Zielkarte „Ziel: alle 64 Distrikte“, wie viele sicher sitzen; „Distrikte üben“ startet eine Übung nur mit Distrikten (`?layer=district`).
-- Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen BGD ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/bn/map.json` (≈ 100 KB, wird nur mit dem Bengali-Kurs geladen). Jede Distrikthauptstadt liegt geprüft innerhalb ihres Distrikts.
+Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungsebene:
+
+| Kurs | Gebiete | Gruppiert nach | Lektionen |
+|------|---------|----------------|-----------|
+| Bengali | 64 Distrikte | 8 Divisionen | 10 |
+| Russian Cyrillic | 83 Föderationssubjekte (ohne Krim und Sewastopol) | 8 Föderationskreise | 13 |
+| Thai | 77 Provinzen | 6 Landesteile | 11 |
+
+- Die Lektionen sind geografisch geordnet, damit Nachbarn zusammen gelernt werden (z. B. „Moskau & Goldener Ring“, „Isan: am Mekong“).
+- Aufgaben: **Wo liegt …?** (Namen in Originalschrift lesen, Gebiet anklicken), **Welche/r … ist markiert?** (markierte Fläche, Auswahl aus vier Nachbarn in Originalschrift) und das Tippen des Namens.
+- Tab **Karte** zum Erkunden mit Zoom (Mausrad, Ziehen, zwei Finger, +/−) und Beschriftung in Originalschrift, Latein oder aus. In Kartenaufgaben ist die Beschriftung standardmäßig aus; das gesuchte Gebiet ist nie beschriftet.
+- Zielkarte auf der Übersicht („Ziel: alle 64 Distrikte“ usw.) und „… üben“ startet eine Übung nur mit Kartengebieten (`?layer=map`).
+- Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand und Bangladesch eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets.
 
 ### Koordinaten und Quellen
 

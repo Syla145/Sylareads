@@ -4,6 +4,7 @@ import type { SessionState } from '../../domain/sessionEngine';
 import type { GradedTask } from '../../domain/tasks';
 import type { PlaceItem } from '../../domain/types';
 import { placeNameLine, useLang, useT } from '../../i18n';
+import { layerOfItem, mapGroupOf } from '../map/layer';
 import { MapView } from '../map/MapView';
 import { ClickedLine, ConfusionLine } from './SessionRunner';
 
@@ -88,6 +89,7 @@ function PlaceFacts({ index, place, withMap }: { index: CourseIndex; place: Plac
   const lang = useLang();
   const region = place.regionId ? (index.byId.get(place.regionId) as PlaceItem | undefined) : undefined;
   const onMap = withMap && index.map && index.mapShapes.has(place.id);
+  const group = !region && index.mapShapes.has(place.id) ? mapGroupOf(index, place.id) : undefined;
   return (
     <div className={`fb-body fb-place${onMap ? ' has-map' : ''}`}>
       {onMap && <MapView index={index} label={t('map.label')} marks={{ [place.id]: 'correct' }} focus={[place.id]} minFrame={0.55} className="map-mini" />}
@@ -106,6 +108,12 @@ function PlaceFacts({ index, place, withMap }: { index: CourseIndex; place: Plac
           <div>
             <dt>{t('session.region')}</dt>
             <dd>{lang === 'de' ? region.names.de : region.names.en}</dd>
+          </div>
+        )}
+        {group?.name && (
+          <div>
+            <dt>{t(`map.group.${layerOfItem(place)}`)}</dt>
+            <dd>{group.name[lang]}</dd>
           </div>
         )}
       </dl>

@@ -34,6 +34,7 @@ export const COURSES: CourseMeta[] = [
     sampleGlyphs: 'А Б В Г Д',
     fontClass: 'font-native-latin',
     status: 'available',
+    hasMap: true,
     load: () => import('./ru').then((m) => m.default),
   },
   {
@@ -71,6 +72,7 @@ export const COURSES: CourseMeta[] = [
     sampleGlyphs: 'ก ข ค ง',
     fontClass: 'font-native-thai',
     status: 'available',
+    hasMap: true,
     load: () => import('./th').then((m) => m.default),
   },
 ];

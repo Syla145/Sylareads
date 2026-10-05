@@ -5,6 +5,7 @@ import type { GradedTask } from '../../domain/tasks';
 import type { PlaceItem } from '../../domain/types';
 import { placeNames, useLang, useT } from '../../i18n';
 import { MapLabelToggle, useMapLabels } from '../map/MapLabelToggle';
+import { layerOfItem } from '../map/layer';
 import { MapView, type Mark } from '../map/MapView';
 
 /** Glyph size by length so long names never overflow and nothing jumps. */
@@ -34,17 +35,21 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
   const item = index.byId.get(task.itemId);
   const feedback = state.phase === 'feedback';
   const taskLabels = useMapLabels('taskMapLabels');
-  const isDistrict = item?.kind === 'region' && item.regionType === 'district';
+  const layer = layerOfItem(item);
+  const onMap = index.mapShapes.has(task.itemId);
 
   let prompt: string;
-  if (task.kind === 'identify') prompt = isDistrict ? t('session.identifyDistrict') : item?.kind === 'region' ? t('session.identifyRegion') : t('session.identifyCity');
-  else if (task.kind === 'locate') prompt = isDistrict ? t('session.locateDistrict') : t('session.locate');
+  if (task.kind === 'identify')
+    prompt = item?.kind === 'city' ? t('session.identifyCity') : layer === 'district' ? t('session.identifyDistrict') : layer === 'province' ? t('session.identifyProvince') : t('session.identifyRegion');
+  else if (task.kind === 'locate')
+    prompt = !onMap ? t('session.locate') : layer === 'district' ? t('session.locateDistrict') : layer === 'province' ? t('session.locateProvince') : t('session.locateRegion');
   else if (task.kind === 'meaning') prompt = t('session.meaning');
   else if (task.kind === 'read') prompt = item?.kind === 'letter' ? t('session.readLetter') : t('session.read');
   else if (task.question === 'reading') prompt = t('session.choiceReading');
   else if (task.question === 'glyph') prompt = t('session.choiceGlyph', { r: task.display });
   else if (task.question === 'function') prompt = t('session.choiceFunction');
-  else if (task.question === 'map') prompt = isDistrict ? t('session.choiceMapDistrict') : t('session.choiceMap');
+  else if (task.question === 'map')
+    prompt = layer === 'district' ? t('session.choiceMapDistrict') : layer === 'province' ? t('session.choiceMapProvince') : t('session.choiceMapRegion');
   else prompt = t('session.scan', { name: placeNames(item as PlaceItem, lang)[0] });
 
   const isScan = task.kind === 'choice' && task.question === 'scan';

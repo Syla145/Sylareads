@@ -6,7 +6,7 @@ import { formatPercent, useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { Button, ButtonLink, Card, MasteryBar } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
-import { DistrictGoal } from '../map/MapPage';
+import { MapGoal } from '../map/MapPage';
 import { recommendedPath } from './recommend';
 
 const BAR_ORDER: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
@@ -46,7 +46,7 @@ export function DashboardPage() {
             </div>
           </div>
         </Card>
-        <DistrictGoal />
+        <MapGoal />
       </div>
     );
   }
@@ -80,7 +80,7 @@ export function DashboardPage() {
       </header>
 
       <div className="dash-grid">
-        <DistrictGoal />
+        <MapGoal />
         <Card className="card-recommended">
           <h2 className="card-label">{t('dash.recommended')}</h2>
           {recLesson ? (

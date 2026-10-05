@@ -9,6 +9,7 @@ import { Button, Modal } from '../../ui/primitives';
 import { FeedbackPanel } from './FeedbackPanel';
 import { IntroCard } from './IntroCard';
 import { TaskPrompt } from './TaskPrompt';
+import { isWideMap } from '../map/layer';
 
 interface Props {
   courseId: string;
@@ -196,7 +197,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
 
       {notice && state.index === 0 && <p className="session-notice">{notice}</p>}
 
-      <main className="session-main" key={task.key}>
+      <main className={`session-main${isMapTask(task) && isWideMap(index) ? ' is-wide' : ''}`} key={task.key}>
         {task.kind === 'intro' ? (
           <IntroCard index={index} itemId={task.itemId} lower={task.lower} onNext={next} />
         ) : (
@@ -305,3 +306,5 @@ export function ClickedLine({ index, id }: { index: CourseIndex; id: string }) {
     </p>
   );
 }
+
+const isMapTask = (task: Task) => task.kind === 'locate' || (task.kind === 'choice' && task.question === 'map');

@@ -180,10 +180,11 @@ export interface CourseMap {
   source: string;
   width: number;
   height: number;
-  /** Equirectangular projection: x = pad + (lon − minLon)·kx·s, y = pad + (maxLat − lat)·s. */
-  projection: { minLon: number; maxLat: number; kx: number; s: number; pad: number };
+  /** Projection used when building the paths (documentation only). */
+  projection: Record<string, unknown>;
   outline: string;
-  groups: Omit<MapShape, 'box'>[];
+  /** Parent areas (divisions, federal districts, regions). Named here when they are no learning items. */
+  groups: (Omit<MapShape, 'box' | 'group'> & { name?: L10n; native?: string })[];
   shapes: MapShape[];
 }
 

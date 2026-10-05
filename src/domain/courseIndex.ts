@@ -38,12 +38,6 @@ export function attachMap(index: CourseIndex, map: CourseMap): CourseIndex {
   return index;
 }
 
-/** Projects [lat, lon] into map units. */
-export function project(map: CourseMap, [lat, lon]: [number, number]): [number, number] {
-  const p = map.projection;
-  return [p.pad + (lon - p.minLon) * p.kx * p.s, p.pad + (p.maxLat - lat) * p.s];
-}
-
 /** Places are compared within their layer: cities, regions, or districts (a district shares its name with a division). */
 export function placeLayer(item: Item): string {
   return item.kind === 'region' && item.regionType === 'district' ? 'district' : item.kind;
