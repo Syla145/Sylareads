@@ -85,6 +85,8 @@ export interface ComboItem extends ItemBase {
   native: string;
   reading: string;
   note?: L10n;
+  /** A reading unit of its own (e.g. a Greek digraph like ου). Words containing it need it to be decodable. */
+  unit?: boolean;
 }
 
 export type TermCategory = 'road' | 'settlement' | 'nature' | 'transport' | 'direction' | 'element' | 'everyday';
@@ -113,7 +115,7 @@ export interface PlaceItem extends ItemBase {
   accepted: string[];
   countryId: string;
   regionId?: string;
-  regionType?: 'oblast' | 'krai' | 'republic' | 'okrug' | 'federal-city';
+  regionType?: 'oblast' | 'krai' | 'republic' | 'okrug' | 'federal-city' | 'periphery' | 'district' | 'island';
   tier: 1 | 2 | 3;
   hint?: L10n;
   tags?: string[];
@@ -150,6 +152,8 @@ export interface Lesson {
   wordIds?: string[];
   /** Review lessons: show letters in lower case. */
   lowercase?: boolean;
+  /** Review lessons: show some words in capitals without accents, as on many signs. */
+  capsWords?: boolean;
 }
 
 /** A segment of a transliteration: all accepted Latin spellings for one native piece. */
@@ -166,7 +170,7 @@ export interface CourseContent {
   lessons: Lesson[];
   /** Rule-based segmentation of a native string into transliteration alternatives. */
   segments: (native: string) => Segment[];
-  /** Letter ids required to decode a native string. */
+  /** Reading-unit ids (letters and unit combos) required to decode a native string. */
   requiredLetters: (native: string) => string[];
   /** Feature flags for the course (e.g. upper/lower case). */
   hasCase: boolean;

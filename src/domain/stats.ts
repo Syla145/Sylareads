@@ -1,6 +1,6 @@
 import type { CourseIndex } from './courseIndex';
 import { dayKey } from './dates';
-import { isDecodable } from './lessonBuilder';
+import { isDecodable, knownUnits } from './lessonBuilder';
 import { weakItemIds } from './practiceBuilder';
 import { confusedTwiceSet, type CourseProgress } from './progress';
 import { isDue, masteryState, masteryValue } from './srs';
@@ -36,9 +36,9 @@ export interface CourseStats {
   recommendation: Recommendation;
 }
 
-/** Letters introduced so far (box ≥ 1). */
+/** Reading units (letters, digraph units) introduced so far (box ≥ 1). */
 export function knownLetters(index: CourseIndex, cp: CourseProgress | undefined): Set<string> {
-  return new Set(index.content.letters.filter((l) => (cp?.items[l.id]?.box ?? 0) >= 1).map((l) => l.id));
+  return knownUnits(index, cp?.items ?? {});
 }
 
 export function readableCities(index: CourseIndex, known: Set<string>): string[] {

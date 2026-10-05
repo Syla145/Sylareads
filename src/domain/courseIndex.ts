@@ -16,8 +16,10 @@ export interface CourseIndex {
   segments: Map<string, Segment[]>;
   /** Extra segment lists accepted for an item (region core names). */
   extraSegments: Map<string, Segment[][]>;
-  /** Letter ids needed to decode an item. */
+  /** Reading-unit ids needed to decode an item. */
   required: Map<string, string[]>;
+  /** Reading units: all letters plus combos marked as units (digraphs). */
+  units: Set<string>;
   /** Lesson that introduces an item (lesson id). */
   lessonOf: Map<string, string>;
   /** Contrast partners of a letter. */
@@ -55,7 +57,9 @@ export function buildIndex(content: CourseContent): CourseIndex {
     }
     const native = readingNative(it);
     segments.set(it.id, content.segments(native));
-    required.set(it.id, content.requiredLetters(native));
+    const req = content.requiredLetters(native);
+    // A unit combo requires itself (a digraph is learned as one unit).
+    required.set(it.id, it.kind === 'combo' && it.unit ? [...new Set([...req, it.id])] : req);
     if (it.kind === 'combo') {
       answers.set(it.id, answerSet([it.reading]));
     } else if (it.kind === 'city' || it.kind === 'region') {
@@ -92,7 +96,9 @@ export function buildIndex(content: CourseContent): CourseIndex {
     }
   }
 
-  return { content, items, byId, byKind, answers, segments, extraSegments, required, lessonOf, contrastOf, lookalikes };
+  const units = new Set<string>([...content.letters.map((l) => l.id), ...content.combos.filter((c) => c.unit).map((c) => c.id)]);
+
+  return { content, items, byId, byKind, answers, segments, extraSegments, required, units, lessonOf, contrastOf, lookalikes };
 }
 
 /** Visual similarity for scan distractors: shared ending, shared start, similar length. */

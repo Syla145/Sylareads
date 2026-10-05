@@ -189,7 +189,7 @@ export function buildPractice(index: CourseIndex, config: PracticeConfig, ctx: P
 export function poolReadability(index: CourseIndex, config: PracticeConfig, ctx: PracticeContext): number {
   const pool = poolFor(index, { ...config, scope: 'all' }, ctx).filter((it) => it.kind !== 'letter');
   if (!pool.length) return 1;
-  const known = new Set(index.content.letters.filter((l) => (ctx.items[l.id]?.box ?? 0) >= 1).map((l) => l.id));
+  const known = new Set([...index.units].filter((id) => (ctx.items[id]?.box ?? 0) >= 1));
   const readable = pool.filter((it) => (index.required.get(it.id) ?? []).every((id) => known.has(id)));
   return readable.length / pool.length;
 }

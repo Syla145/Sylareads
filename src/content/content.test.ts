@@ -2,13 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { buildIndex } from '../domain/courseIndex';
 import { accepts } from '../domain/evaluate';
 import { normalize } from '../domain/normalize';
+import el from './el';
 import ru from './ru';
 
 /**
  * Content validation (spec section 14). These tests are the quality gate for
  * every course: they run in CI before each deployment.
  */
-const courses = [ru];
+const courses = [ru, el];
 
 describe.each(courses)('course $id', (course) => {
   const index = buildIndex(course);
@@ -36,11 +37,15 @@ describe.each(courses)('course $id', (course) => {
     expect(taught.sort()).toEqual(course.letters.map((l) => l.id).sort());
   });
 
-  it('can decode every word and place with the course letters', () => {
-    const letters = new Set(course.letters.map((l) => l.id));
+  it('can decode every word and place with the course reading units', () => {
     for (const it of index.items) {
-      for (const req of index.required.get(it.id) ?? []) expect(letters.has(req), it.id).toBe(true);
+      for (const req of index.required.get(it.id) ?? []) expect(index.units.has(req), `${it.id} needs ${req}`).toBe(true);
     }
+  });
+
+  it('teaches every reading unit before the place lessons', () => {
+    const taught = new Set(course.lessons.filter((l) => l.type === 'letters' || l.type === 'combos').flatMap((l) => l.newIds));
+    for (const id of index.units) expect(taught.has(id), id).toBe(true);
   });
 
   it('accepts the stored transliteration of every word through the reading rules', () => {

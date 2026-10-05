@@ -8,6 +8,7 @@ import {
   readingChoiceTask,
   readTask,
   shuffle,
+  signCaps,
   type Rng,
 } from './taskFactory';
 import type { Task } from './tasks';
@@ -15,14 +16,24 @@ import type { ComboItem, Item, LetterItem, Lesson, PlaceItem } from './types';
 
 type Items = Record<string, ItemProgress | undefined>;
 
-/** Letters known when a lesson starts: taught in earlier lessons, seen in practice, or new in this lesson. */
+/**
+ * Reading units (letters and digraph units) known when a lesson starts: taught
+ * in this or an earlier lesson, or already seen in practice.
+ */
 export function knownLettersFor(index: CourseIndex, lesson: Lesson, items: Items): Set<string> {
   const known = new Set<string>();
   for (const l of index.content.lessons) {
-    if (l.number <= lesson.number && l.type === 'letters') l.newIds.forEach((id) => known.add(id));
+    if (l.number <= lesson.number && (l.type === 'letters' || l.type === 'combos')) {
+      l.newIds.filter((id) => index.units.has(id)).forEach((id) => known.add(id));
+    }
   }
-  for (const letter of index.content.letters) if ((items[letter.id]?.box ?? 0) >= 1) known.add(letter.id);
+  for (const id of index.units) if ((items[id]?.box ?? 0) >= 1) known.add(id);
   return known;
+}
+
+/** Reading units the learner has met (box ≥ 1). */
+export function knownUnits(index: CourseIndex, items: Items): Set<string> {
+  return new Set([...index.units].filter((id) => (items[id]?.box ?? 0) >= 1));
 }
 
 export function isDecodable(index: CourseIndex, itemId: string, known: Set<string>): boolean {
@@ -126,7 +137,10 @@ function reviewLesson(index: CourseIndex, lesson: Lesson, items: Items, rng: Rng
     .slice(0, 4)
     .forEach((l) => tasks.push(glyphChoiceTask(index, l, rng, lower, known)));
   const words = pickReadables(index, known, lesson.reviewIds ?? [], 6, rng, new Set());
-  words.forEach((w) => tasks.push(readTask(w, rng, { caseMix: false })));
+  words.forEach((w, i) => {
+    const t = readTask(w, rng, { caseMix: false });
+    tasks.push(lesson.capsWords && i % 2 === 0 && t.kind === 'read' ? { ...t, display: signCaps(t.display) } : t);
+  });
   return tasks;
 }
 
@@ -145,17 +159,21 @@ function cardsThenRecall(ids: string[], groupSize: number, card: (id: string) =>
 }
 
 function comboLesson(index: CourseIndex, lesson: Lesson, items: Items, rng: Rng): Task[] {
-  const known = new Set(index.content.letters.map((l) => l.id));
-  void items;
+  // Endings lessons come after the whole alphabet; digraph lessons only know what was taught so far.
+  const known = new Set([...index.content.letters.map((l) => l.id), ...knownLettersFor(index, lesson, items)]);
   const tasks = cardsThenRecall(lesson.newIds, 3, (id) => introTask(id), (id) => readTask(index.byId.get(id)!, rng));
   // Places that carry the endings
   const places = [...index.byKind.city, ...index.byKind.region] as PlaceItem[];
   const used = new Set<string>();
+  const words = [...places, ...index.byKind.term, ...index.byKind.word] as Item[];
   shuffle(lesson.newIds, rng).forEach((id) => {
-    const suffix = (index.byId.get(id) as ComboItem).native.replace(/^-/, '').toLowerCase();
-    const match = shuffle(places, rng).find(
-      (p) => !used.has(p.id) && p.native.toLowerCase().split(/[\s-]/).some((part) => part.endsWith(suffix)) && isDecodable(index, p.id, known),
-    );
+    const combo = index.byId.get(id) as ComboItem;
+    const suffix = combo.native.replace(/^-/, '').toLowerCase();
+    const carries = (it: Item) =>
+      combo.native.startsWith('-')
+        ? 'native' in it && it.native.toLowerCase().split(/[\s-]/).some((part) => part.endsWith(suffix))
+        : (index.required.get(it.id) ?? []).includes(id);
+    const match = shuffle(combo.unit ? words : places, rng).find((p) => !used.has(p.id) && carries(p) && isDecodable(index, p.id, known));
     if (match) {
       used.add(match.id);
       tasks.push(readTask(match, rng));

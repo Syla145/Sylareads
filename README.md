@@ -2,7 +2,7 @@
 
 **Learn to read the world.** Ein Lesetrainer für GeoGuessr-Spieler: fremde Schriften lesen, Ortsnamen erkennen, Schilderwörter verstehen.
 
-Stand: **Meilenstein M1** – vollständige Engine und vollständiger Kurs *Russian Cyrillic*. Greek, Bengali und Thai erscheinen als „Bald verfügbar“ und folgen in M2 und M3.
+Stand: **Meilenstein M2** – vollständige Engine sowie die Kurse *Russian Cyrillic* und *Greek* (Griechenland und Zypern). Bengali und Thai erscheinen als „Bald verfügbar“ und folgen in M3.
 
 ## Was drin ist
 
@@ -14,6 +14,12 @@ Stand: **Meilenstein M1** – vollständige Engine und vollständiger Kurs *Russ
 - XP, Level, Streak, 14 Achievements, Lesbarkeits-Meilenstein („31 / 50 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
+
+### Greek
+
+- 23 Lektionen: 24 Buchstaben (Easy Wins → False Friends wie Η, Ρ, Ν, Β → neue Formen), zwei Lektionen Buchstabenpaare (αι ει οι ου, αυ ευ μπ ντ γκ γγ), Klein- und Großschrift ohne Akzente, Namensbausteine (Άγιος, Νέα, Άνω, Κάτω), 4 Begriffslektionen, 6 Städte- und 4 Regionslektionen
+- 50 Städte (40 Griechenland, 10 Zypern), 13 Regionen, 5 Bezirke Zyperns, 14 Inseln, 38 Schilderbegriffe
+- Transliteration nach ELOT 743 wie auf griechischen Wegweisern (Athina, Irakleio); die gängige gesprochene Form gilt ebenfalls (Iraklio, Pireas). Buchstabenpaare sind eigene Leseeinheiten: ευ ist ev/ef, nie „eu“.
 
 ## Lokal starten
 

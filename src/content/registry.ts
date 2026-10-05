@@ -46,7 +46,8 @@ export const COURSES: CourseMeta[] = [
     countryIds: ['GR', 'CY'],
     sampleGlyphs: 'Α Β Γ Δ Ε',
     fontClass: 'font-native-latin',
-    status: 'soon',
+    status: 'available',
+    load: () => import('./el').then((m) => m.default),
   },
   {
     id: 'bn',

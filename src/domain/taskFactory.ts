@@ -31,6 +31,14 @@ export function seededRng(seed: number): Rng {
 
 export const introTask = (itemId: string, lower?: boolean): Task => ({ key: taskKey('intro'), kind: 'intro', itemId, lower });
 
+/**
+ * Capitals as on signs: upper case without stress accents (Αθήνα → ΑΘΗΝΑ).
+ * Only the acute/tonos is removed; letters such as Й and Ё keep their marks.
+ */
+export function signCaps(text: string): string {
+  return text.toUpperCase().normalize('NFD').replace(/\u0301/g, '').normalize('NFC');
+}
+
 /** Text shown for reading tasks. Words appear in lower case like on most signs, sometimes in capitals. */
 export function displayFor(item: Item, rng: Rng, opts: { lower?: boolean; caseMix?: boolean } = {}): string {
   if (item.kind === 'letter') {
@@ -39,7 +47,7 @@ export function displayFor(item: Item, rng: Rng, opts: { lower?: boolean; caseMi
   }
   const native = nativeOf(item);
   if (opts.caseMix && (item.kind === 'word' || item.kind === 'term' || item.kind === 'element') && rng() < 0.25) {
-    return native.toUpperCase();
+    return signCaps(native);
   }
   return native;
 }

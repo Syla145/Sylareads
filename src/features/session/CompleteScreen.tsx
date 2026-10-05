@@ -77,12 +77,13 @@ export function CompleteScreen({
   const confused = confusedTwiceSet(ca);
   const weak = seenIds.filter((id) => isWeak(ca?.items[id], confused.has(id)));
   const newCount = lesson ? lesson.newIds.filter((id) => session.introduced.includes(id)).length : 0;
-  const newKey = lesson ? NEW_KEY[lesson.type] : null;
+  const isPairs = !!lesson && lesson.type === 'combos' && lesson.newIds.some((id) => index.units.has(id));
+  const newKey = lesson ? (isPairs ? 'complete.new.pairs' : NEW_KEY[lesson.type]) : null;
 
   const readableBefore = new Set(readableCities(index, knownLetters(index, cb)));
   const readableAfter = readableCities(index, knownLetters(index, ca));
   const newlyReadable = readableAfter.filter((id) => !readableBefore.has(id)).map((id) => index.byId.get(id)!);
-  const showReadable = lesson?.type === 'letters';
+  const showReadable = lesson?.type === 'letters' || isPairs;
 
   const levelBefore = levelFromXp(before.profile.xp);
   const levelAfter = levelFromXp(after.profile.xp);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { nativeOf } from '../../domain/courseIndex';
-import { knownLettersFor, isDecodable } from '../../domain/lessonBuilder';
+import { knownLettersFor, knownUnits, isDecodable } from '../../domain/lessonBuilder';
 import type { Lesson } from '../../domain/types';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
@@ -22,7 +22,7 @@ export function LearnPage() {
   /** A lesson is "ahead" if it needs letters that are neither known nor taught in it. */
   const isAhead = (lesson: Lesson) => {
     if (!next || lesson.number <= next.number) return false;
-    const known = new Set(index.content.letters.filter((l) => (cp?.items[l.id]?.box ?? 0) >= 1).map((l) => l.id));
+    const known = knownUnits(index, cp?.items ?? {});
     const taughtHere = lesson.type === 'letters' ? knownLettersFor(index, lesson, cp?.items ?? {}) : known;
     const ids = lesson.newIds.length ? lesson.newIds : lesson.reviewIds ?? [];
     return ids.some((id) => !isDecodable(index, id, lesson.type === 'letters' ? taughtHere : known));

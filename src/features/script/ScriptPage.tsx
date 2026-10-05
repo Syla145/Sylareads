@@ -16,10 +16,12 @@ export function ScriptPage() {
   // Alphabetical order here (the lesson path teaches in didactic order).
   const letters = [...index.content.letters].sort((a, b) => a.upper.localeCompare(b.upper, index.content.id));
   const endings = index.content.combos.filter((c) => c.native.startsWith('-'));
+  const pairs = index.content.combos.filter((c) => c.unit);
+  const plain = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
   const examples = (l: LetterItem) =>
     [...index.byKind.city, ...index.byKind.term]
-      .filter((it) => it.kind !== 'letter' && 'native' in it && it.native.toLowerCase().includes(l.lower))
+      .filter((it) => it.kind !== 'letter' && 'native' in it && plain(it.native).includes(plain(l.lower)))
       .slice(0, 4);
 
   return (
@@ -41,16 +43,35 @@ export function ScriptPage() {
         ))}
       </div>
 
-      <h2 className="section-label">{t('script.endings')}</h2>
-      <div className="ending-list">
-        {endings.map((c) => (
-          <div key={c.id} className="ending-row">
-            <span className="glyph glyph-s">{c.native}</span>
-            <span className="ending-reading">-{c.reading}</span>
-            <span className="muted small">{c.note?.[lang]}</span>
+      {pairs.length > 0 && (
+        <>
+          <h2 className="section-label">{t('script.pairs')}</h2>
+          <div className="ending-list">
+            {pairs.map((c) => (
+              <div key={c.id} className="ending-row">
+                <span className="glyph glyph-s">{c.native}</span>
+                <span className="ending-reading">{c.reading}</span>
+                <span className="muted small">{c.note?.[lang]}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
+
+      {endings.length > 0 && (
+        <>
+          <h2 className="section-label">{t('script.endings')}</h2>
+          <div className="ending-list">
+            {endings.map((c) => (
+              <div key={c.id} className="ending-row">
+                <span className="glyph glyph-s">{c.native}</span>
+                <span className="ending-reading">-{c.reading}</span>
+                <span className="muted small">{c.note?.[lang]}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       <Modal open={!!open} onClose={() => setOpen(null)} title={open ? `${open.upper} ${open.lower}` : ''}>
         {open && (
