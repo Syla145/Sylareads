@@ -10,8 +10,10 @@ import './styles/base.css';
 import './styles/components.css';
 import { App } from './App';
 import { installFlushHandlers } from './store/persistence';
+import { startSync } from './sync/syncStore';
 
 installFlushHandlers();
+startSync();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

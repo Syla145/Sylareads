@@ -90,7 +90,35 @@ Weitere Hinweise:
 
 ## Fortschritt und Datenschutz
 
-Alles bleibt im Browser des Nutzers (localStorage, ca. 200 KB im Vollausbau). Es gibt keinen Server und keine Tracker. Safari kann Website-Daten nach 7 Tagen ohne Besuch löschen; deshalb im Profil regelmäßig **Fortschritt exportieren**. Der Import zeigt vorher an, was ersetzt wird, und behält den alten Stand als Sicherung.
+Ohne Anmeldung bleibt alles im Browser des Nutzers (localStorage, ca. 200 KB im Vollausbau). Es gibt keine Tracker. Safari kann Website-Daten nach 7 Tagen ohne Besuch löschen; deshalb im Profil regelmäßig **Fortschritt exportieren** oder online speichern. Der Import zeigt vorher an, was ersetzt wird, und behält den alten Stand als Sicherung.
+
+## Online-Speicherung (optional, Firebase)
+
+Im Profil erscheint „Online speichern“, sobald eine Firebase-Konfiguration eingetragen ist. Nutzer melden sich mit Google an; der Fortschritt wird ein paar Sekunden nach jeder Änderung, beim Öffnen und beim Zurückkehren in die App abgeglichen. Fortschritt von mehreren Geräten wird **zusammengeführt** (pro Lernobjekt gilt die zuletzt beantwortete Version, Lektionen und Achievements werden vereinigt), nichts wird überschrieben. Nur „Fortschritt zurücksetzen“ und „Importieren“ ersetzen bewusst auch die Online-Kopie. Firebase wird erst geladen, wenn jemand die Online-Speicherung nutzt.
+
+Einrichtung (einmalig, kostenloser Spark-Tarif reicht):
+
+1. [Firebase Console](https://console.firebase.google.com) → **Projekt hinzufügen**, z. B. `sylareads` (Google Analytics wird nicht gebraucht). Ein eigenes Projekt hält die Daten getrennt von anderen Seiten.
+2. **Build → Authentication → Jetzt starten → Sign-in method → Google** aktivieren, Support-E-Mail wählen, speichern.
+3. **Authentication → Settings → Authorized domains → Domain hinzufügen:** `<dein-name>.github.io`.
+4. **Build → Firestore Database → Datenbank erstellen**, Standort z. B. `eur3 (europe-west)`, Produktionsmodus. Dann im Tab **Regeln** einfügen und **Veröffentlichen**:
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /sylareads/{uid} {
+         allow read, delete: if request.auth != null && request.auth.uid == uid;
+         allow create, update: if request.auth != null && request.auth.uid == uid
+           && request.resource.data.data is string
+           && request.resource.data.data.size() < 900000;
+       }
+     }
+   }
+   ```
+   Jeder angemeldete Nutzer kann so nur sein eigenes Dokument lesen und schreiben.
+5. **Projekteinstellungen (Zahnrad) → Allgemein → Meine Apps → Web-App hinzufügen (`</>`)**, Name `Sylareads`, kein Firebase Hosting. Die angezeigte `firebaseConfig` in `src/sync/firebaseConfig.ts` bei `FIREBASE_CONFIG` eintragen (statt `null`). Die Werte sind öffentlich und dürfen ins Repository; geschützt wird über die Regeln oben.
+
+Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung.
 
 ## Projektstruktur
 
@@ -101,6 +129,7 @@ src/
   content/     Inhalte pro Kurs (ru/, el/, th/, bn/: Leseeinheiten, Wörter, Begriffe,
                Orte, Lektionen, Transliterationsregeln) und das Kurs-Register
   store/       Zustand-Store, localStorage, Migrationen, Import/Export
+  sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
   features/    Seiten: home, dashboard, learn, practice, session, script, profile
   ui/          Bausteine: Buttons, Balken, Top-Bar, Modal

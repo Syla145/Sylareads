@@ -33,6 +33,8 @@ interface ProgressState {
   finishPractice: (courseId: string, answered: number, index: CourseIndex) => string[];
   savePracticeConfig: (courseId: string, config: PracticeConfigStored) => void;
   replaceAll: (root: ProgressRoot) => void;
+  /** Progress merged with the cloud copy (no backup: nothing is lost by a merge). */
+  applyMerged: (root: ProgressRoot) => void;
   markExported: () => void;
   reset: () => void;
 }
@@ -74,6 +76,7 @@ export const useProgress = create<ProgressState>((set, get) => {
       backupCurrent(get().root);
       commit(root, true);
     },
+    applyMerged: (root) => commit(root, true),
     markExported: () => commit({ ...get().root, lastExportAt: Date.now() }, true),
     reset: () => {
       backupCurrent(get().root);

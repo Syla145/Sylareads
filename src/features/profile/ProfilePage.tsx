@@ -7,6 +7,8 @@ import { exportJson, parseImport, type ImportPreview } from '../../store/persist
 import { useProgress } from '../../store/progressStore';
 import { Button, Card, Modal, ProgressBar } from '../../ui/primitives';
 import { LangToggle, TopBar } from '../../ui/TopBar';
+import { SyncCard } from '../../sync/SyncCard';
+import { useSync } from '../../sync/syncStore';
 
 export function ProfilePage() {
   const t = useT();
@@ -19,6 +21,9 @@ export function ProfilePage() {
   const [preview, setPreview] = useState<ImportPreview | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [resetStep, setResetStep] = useState(0);
+  // Reset and import replace the online copy too (a merge would bring the old progress back).
+  const overwriteCloud = useSync((s) => s.overwriteCloud);
+  const signedIn = useSync((s) => !!s.user);
 
   const lp = levelProgress(root.profile.xp);
   const streak = displayedStreak(root.profile.streak, dayKey());
@@ -101,6 +106,8 @@ export function ProfilePage() {
           <p className="muted small">{t('profile.languageNote')}</p>
         </Card>
 
+        <SyncCard />
+
         <Card>
           <h2 className="card-label">{t('profile.data')}</h2>
           <p className="muted">{t('profile.dataNote')}</p>
@@ -126,7 +133,7 @@ export function ProfilePage() {
               <div className="notice notice-error">
                 <p>{t('profile.resetConfirm')}</p>
                 <div className="actions">
-                  <Button variant="danger" onClick={() => { reset(); setResetStep(0); setMessage(t('profile.resetDone')); }}>
+                  <Button variant="danger" onClick={() => { reset(); if (signedIn) void overwriteCloud(); setResetStep(0); setMessage(t('profile.resetDone')); }}>
                     {t('profile.resetFinal')}
                   </Button>
                   <Button variant="ghost" onClick={() => setResetStep(0)}>
@@ -143,7 +150,7 @@ export function ProfilePage() {
             <>
               <p>{t('profile.importPreview', { c: preview.courses, l: preview.lessons, x: preview.xp })}</p>
               <div className="actions">
-                <Button variant="primary" onClick={() => { replaceAll(preview.root); setPreview(null); setMessage(t('profile.importDone')); }}>
+                <Button variant="primary" onClick={() => { replaceAll(preview.root); if (signedIn) void overwriteCloud(); setPreview(null); setMessage(t('profile.importDone')); }}>
                   {t('profile.importConfirm')}
                 </Button>
                 <Button variant="ghost" onClick={() => setPreview(null)}>

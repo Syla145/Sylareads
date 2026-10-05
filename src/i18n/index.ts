@@ -52,6 +52,14 @@ export function formatPercent(value: number): number {
   return Math.round(value * 100);
 }
 
+/** Time today ("15:42"), otherwise date and time. */
+export function formatDateTime(ts: number, lang: Lang): string {
+  const d = new Date(ts);
+  const locale = lang === 'de' ? 'de-DE' : 'en-GB';
+  const time = d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+  return d.toDateString() === new Date().toDateString() ? time : `${d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}, ${time}`;
+}
+
 export function formatDate(ts: number, lang: Lang): string {
   return new Date(ts).toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }

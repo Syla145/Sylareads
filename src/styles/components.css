@@ -2207,3 +2207,28 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Online sync */
+.sync-status {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--text-secondary);
+}
+
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--state-new);
+}
+
+.sync-status.is-synced .sync-dot { background: var(--success); }
+.sync-status.is-syncing .sync-dot { background: var(--accent); animation: pulse 1s ease-in-out infinite alternate; }
+.sync-status.is-offline .sync-dot { background: var(--state-familiar); }
+.sync-status.is-error .sync-dot { background: var(--error); }
+
+@keyframes pulse {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
