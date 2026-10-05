@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildIndex } from '../domain/courseIndex';
 import { accepts } from '../domain/evaluate';
 import { normalize } from '../domain/normalize';
+import type { CourseContent } from '../domain/types';
 import bn from './bn';
 import el from './el';
 import th from './th';
@@ -73,10 +74,43 @@ describe.each(courses)('course $id', (course) => {
     }
   });
 
-  it('has 50 cities and German and English texts everywhere', () => {
-    expect(course.places.filter((p) => p.kind === 'city')).toHaveLength(50);
+  it('has 100 cities and German and English texts everywhere', () => {
+    expect(course.places.filter((p) => p.kind === 'city')).toHaveLength(100);
     for (const l of course.letters) expect(l.mnemonic.de && l.mnemonic.en, l.id).toBeTruthy();
     for (const w of course.words) expect(w.meaning.de.length && w.meaning.en.length, w.id).toBeTruthy();
     for (const l of course.lessons) expect(l.title.de && l.title.en && l.goal.de && l.goal.en, l.id).toBeTruthy();
+  });
+});
+
+describe('regions', () => {
+  const regions = (c: CourseContent, type?: string) => c.places.filter((p) => p.kind === 'region' && (!type || p.regionType === type));
+  it('covers every internationally recognised first-level region', () => {
+    expect(regions(ru)).toHaveLength(83);
+    expect(regions(el, 'periphery')).toHaveLength(13);
+    expect(regions(th, 'province')).toHaveLength(77);
+    expect(regions(bn, 'division')).toHaveLength(8);
+  });
+  it('places every city in one of its country’s regions', () => {
+    for (const c of courses) {
+      const ids = new Set(regions(c).map((r) => r.id));
+      for (const p of c.places) if (p.kind === 'city') expect(ids.has(p.regionId ?? ''), p.id).toBe(true);
+    }
+  });
+});
+
+describe('coordinates', () => {
+  // Rough bounding boxes [south, west, north, east] – enough to catch swapped or wrong-country values.
+  const BOX: Record<string, [number, number, number, number]> = {
+    RU: [41, 19, 78, 180], GR: [34.7, 19.3, 41.8, 29.7], TH: [5.5, 97.3, 20.5, 105.7], BD: [20.5, 88, 26.7, 92.7],
+  };
+  it('gives every place a label point inside its country', () => {
+    for (const c of courses) {
+      for (const p of c.places) {
+        expect(p.coords, p.id).toBeDefined();
+        const [s, w, n, e] = BOX[p.countryId];
+        const [lat, lon] = p.coords!;
+        expect(lat >= s && lat <= n && lon >= w && lon <= e, `${p.id} ${lat},${lon}`).toBe(true);
+      }
+    }
   });
 });

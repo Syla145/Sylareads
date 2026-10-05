@@ -83,7 +83,7 @@ export const DIGRAPHS: ComboItem[] = [
   combo('oi', 'οι', 'oi', { de: 'Gesprochen i. Auf Schildern oi: Βέροια = Veroia. Beides gilt.', en: 'Spoken i. Signs write oi: Βέροια = Veroia. Both count.' }),
   combo('ou', 'ου', 'ou', { de: 'Gesprochen u, geschrieben ou: Ηγουμενίτσα = Igoumenitsa.', en: 'Spoken u, written ou: Ηγουμενίτσα = Igoumenitsa.' }),
   combo('av', 'αυ', 'av', { de: 'av vor Vokalen und weichen Konsonanten, sonst af: Ναύπλιο = Nafplio.', en: 'av before vowels and soft consonants, otherwise af: Ναύπλιο = Nafplio.' }),
-  combo('ev', 'ευ', 'ev', { de: 'ev oder ef, nie „eu“: Λευκωσία = Lefkosia.', en: 'ev or ef, never “eu”: Λευκωσία = Lefkosia.' }),
+  combo('ev', 'ευ', 'ev', { de: 'ev oder ef, nie „eu“: Λευκάδα = Lefkada.', en: 'ev or ef, never “eu”: Λευκάδα = Lefkada.' }),
   combo('mp', 'μπ', 'b', { de: 'Am Wortanfang b, sonst mp: μπύρα = bira, Όλυμπος = Olympos.', en: 'b at the start of a word, otherwise mp: μπύρα = bira, Όλυμπος = Olympos.' }),
   combo('nt', 'ντ', 'd', { de: 'Am Wortanfang d, sonst nt: Κέντρο = Kentro.', en: 'd at the start of a word, otherwise nt: Κέντρο = Kentro.' }),
   combo('gk', 'γκ', 'g', { de: 'Am Wortanfang g, sonst gk oder ng.', en: 'g at the start of a word, otherwise gk or ng.' }),

@@ -78,6 +78,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: (root, courseId, index) => citiesRecognized(root, courseId, index) >= 50,
   },
   {
+    id: 'city-reader-100',
+    title: { de: 'Stadtleser 100', en: 'City Reader 100' },
+    description: { de: 'Alle 100 Städte eines Landes sicher erkannt', en: 'Recognise all 100 cities of a country reliably' },
+    check: (root, courseId, index) => citiesRecognized(root, courseId, index) >= 100,
+  },
+  {
     id: 'flawless',
     title: { de: 'Fehlerfrei', en: 'Flawless' },
     description: { de: 'Eine Lektion ohne Fehler', en: 'A lesson without a single mistake' },

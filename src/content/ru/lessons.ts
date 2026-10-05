@@ -140,13 +140,12 @@ function chunk<T>(list: T[], size: number): T[][] {
 
 const byTier = (list: PlaceItem[]) => [...list].sort((a, b) => a.tier - b.tier);
 
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
 const cityLessons: Omit<Lesson, 'number'>[] = chunk(byTier(CITIES), 9).map((group, i) => ({
   id: `ru-city-${i + 1}`,
   phaseId: 'cities',
   type: 'places',
-  title: { de: `Städte ${ROMAN[i]}`, en: `Cities ${ROMAN[i]}` },
+  title: { de: `Städte ${i + 1}`, en: `Cities ${i + 1}` },
   goal: {
     de: i === 0 ? 'Die wichtigsten Städte Russlands erkennen.' : 'Weitere Städte, die auf Wegweisern auftauchen.',
     en: i === 0 ? 'Recognise Russia’s most important cities.' : 'More cities that appear on direction signs.',
@@ -158,7 +157,7 @@ const regionLessons: Omit<Lesson, 'number'>[] = chunk(byTier(REGIONS), 9).map((g
   id: `ru-region-${i + 1}`,
   phaseId: 'regions',
   type: 'places',
-  title: { de: `Regionen ${ROMAN[i]}`, en: `Regions ${ROMAN[i]}` },
+  title: { de: `Regionen ${i + 1}`, en: `Regions ${i + 1}` },
   goal: {
     de: 'Oblaste, Krais und Republiken erkennen. Das Typwort ist optional.',
     en: 'Recognise oblasts, krais and republics. The type word is optional.',

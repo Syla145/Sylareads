@@ -58,7 +58,7 @@ const core: Omit<Lesson, 'number'>[] = [
   {
     id: 'el-l07', phaseId: 'pairs', type: 'combos',
     title: { de: 'Konsonantenpaare', en: 'Consonant Pairs' },
-    goal: { de: 'αυ, ευ, μπ, ντ, γκ und γγ – danach liest du Λευκωσία und Ναύπλιο.', en: 'αυ, ευ, μπ, ντ, γκ and γγ – afterwards you can read Λευκωσία and Ναύπλιο.' },
+    goal: { de: 'αυ, ευ, μπ, ντ, γκ und γγ – danach liest du Λευκάδα und Ναύπλιο.', en: 'αυ, ευ, μπ, ντ, γκ and γγ – afterwards you can read Λευκάδα and Ναύπλιο.' },
     newIds: C('av', 'ev', 'mp', 'nt', 'gk', 'gg'),
   },
   {
@@ -113,16 +113,15 @@ function chunk<T>(list: T[], size: number): T[][] {
 }
 
 const byTier = (list: PlaceItem[]) => [...list].sort((a, b) => a.tier - b.tier);
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
 const cityLessons: Omit<Lesson, 'number'>[] = chunk(byTier(CITIES), 9).map((group, i) => ({
   id: `el-city-${i + 1}`,
   phaseId: 'cities',
   type: 'places',
-  title: { de: `Städte ${ROMAN[i]}`, en: `Cities ${ROMAN[i]}` },
+  title: { de: `Städte ${i + 1}`, en: `Cities ${i + 1}` },
   goal: {
-    de: i === 0 ? 'Die wichtigsten Städte Griechenlands und Zyperns.' : 'Weitere Städte von Wegweisern in Griechenland und Zypern.',
-    en: i === 0 ? 'The most important cities of Greece and Cyprus.' : 'More cities from direction signs in Greece and Cyprus.',
+    de: i === 0 ? 'Die wichtigsten Städte Griechenlands.' : 'Weitere Städte von griechischen Wegweisern.',
+    en: i === 0 ? 'The most important cities of Greece.' : 'More cities from Greek direction signs.',
   },
   newIds: group.map((p) => p.id),
 }));
@@ -131,10 +130,10 @@ const regionLessons: Omit<Lesson, 'number'>[] = chunk(byTier(REGIONS), 9).map((g
   id: `el-region-${i + 1}`,
   phaseId: 'regions',
   type: 'places',
-  title: { de: `Regionen & Inseln ${ROMAN[i]}`, en: `Regions & Islands ${ROMAN[i]}` },
+  title: { de: `Regionen & Inseln ${i + 1}`, en: `Regions & Islands ${i + 1}` },
   goal: {
-    de: 'Die 13 Regionen Griechenlands, die Bezirke Zyperns und die großen Inseln.',
-    en: 'Greece’s 13 regions, the districts of Cyprus and the large islands.',
+    de: 'Die 13 Regionen Griechenlands und die großen Inseln.',
+    en: 'Greece’s 13 regions and the large islands.',
   },
   newIds: group.map((p) => p.id),
 }));

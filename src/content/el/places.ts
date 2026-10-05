@@ -1,11 +1,9 @@
 import type { L10n, PlaceItem } from '../../domain/types';
 
 /**
- * Greek and Cypriot places by GeoGuessr relevance: regional capitals,
- * destinations on national-road signs, ports and well-known islands.
- * Transliteration follows ELOT 743 as on Greek and Cypriot road signs.
- * Only territory under the control of the Republic of Cyprus is included
- * (Northern Cyprus has no coverage); the Kyrenia district is left out.
+ * Greek places: the 100 largest towns, counting the suburbs of Athens and
+ * Thessaloniki as part of their city (Piraeus excepted), plus the 13 regions
+ * and the large islands. Transliteration follows ELOT 743 as on road signs.
  */
 
 const city = (
@@ -18,7 +16,6 @@ const city = (
   tier: 1 | 2 | 3,
   extra: string[] = [],
   hint?: L10n,
-  countryId: 'GR' | 'CY' = 'GR',
 ): PlaceItem => ({
   id: `el:city:${slug}`,
   kind: 'city',
@@ -26,14 +23,12 @@ const city = (
   translit,
   names: { de, en },
   accepted: [translit, en, de, ...extra],
-  countryId,
+  countryId: 'GR',
   regionId: `el:region:${regionSlug}`,
   tier,
   hint,
 });
 
-const cy = (slug: string, native: string, translit: string, en: string, de: string, district: string, tier: 1 | 2 | 3, extra: string[] = [], hint?: L10n) =>
-  city(slug, native, translit, en, de, district, tier, extra, hint, 'CY');
 
 export const CITIES: PlaceItem[] = [
   city('athina', 'Αθήνα', 'Athina', 'Athens', 'Athen', 'attiki', 1, [], { de: 'Hauptstadt Griechenlands', en: 'Capital of Greece' }),
@@ -77,16 +72,67 @@ export const CITIES: PlaceItem[] = [
   city('thiva', 'Θήβα', 'Thiva', 'Thebes', 'Theben', 'sterea-ellada', 3),
   city('edessa', 'Έδεσσα', 'Edessa', 'Edessa', 'Edessa', 'kentriki-makedonia', 3),
 
-  cy('lefkosia', 'Λευκωσία', 'Lefkosia', 'Nicosia', 'Nikosia', 'lefkosia-district', 1, [], { de: 'Hauptstadt Zyperns', en: 'Capital of Cyprus' }),
-  cy('lemesos', 'Λεμεσός', 'Lemesos', 'Limassol', 'Limassol', 'lemesos-district', 1, [], { de: 'Hafenstadt an der Südküste', en: 'Port city on the south coast' }),
-  cy('larnaka', 'Λάρνακα', 'Larnaka', 'Larnaca', 'Larnaka', 'larnaka-district', 1, [], { de: 'Wichtigster Flughafen Zyperns', en: 'Main airport of Cyprus' }),
-  cy('pafos', 'Πάφος', 'Pafos', 'Paphos', 'Paphos', 'pafos-district', 1),
-  cy('agia-napa', 'Αγία Νάπα', 'Agia Napa', 'Ayia Napa', 'Ayia Napa', 'ammochostos-district', 2),
-  cy('paralimni', 'Παραλίμνι', 'Paralimni', 'Paralimni', 'Paralimni', 'ammochostos-district', 3),
-  cy('protaras', 'Πρωταράς', 'Protaras', 'Protaras', 'Protaras', 'ammochostos-district', 3),
-  cy('strovolos', 'Στρόβολος', 'Strovolos', 'Strovolos', 'Strovolos', 'lefkosia-district', 3, [], { de: 'Großer Vorort von Nikosia', en: 'Large suburb of Nicosia' }),
-  cy('polis-chrysochous', 'Πόλη Χρυσοχούς', 'Poli Chrysochous', 'Polis', 'Polis', 'pafos-district', 3, ['Polis Chrysochous', 'Poli']),
-  cy('platres', 'Πλάτρες', 'Platres', 'Platres', 'Platres', 'lemesos-district', 3, [], { de: 'Bergdorf im Troodos', en: 'Mountain village in the Troodos' }),
+  // Further towns up to the 100 largest
+  city('ptolemaida', 'Πτολεμαΐδα', 'Ptolemaida', 'Ptolemaida', 'Ptolemaida', 'dytiki-makedonia', 2, ['Ptolemais'], { de: 'Braunkohlekraftwerke', en: 'Lignite power stations' }),
+  city('giannitsa', 'Γιαννιτσά', 'Giannitsa', 'Giannitsa', 'Giannitsa', 'kentriki-makedonia', 2, ['Yiannitsa', 'Yannitsa']),
+  city('kerkyra', 'Κέρκυρα', 'Kerkyra', 'Corfu', 'Korfu', 'ionia-nisia', 1, ['Kerkira'], { de: 'Hauptstadt der Insel Korfu', en: 'Main town of Corfu' }),
+  city('chios', 'Χίος', 'Chios', 'Chios', 'Chios', 'voreio-aigaio', 2, ['Hios', 'Khios'], { de: 'Hauptort der Insel Chios', en: 'Main town of Chios' }),
+  city('rodos', 'Ρόδος', 'Rodos', 'Rhodes', 'Rhodos', 'notio-aigaio', 1, [], { de: 'Hauptstadt der Insel Rhodos', en: 'Main town of Rhodes' }),
+  city('megara', 'Μέγαρα', 'Megara', 'Megara', 'Megara', 'attiki', 2, [], { de: 'An der Autobahn Athen–Korinth', en: 'On the Athens–Corinth motorway' }),
+  city('kilkis', 'Κιλκίς', 'Kilkis', 'Kilkis', 'Kilkis', 'kentriki-makedonia', 2),
+  city('argos', 'Άργος', 'Argos', 'Argos', 'Argos', 'peloponnisos', 2),
+  city('livadeia', 'Λιβαδειά', 'Livadeia', 'Livadeia', 'Livadia', 'sterea-ellada', 2, ['Livadia', 'Levadia']),
+  city('artemida', 'Αρτέμιδα', 'Artemida', 'Artemida', 'Artemida', 'attiki', 3, ['Loutsa']),
+  city('aigio', 'Αίγιο', 'Aigio', 'Aigio', 'Egio', 'dytiki-ellada', 2, ['Aegio', 'Aigion', 'Egio']),
+  city('naousa', 'Νάουσα', 'Naousa', 'Naousa', 'Naoussa', 'kentriki-makedonia', 3, ['Naoussa']),
+  city('kos', 'Κως', 'Kos', 'Kos', 'Kos', 'notio-aigaio', 2, [], { de: 'Hauptort der Insel Kos', en: 'Main town of Kos' }),
+  city('amaliada', 'Αμαλιάδα', 'Amaliada', 'Amaliada', 'Amaliada', 'dytiki-ellada', 3),
+  city('orestiada', 'Ορεστιάδα', 'Orestiada', 'Orestiada', 'Orestiada', 'anatoliki-makedonia-thraki', 3, [], { de: 'Nördlichste Stadt, nahe der Türkei', en: 'Northernmost town, near Turkey' }),
+  city('nea-makri', 'Νέα Μάκρη', 'Nea Makri', 'Nea Makri', 'Nea Makri', 'attiki', 3),
+  city('nafpaktos', 'Ναύπακτος', 'Nafpaktos', 'Nafpaktos', 'Nafpaktos', 'dytiki-ellada', 2, ['Navpaktos', 'Lepanto']),
+  city('ierapetra', 'Ιεράπετρα', 'Ierapetra', 'Ierapetra', 'Ierapetra', 'kriti', 2, [], { de: 'Südküste Kretas', en: 'South coast of Crete' }),
+  city('rafina', 'Ραφήνα', 'Rafina', 'Rafina', 'Rafina', 'attiki', 2, [], { de: 'Fährhafen östlich von Athen', en: 'Ferry port east of Athens' }),
+  city('loutraki', 'Λουτράκι', 'Loutraki', 'Loutraki', 'Loutraki', 'peloponnisos', 3),
+  city('zakynthos', 'Ζάκυνθος', 'Zakynthos', 'Zakynthos', 'Zakynthos', 'ionia-nisia', 2, ['Zante', 'Zakinthos'], { de: 'Hauptort der Insel Zakynthos', en: 'Main town of Zakynthos' }),
+  city('ermoupoli', 'Ερμούπολη', 'Ermoupoli', 'Ermoupoli', 'Ermoupoli', 'notio-aigaio', 2, ['Ermoupolis', 'Hermoupolis'], { de: 'Hauptort von Syros', en: 'Main town of Syros' }),
+  city('tyrnavos', 'Τύρναβος', 'Tyrnavos', 'Tyrnavos', 'Tyrnavos', 'thessalia', 3, ['Tirnavos']),
+  city('grevena', 'Γρεβενά', 'Grevena', 'Grevena', 'Grevena', 'dytiki-makedonia', 3),
+  city('farsala', 'Φάρσαλα', 'Farsala', 'Farsala', 'Farsala', 'thessalia', 3, ['Pharsala', 'Pharsalos']),
+  city('polygyros', 'Πολύγυρος', 'Polygyros', 'Polygyros', 'Polygyros', 'kentriki-makedonia', 3, ['Poligiros', 'Polygiros']),
+  city('argostoli', 'Αργοστόλι', 'Argostoli', 'Argostoli', 'Argostoli', 'ionia-nisia', 2, [], { de: 'Hauptort von Kefalonia', en: 'Main town of Kefalonia' }),
+  city('kiato', 'Κιάτο', 'Kiato', 'Kiato', 'Kiato', 'peloponnisos', 3),
+  city('nea-moudania', 'Νέα Μουδανιά', 'Nea Moudania', 'Nea Moudania', 'Nea Moudania', 'kentriki-makedonia', 3, [], { de: 'Tor zur Chalkidiki', en: 'Gateway to Chalkidiki' }),
+  city('chrysoupoli', 'Χρυσούπολη', 'Chrysoupoli', 'Chrysoupoli', 'Chrysoupoli', 'anatoliki-makedonia-thraki', 3, ['Chrysoupolis', 'Hrisoupoli']),
+  city('siteia', 'Σητεία', 'Siteia', 'Sitia', 'Sitia', 'kriti', 3, ['Sitia']),
+  city('lefkada', 'Λευκάδα', 'Lefkada', 'Lefkada', 'Lefkada', 'ionia-nisia', 2, ['Lefkas'], { de: 'Inselhauptort, per Brücke erreichbar', en: 'Island town reached by a causeway' }),
+  city('didymoteicho', 'Διδυμότειχο', 'Didymoteicho', 'Didymoteicho', 'Didymoticho', 'anatoliki-makedonia-thraki', 3, ['Didymoticho', 'Didimoticho']),
+  city('kalampaka', 'Καλαμπάκα', 'Kalampaka', 'Kalambaka', 'Kalambaka', 'thessalia', 2, ['Kalabaka'], { de: 'Unterhalb der Meteora-Klöster', en: 'Below the Meteora monasteries' }),
+  city('almyros', 'Αλμυρός', 'Almyros', 'Almyros', 'Almyros', 'thessalia', 3, ['Almiros']),
+  city('lagkadas', 'Λαγκαδάς', 'Lagkadas', 'Langadas', 'Langadas', 'kentriki-makedonia', 3, ['Lagadas']),
+  city('marathonas', 'Μαραθώνας', 'Marathonas', 'Marathon', 'Marathon', 'attiki', 2),
+  city('lavrio', 'Λαύριο', 'Lavrio', 'Lavrio', 'Lavrio', 'attiki', 3, ['Lavrion', 'Laurion']),
+  city('naxos', 'Νάξος', 'Naxos', 'Naxos', 'Naxos', 'notio-aigaio', 2, [], { de: 'Hauptort der Insel Naxos', en: 'Main town of Naxos' }),
+  city('polykastro', 'Πολύκαστρο', 'Polykastro', 'Polykastro', 'Polykastro', 'kentriki-makedonia', 3, ['Polikastro'], { de: 'Nahe der Grenze zu Nordmazedonien', en: 'Near the North Macedonian border' }),
+  city('elassona', 'Ελασσόνα', 'Elassona', 'Elassona', 'Elassona', 'thessalia', 3),
+  city('karpenisi', 'Καρπενήσι', 'Karpenisi', 'Karpenisi', 'Karpenisi', 'sterea-ellada', 3),
+  city('amfissa', 'Άμφισσα', 'Amfissa', 'Amfissa', 'Amfissa', 'sterea-ellada', 3, [], { de: 'Nahe Delphi', en: 'Near Delphi' }),
+  city('messini', 'Μεσσήνη', 'Messini', 'Messini', 'Messini', 'peloponnisos', 3),
+  city('litochoro', 'Λιτόχωρο', 'Litochoro', 'Litochoro', 'Litochoro', 'kentriki-makedonia', 3, [], { de: 'Ausgangspunkt für den Olymp', en: 'Base for Mount Olympus' }),
+  city('alexandreia', 'Αλεξάνδρεια', 'Alexandreia', 'Alexandreia', 'Alexandreia', 'kentriki-makedonia', 3, ['Alexandria']),
+  city('sidirokastro', 'Σιδηρόκαστρο', 'Sidirokastro', 'Sidirokastro', 'Sidirokastro', 'kentriki-makedonia', 3, ['Sidhirokastro', 'Siderokastro'], { de: 'An der Straße nach Bulgarien', en: 'On the road to Bulgaria' }),
+  city('gastouni', 'Γαστούνη', 'Gastouni', 'Gastouni', 'Gastouni', 'dytiki-ellada', 3),
+  city('keratea', 'Κερατέα', 'Keratea', 'Keratea', 'Keratea', 'attiki', 3),
+  city('aigina', 'Αίγινα', 'Aigina', 'Aegina', 'Ägina', 'attiki', 3, ['Egina', 'Aegina'], { de: 'Inselhauptort im Saronischen Golf', en: 'Island town in the Saronic Gulf' }),
+  city('argos-orestiko', 'Άργος Ορεστικό', 'Argos Orestiko', 'Argos Orestiko', 'Argos Orestiko', 'dytiki-makedonia', 3),
+  city('atalanti', 'Αταλάντη', 'Atalanti', 'Atalanti', 'Atalanti', 'sterea-ellada', 3),
+  city('istiaia', 'Ιστιαία', 'Istiaia', 'Istiaia', 'Istiea', 'sterea-ellada', 3, ['Istiea']),
+  city('aliveri', 'Αλιβέρι', 'Aliveri', 'Aliveri', 'Aliveri', 'sterea-ellada', 3),
+  city('kyparissia', 'Κυπαρισσία', 'Kyparissia', 'Kyparissia', 'Kyparissia', 'peloponnisos', 3, ['Kiparissia']),
+  city('gytheio', 'Γύθειο', 'Gytheio', 'Gythio', 'Gythio', 'peloponnisos', 3, ['Gythio', 'Githio', 'Gythion']),
+  city('filippiada', 'Φιλιππιάδα', 'Filippiada', 'Filippiada', 'Filippiada', 'ipeiros', 3),
+  city('kissamos', 'Κίσσαμος', 'Kissamos', 'Kissamos', 'Kissamos', 'kriti', 3, ['Kastelli Kissamou']),
+  city('moires', 'Μοίρες', 'Moires', 'Moires', 'Mires', 'kriti', 3, ['Mires']),
+  city('karystos', 'Κάρυστος', 'Karystos', 'Karystos', 'Karystos', 'sterea-ellada', 3, ['Karistos']),
 ];
 
 const region = (
@@ -95,10 +141,9 @@ const region = (
   translit: string,
   en: string,
   de: string,
-  regionType: 'periphery' | 'district' | 'island',
+  regionType: 'periphery' | 'island',
   tier: 1 | 2 | 3,
   extra: string[] = [],
-  countryId: 'GR' | 'CY' = 'GR',
   hint?: L10n,
 ): PlaceItem => ({
   id: `el:region:${slug}`,
@@ -107,14 +152,13 @@ const region = (
   translit,
   names: { en, de },
   accepted: [translit, en, de, ...extra],
-  countryId,
+  countryId: 'GR',
   regionType,
   tier,
   hint,
 });
 
 const ISLAND: L10n = { de: 'Insel', en: 'Island' };
-const DISTRICT: L10n = { de: 'Bezirk in Zypern', en: 'District of Cyprus' };
 
 export const REGIONS: PlaceItem[] = [
   // The 13 regions (periphereies) of Greece
@@ -133,26 +177,19 @@ export const REGIONS: PlaceItem[] = [
   region('notio-aigaio', 'Νότιο Αιγαίο', 'Notio Aigaio', 'South Aegean', 'Südliche Ägäis', 'periphery', 2),
   region('kriti', 'Κρήτη', 'Kriti', 'Crete', 'Kreta', 'periphery', 1),
 
-  // Districts of the Republic of Cyprus (without Kyrenia)
-  region('lefkosia-district', 'Λευκωσία', 'Lefkosia', 'Nicosia District', 'Bezirk Nikosia', 'district', 1, ['Nicosia', 'Nikosia'], 'CY', DISTRICT),
-  region('lemesos-district', 'Λεμεσός', 'Lemesos', 'Limassol District', 'Bezirk Limassol', 'district', 1, ['Limassol'], 'CY', DISTRICT),
-  region('larnaka-district', 'Λάρνακα', 'Larnaka', 'Larnaca District', 'Bezirk Larnaka', 'district', 1, ['Larnaca', 'Larnaka'], 'CY', DISTRICT),
-  region('pafos-district', 'Πάφος', 'Pafos', 'Paphos District', 'Bezirk Paphos', 'district', 1, ['Paphos', 'Pafos'], 'CY', DISTRICT),
-  region('ammochostos-district', 'Αμμόχωστος', 'Ammochostos', 'Famagusta District', 'Bezirk Famagusta', 'district', 2, ['Famagusta'], 'CY', DISTRICT),
-
   // Islands with Street View coverage
-  region('kerkyra', 'Κέρκυρα', 'Kerkyra', 'Corfu', 'Korfu', 'island', 1, [], 'GR', ISLAND),
-  region('rodos', 'Ρόδος', 'Rodos', 'Rhodes', 'Rhodos', 'island', 1, [], 'GR', ISLAND),
-  region('lesvos', 'Λέσβος', 'Lesvos', 'Lesbos', 'Lesbos', 'island', 2, [], 'GR', ISLAND),
-  region('chios', 'Χίος', 'Chios', 'Chios', 'Chios', 'island', 2, [], 'GR', ISLAND),
-  region('samos', 'Σάμος', 'Samos', 'Samos', 'Samos', 'island', 2, [], 'GR', ISLAND),
-  region('naxos', 'Νάξος', 'Naxos', 'Naxos', 'Naxos', 'island', 2, [], 'GR', ISLAND),
-  region('santorini', 'Σαντορίνη', 'Santorini', 'Santorini', 'Santorin', 'island', 1, ['Thira', 'Thera'], 'GR', ISLAND),
-  region('mykonos', 'Μύκονος', 'Mykonos', 'Mykonos', 'Mykonos', 'island', 2, [], 'GR', ISLAND),
-  region('kefalonia', 'Κεφαλονιά', 'Kefalonia', 'Kefalonia', 'Kefalonia', 'island', 2, ['Cephalonia', 'Kefallonia'], 'GR', ISLAND),
-  region('zakynthos', 'Ζάκυνθος', 'Zakynthos', 'Zakynthos', 'Zakynthos', 'island', 2, ['Zante'], 'GR', ISLAND),
-  region('evvoia', 'Εύβοια', 'Evvoia', 'Euboea', 'Euböa', 'island', 1, ['Evia', 'Evvia', 'Evoia'], 'GR', ISLAND),
-  region('limnos', 'Λήμνος', 'Limnos', 'Lemnos', 'Limnos', 'island', 3, [], 'GR', ISLAND),
-  region('kos', 'Κως', 'Kos', 'Kos', 'Kos', 'island', 2, [], 'GR', ISLAND),
-  region('thasos', 'Θάσος', 'Thasos', 'Thasos', 'Thasos', 'island', 3, [], 'GR', ISLAND),
+  region('kerkyra', 'Κέρκυρα', 'Kerkyra', 'Corfu', 'Korfu', 'island', 1, [], ISLAND),
+  region('rodos', 'Ρόδος', 'Rodos', 'Rhodes', 'Rhodos', 'island', 1, [], ISLAND),
+  region('lesvos', 'Λέσβος', 'Lesvos', 'Lesbos', 'Lesbos', 'island', 2, [], ISLAND),
+  region('chios', 'Χίος', 'Chios', 'Chios', 'Chios', 'island', 2, [], ISLAND),
+  region('samos', 'Σάμος', 'Samos', 'Samos', 'Samos', 'island', 2, [], ISLAND),
+  region('naxos', 'Νάξος', 'Naxos', 'Naxos', 'Naxos', 'island', 2, [], ISLAND),
+  region('santorini', 'Σαντορίνη', 'Santorini', 'Santorini', 'Santorin', 'island', 1, ['Thira', 'Thera'], ISLAND),
+  region('mykonos', 'Μύκονος', 'Mykonos', 'Mykonos', 'Mykonos', 'island', 2, [], ISLAND),
+  region('kefalonia', 'Κεφαλονιά', 'Kefalonia', 'Kefalonia', 'Kefalonia', 'island', 2, ['Cephalonia', 'Kefallonia'], ISLAND),
+  region('zakynthos', 'Ζάκυνθος', 'Zakynthos', 'Zakynthos', 'Zakynthos', 'island', 2, ['Zante'], ISLAND),
+  region('evvoia', 'Εύβοια', 'Evvoia', 'Euboea', 'Euböa', 'island', 1, ['Evia', 'Evvia', 'Evoia'], ISLAND),
+  region('limnos', 'Λήμνος', 'Limnos', 'Lemnos', 'Limnos', 'island', 3, [], ISLAND),
+  region('kos', 'Κως', 'Kos', 'Kos', 'Kos', 'island', 2, [], ISLAND),
+  region('thasos', 'Θάσος', 'Thasos', 'Thasos', 'Thasos', 'island', 3, [], ISLAND),
 ];

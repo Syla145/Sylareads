@@ -61,10 +61,10 @@ const t = (slug: string, native: string, translit: string, category: TermCategor
   category,
   meaning: { de, en },
   abbr,
-  countryIds: ['GR', 'CY'],
+  countryIds: ['GR'],
 });
 
-/** Words from Greek and Cypriot road, place and shop signs. */
+/** Words from Greek road, place and shop signs. */
 export const TERMS: WordItem[] = [
   // Streets & addresses
   t('odos', 'Οδός', 'Odos', 'road', ['Straße'], ['street', 'road'], ['Οδ.']),

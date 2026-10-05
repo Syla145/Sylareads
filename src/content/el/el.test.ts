@@ -11,11 +11,11 @@ describe('Greek reading rules (ELOT 743 + phonetic)', () => {
   it('accepts German, English and transliteration for places', () => {
     for (const a of ['Athina', 'Athens', 'Athen']) expect(ok('el:city:athina', a)).toBe(true);
     for (const a of ['Irakleio', 'Iraklio', 'Heraklion']) expect(ok('el:city:irakleio', a)).toBe(true);
-    for (const a of ['Lefkosia', 'Nicosia', 'Nikosia']) expect(ok('el:city:lefkosia', a)).toBe(true);
+    for (const a of ['Kerkyra', 'Corfu', 'Korfu']) expect(ok('el:city:kerkyra', a)).toBe(true);
     for (const a of ['Peiraias', 'Pireas', 'Piraeus', 'Piräus']) expect(ok('el:city:peiraias', a)).toBe(true);
   });
   it('reads digraphs as units, never letter by letter', () => {
-    expect(ok('el:city:lefkosia', 'Leukosia')).toBe(false);
+    expect(ok('el:city:lefkada', 'Leukada')).toBe(false);
     expect(ok('el:city:nafplio', 'Nafplio')).toBe(true);
     expect(ok('el:city:nafplio', 'Nauplio')).toBe(false);
     expect(ok('el:word:efcharisto', 'efcharisto')).toBe(true);

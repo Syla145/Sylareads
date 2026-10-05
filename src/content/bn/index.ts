@@ -3,6 +3,8 @@ import { LESSONS, PHASES } from './lessons';
 import { CITIES, DIVISIONS } from './places';
 import { CONJUNCTS, CONTRAST_SETS, ENDINGS, PHALAS, requiredUnitsBn, SYLLABLES, UNITS } from './units';
 import { TERMS, WORDS } from './words';
+import { withCoords } from '../coords';
+import { COORDS } from './coords';
 
 /**
  * Bengali: readings are listed explicitly (no rule-based segmentation),
@@ -13,7 +15,7 @@ const content: CourseContent = {
   letters: UNITS,
   combos: [...SYLLABLES, ...PHALAS, ...CONJUNCTS, ...ENDINGS],
   words: [...WORDS, ...TERMS],
-  places: [...CITIES, ...DIVISIONS],
+  places: withCoords([...CITIES, ...DIVISIONS], COORDS),
   contrastSets: CONTRAST_SETS,
   phases: PHASES,
   lessons: LESSONS,

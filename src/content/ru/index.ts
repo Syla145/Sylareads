@@ -4,13 +4,15 @@ import { LESSONS, PHASES } from './lessons';
 import { CITIES, REGIONS } from './places';
 import { requiredLettersRu, segmentRu } from './translit';
 import { COMBOS, ELEMENTS, TERMS, WORDS } from './words';
+import { withCoords } from '../coords';
+import { COORDS } from './coords';
 
 const content: CourseContent = {
   id: 'ru',
   letters: LETTERS,
   combos: COMBOS,
   words: [...WORDS, ...ELEMENTS, ...TERMS],
-  places: [...CITIES, ...REGIONS],
+  places: withCoords([...CITIES, ...REGIONS], COORDS),
   contrastSets: CONTRAST_SETS,
   phases: PHASES,
   lessons: LESSONS,

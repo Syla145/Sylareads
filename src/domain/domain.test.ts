@@ -194,3 +194,13 @@ describe('practice builder', () => {
     expect(tasks.filter((t) => t.kind === 'identify')).toHaveLength(5);
   });
 });
+
+describe('content updates', () => {
+  it('ignores progress for items that no longer exist (e.g. the removed Cyprus places)', () => {
+    const index = buildIndex(ru);
+    const stale = { box: 2, due: '2020-01-01', ok: 3, wrong: 4, streak: 0, lastSeen: '2020-01-01' } as never;
+    const items = { 'el:city:lefkosia': stale, 'ru:city:gone': stale };
+    const tasks = buildPractice(index, SMART_PRACTICE, { items, confusedTwice: new Set(['ru:city:gone']) }, seededRng(2));
+    expect(tasks.every((t) => !('itemId' in t) || index.byId.has(t.itemId!))).toBe(true);
+  });
+});

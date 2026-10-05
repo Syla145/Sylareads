@@ -121,6 +121,8 @@ export interface PlaceItem extends ItemBase {
   tier: 1 | 2 | 3;
   hint?: L10n;
   tags?: string[];
+  /** Label point as [latitude, longitude] (city centre, or a point inside the region). */
+  coords?: [number, number];
 }
 
 export type Item = LetterItem | ComboItem | WordItem | PlaceItem;

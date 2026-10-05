@@ -17,7 +17,6 @@ export const LANGUAGES: Record<string, LanguageDef> = {
 export const COUNTRIES: Record<string, CountryDef> = {
   RU: { id: 'RU', name: { de: 'Russland', en: 'Russia' } },
   GR: { id: 'GR', name: { de: 'Griechenland', en: 'Greece' } },
-  CY: { id: 'CY', name: { de: 'Zypern', en: 'Cyprus' } },
   BD: { id: 'BD', name: { de: 'Bangladesch', en: 'Bangladesh' } },
   IN: { id: 'IN', name: { de: 'Indien', en: 'India' } },
   TH: { id: 'TH', name: { de: 'Thailand', en: 'Thailand' } },
@@ -43,7 +42,7 @@ export const COURSES: CourseMeta[] = [
     name: { de: 'Greek', en: 'Greek' },
     scriptId: 'Grek',
     languageId: 'el',
-    countryIds: ['GR', 'CY'],
+    countryIds: ['GR'],
     sampleGlyphs: 'Α Β Γ Δ Ε',
     fontClass: 'font-native-latin',
     status: 'available',

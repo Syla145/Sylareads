@@ -16,18 +16,19 @@ export function loadCourseIndex(meta: CourseMeta): Promise<CourseIndex> {
 }
 
 export function useCourseIndex(meta: CourseMeta | undefined): CourseIndex | null {
-  const [index, setIndex] = useState<CourseIndex | null>(null);
+  const [loaded, setLoaded] = useState<CourseIndex | null>(null);
   useEffect(() => {
     let alive = true;
-    setIndex(null);
     if (meta?.status === 'available') {
-      loadCourseIndex(meta).then((i) => alive && setIndex(i));
+      loadCourseIndex(meta).then((i) => alive && setLoaded(i));
     }
     return () => {
       alive = false;
     };
   }, [meta]);
-  return index;
+  // When switching courses the previous index is still in state for one render;
+  // never hand it out for the new course (a lesson id would not be found in it).
+  return loaded && loaded.content.id === meta?.id ? loaded : null;
 }
 
 export interface CourseCtx {

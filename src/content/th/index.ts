@@ -3,6 +3,8 @@ import { LESSONS, PHASES } from './lessons';
 import { CITIES, PROVINCES } from './places';
 import { COMBOS, CONTRAST_SETS, requiredUnitsTh, SYLLABLES, UNITS } from './units';
 import { ELEMENTS, TERMS, WORDS } from './words';
+import { withCoords } from '../coords';
+import { COORDS } from './coords';
 
 /**
  * Thai: readings are listed explicitly for every unit, word and place
@@ -14,7 +16,7 @@ const content: CourseContent = {
   letters: UNITS,
   combos: [...SYLLABLES, ...COMBOS],
   words: [...WORDS, ...ELEMENTS, ...TERMS],
-  places: [...CITIES, ...PROVINCES],
+  places: withCoords([...CITIES, ...PROVINCES], COORDS),
   contrastSets: CONTRAST_SETS,
   phases: PHASES,
   lessons: LESSONS,

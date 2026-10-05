@@ -2,37 +2,41 @@
 
 **Learn to read the world.** Ein Lesetrainer für GeoGuessr-Spieler: fremde Schriften lesen, Ortsnamen erkennen, Schilderwörter verstehen.
 
-Stand: **Meilenstein M3** – vollständige Engine und vier Kurse: *Russian Cyrillic*, *Greek* (Griechenland und Zypern), *Thai* und *Bengali* (Bangladesch).
+Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse: *Russian Cyrillic*, *Greek*, *Thai* und *Bengali* (Bangladesch). Jeder Kurs hat 100 Städte und alle Regionen erster Ebene; jeder Ort hat Koordinaten für die spätere Karte.
 
 ## Was drin ist
 
-- 29 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen, 6 Städte- und 6 Regionslektionen
-- 50 Städte und 50 Regionen, 51 GeoGuessr-Begriffe mit Abkürzungen, 35 Übungswörter, 56 Kombinationen
+- 37 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen, 11 Städte- und 9 Regionslektionen
+- 100 Städte (die größten nach Einwohnerzahl) und alle 83 international anerkannten Föderationssubjekte (ohne Krim und Sewastopol), 51 GeoGuessr-Begriffe mit Abkürzungen, 35 Übungswörter, 56 Kombinationen
 - Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
-- XP, Level, Streak, 14 Achievements, Lesbarkeits-Meilenstein („31 / 50 cities readable“)
+- XP, Level, Streak, 15 Achievements, Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 
 ### Greek
 
-- 23 Lektionen: 24 Buchstaben (Easy Wins → False Friends wie Η, Ρ, Ν, Β → neue Formen), zwei Lektionen Buchstabenpaare (αι ει οι ου, αυ ευ μπ ντ γκ γγ), Klein- und Großschrift ohne Akzente, Namensbausteine (Άγιος, Νέα, Άνω, Κάτω), 4 Begriffslektionen, 6 Städte- und 4 Regionslektionen
-- 50 Städte (40 Griechenland, 10 Zypern), 13 Regionen, 5 Bezirke Zyperns, 14 Inseln, 38 Schilderbegriffe
+- 27 Lektionen: 24 Buchstaben (Easy Wins → False Friends wie Η, Ρ, Ν, Β → neue Formen), zwei Lektionen Buchstabenpaare (αι ει οι ου, αυ ευ μπ ντ γκ γγ), Klein- und Großschrift ohne Akzente, Namensbausteine (Άγιος, Νέα, Άνω, Κάτω), 4 Begriffslektionen, 11 Städte- und 3 Regionslektionen
+- 100 Städte (die größten eigenständigen Orte; Vororte von Athen und Thessaloniki zählen zur Stadt, Piräus ausgenommen), alle 13 Regionen, 14 Inseln, 38 Schilderbegriffe
 - Transliteration nach ELOT 743 wie auf griechischen Wegweisern (Athina, Irakleio); die gängige gesprochene Form gilt ebenfalls (Iraklio, Pireas). Buchstabenpaare sind eigene Leseeinheiten: ευ ist ev/ef, nie „eu“.
 
 ### Thai
 
-- 34 Lektionen: 42 Konsonanten, 15 Vokalzeichen und 5 Sonderzeichen (Tonzeichen, Karan, Mai Taikhu, Mai Yamok, Paiyannoi) in 11 Buchstabenlektionen, 3 Regellektionen (Silbenende, zusammengesetzte Vokale, unsichtbare Vokale), Namensbausteine, 4 Begriffslektionen, 6 Städte- und 9 Provinzlektionen
-- 50 Städte, alle 77 Provinzen (inkl. Bangkok), 36 Schilderbegriffe, 52 Übungswörter
+- 39 Lektionen: 42 Konsonanten, 15 Vokalzeichen und 5 Sonderzeichen (Tonzeichen, Karan, Mai Taikhu, Mai Yamok, Paiyannoi) in 11 Buchstabenlektionen, 3 Regellektionen (Silbenende, zusammengesetzte Vokale, unsichtbare Vokale), Namensbausteine, 4 Begriffslektionen, 11 Städte- und 9 Provinzlektionen
+- 100 Städte (alle 77 Provinzhauptstädte plus die 23 größten weiteren Städte wie Hat Yai, Pattaya, Ko Samui), alle 77 Provinzen (inkl. Bangkok), 36 Schilderbegriffe, 52 Übungswörter
 - Thai wird in Silben gelesen, nicht Buchstabe für Buchstabe. Deshalb gibt es keine regelbasierte Transliteration: Jedes Wort hat eine Liste erlaubter Lesungen nach RTGS (der Umschrift auf thailändischen Schildern), dazu verbreitete Varianten (Phuket, Chiang Mai, Ayutthaya). Tonhöhen werden nicht abgefragt – sie helfen beim Lesen von Schildern nicht.
 - Vokalzeichen erscheinen mit Platzhalterkreis (◌า), damit sichtbar ist, wo sie am Konsonanten sitzen.
 
 ### Bengali
 
-- 26 Lektionen: 36 Konsonanten, 11 unabhängige Vokale, 10 Vokalzeichen und 4 Sonderzeichen in 11 Buchstabenlektionen, Phala und Reph, 2 Lektionen Ligaturen (ট্ট ল্ল ক্স ঞ্জ ঙ্গ ক্ষ ষ্ট হ্ম ন্ধ ঞ্চ স্ট স্ক), Ortsnamen-Endungen (-পুর, -গঞ্জ, -বাজার, -হাট, -গ্রাম, -খালী), 4 Begriffslektionen, 6 Städte- und 1 Divisionslektion
-- 50 Städte, alle 8 Divisionen, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
+- 31 Lektionen: 36 Konsonanten, 11 unabhängige Vokale, 10 Vokalzeichen und 4 Sonderzeichen in 11 Buchstabenlektionen, Phala und Reph, 2 Lektionen Ligaturen (ট্ট ল্ল ক্স ঞ্জ ঙ্গ ক্ষ ষ্ট হ্ম ন্ধ ঞ্চ স্ট স্ক), Ortsnamen-Endungen (-পুর, -গঞ্জ, -বাজার, -হাট, -গ্রাম, -খালী), 4 Begriffslektionen, 11 Städte- und 1 Divisionslektion
+- 100 Städte (alle 64 Distrikthauptstädte plus 36 große Orte wie Savar, Sreemangal, Teknaf, Benapole), alle 8 Divisionen, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
 - Englische Namen nach der offiziellen Schreibweise von 2018 (Chattogram, Cumilla, Barishal, Jashore, Bogura); die älteren Formen (Chittagong, Comilla, Barisal, Jessore, Bogra) gelten ebenfalls. Ligaturen sind eigene Leseeinheiten, weil man sie als Ganzes erkennt.
+
+### Koordinaten und Quellen
+
+Jeder Ort hat einen Kartenpunkt (`coords`, Breite/Länge) in `src/content/<kurs>/coords.ts`. Die Datei ist generiert: Städte stammen aus [GeoNames](https://www.geonames.org) (CC BY 4.0), Regionen sind die Label-Punkte aus [Natural Earth](https://www.naturalearthdata.com) (gemeinfrei). Jede Stadt wurde gegen das Polygon ihrer Region geprüft; einige kleinere Orte in Bangladesch und die griechischen Inseln sind von Hand gesetzt. Die Polygone aus Natural Earth sind die Grundlage für die geplante Karte.
 
 ## Lokal starten
 
