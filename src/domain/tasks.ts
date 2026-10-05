@@ -22,18 +22,21 @@ export type Task =
   | { key: string; kind: 'identify'; itemId: string; display: string }
   /** Type a meaning (DE or EN) for a GeoGuessr term. */
   | { key: string; kind: 'meaning'; itemId: string; display: string }
+  /** Read the name, then click the place on the course map. */
+  | { key: string; kind: 'locate'; itemId: string; display: string }
   /**
    * Choice tasks:
    * - reading: glyph shown, pick the reading (first contact only)
    * - glyph: reading shown, pick the glyph (reverse direction, contrast)
    * - function: letters without a sound of their own (Ь, Ъ)
    * - scan: find the named place among similar-looking names
+   * - map: a place is highlighted on the map, pick its native name
    */
   | {
       key: string;
       kind: 'choice';
       itemId: string;
-      question: 'reading' | 'glyph' | 'function' | 'scan';
+      question: 'reading' | 'glyph' | 'function' | 'scan' | 'map';
       display: string;
       options: ChoiceOption[];
     };

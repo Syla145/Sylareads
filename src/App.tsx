@@ -4,6 +4,7 @@ import { CourseGate } from './features/course/CourseLayout';
 import { DashboardPage } from './features/dashboard/DashboardPage';
 import { HomePage } from './features/home/HomePage';
 import { LearnPage } from './features/learn/LearnPage';
+import { MapPage } from './features/map/MapPage';
 import { PracticeHub } from './features/practice/PracticeHub';
 import { ProfilePage } from './features/profile/ProfilePage';
 import { ScriptPage } from './features/script/ScriptPage';
@@ -43,6 +44,7 @@ export function App() {
           <Route path="learn" element={<LearnPage />} />
           <Route path="practice" element={<PracticeHub />} />
           <Route path="script" element={<ScriptPage />} />
+          <Route path="map" element={<MapPage />} />
         </Route>
         <Route path="/:slug" element={<CourseGate focus />}>
           <Route path="lesson/:lessonId" element={<LessonRoute />} />

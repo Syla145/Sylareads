@@ -4,7 +4,8 @@ import type { SessionState } from '../../domain/sessionEngine';
 import type { GradedTask } from '../../domain/tasks';
 import type { PlaceItem } from '../../domain/types';
 import { placeNameLine, useLang, useT } from '../../i18n';
-import { ConfusionLine } from './SessionRunner';
+import { MapView } from '../map/MapView';
+import { ClickedLine, ConfusionLine } from './SessionRunner';
 
 /**
  * Feedback after every graded answer. For places it always shows the full
@@ -19,7 +20,8 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
   const result = state.lastResult;
   const ok = result !== 'W';
   const title = result === 'C' ? t('session.correct') : result === 'R' ? t('session.correctRetry') : t('session.wrong');
-  const typed = task.kind !== 'choice';
+  const typed = task.kind !== 'choice' && task.kind !== 'locate';
+  const mapShown = task.kind === 'locate' || (task.kind === 'choice' && task.question === 'map');
 
   return (
     <div className={`feedback ${ok ? 'is-correct' : 'is-wrong'}`}>
@@ -72,20 +74,23 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
         </div>
       )}
 
-      {(item.kind === 'city' || item.kind === 'region') && <PlaceFacts index={index} place={item} />}
+      {(item.kind === 'city' || item.kind === 'region') && <PlaceFacts index={index} place={item} withMap={!mapShown} />}
 
       {!ok && typed && state.evaluation?.confusedWith && <ConfusionLine index={index} input={state.lastInput} otherId={state.evaluation.confusedWith} />}
-      {!ok && task.kind === 'choice' && task.question === 'scan' && <ScanMiss index={index} state={state} task={task} />}
+      {!ok && task.kind === 'locate' && state.lastInput && <ClickedLine index={index} id={state.lastInput} />}
+      {!ok && task.kind === 'choice' && (task.question === 'scan' || task.question === 'map') && <ScanMiss index={index} state={state} task={task} />}
     </div>
   );
 }
 
-function PlaceFacts({ index, place }: { index: CourseIndex; place: PlaceItem }) {
+function PlaceFacts({ index, place, withMap }: { index: CourseIndex; place: PlaceItem; withMap: boolean }) {
   const t = useT();
   const lang = useLang();
   const region = place.regionId ? (index.byId.get(place.regionId) as PlaceItem | undefined) : undefined;
+  const onMap = withMap && index.map && index.mapShapes.has(place.id);
   return (
-    <div className="fb-body fb-place">
+    <div className={`fb-body fb-place${onMap ? ' has-map' : ''}`}>
+      {onMap && <MapView index={index} label={t('map.label')} marks={{ [place.id]: 'correct' }} focus={[place.id]} minFrame={0.55} className="map-mini" />}
       <span className={`glyph glyph-${place.native.length > 14 ? 's' : 'm'}`}>{place.native}</span>
       <p className="fb-names">{placeNameLine(place, lang)}</p>
       <dl className="fb-facts">

@@ -1830,3 +1830,340 @@
   font-size: 20px;
   letter-spacing: -0.02em;
 }
+
+/* ---------- Maps ---------- */
+.map {
+  position: relative;
+  width: 100%;
+}
+
+.map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(64vh, 720px);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.map-svg.is-zoomable {
+  touch-action: none;
+  cursor: grab;
+}
+
+.map-svg.is-zoomable:active {
+  cursor: grabbing;
+}
+
+.map-area {
+  stroke: var(--bg);
+  stroke-linejoin: round;
+  transition: fill 120ms var(--ease);
+  outline: none;
+}
+
+.map-tint-0 { fill: #2f3843; }
+.map-tint-1 { fill: #3a3345; }
+.map-tint-2 { fill: #2e3f37; }
+.map-tint-3 { fill: #433a2e; }
+.map-tint-4 { fill: #412f38; }
+.map-tint-5 { fill: #383f2c; }
+.map-tint-6 { fill: #2b3e41; }
+.map-tint-7 { fill: #3f3b2b; }
+
+.map-svg.is-pickable .map-area {
+  cursor: pointer;
+}
+
+.map-area.is-hover,
+.map-area:focus-visible {
+  fill: #4b5563;
+}
+
+.map-area.is-target { fill: var(--accent); }
+.map-area.is-correct { fill: var(--success); }
+.map-area.is-wrong { fill: var(--error); }
+.map-area.is-selected { fill: var(--accent); }
+
+.map-group {
+  fill: none;
+  stroke: #79808a;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.map-sea-edge {
+  fill: none;
+  stroke: rgba(138, 160, 189, 0.16);
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.map-mark {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.map-ring {
+  fill: none;
+  pointer-events: none;
+}
+
+.map-ring.is-target,
+.map-ring.is-selected { stroke: var(--accent); }
+.map-ring.is-correct { stroke: var(--success); }
+.map-ring.is-wrong { stroke: var(--error); }
+
+.map-label {
+  fill: var(--text-primary);
+  stroke: rgba(18, 20, 23, 0.85);
+  paint-order: stroke;
+  text-anchor: middle;
+  dominant-baseline: central;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.map-label.is-native {
+  font-family: var(--font-bengali), var(--font-thai), var(--font-ui);
+}
+
+.map-label.is-marked {
+  font-weight: 700;
+}
+
+.map-zoom {
+  position: absolute;
+  top: var(--s-2);
+  right: var(--s-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.map-zoom-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-3);
+  color: var(--text-primary);
+  font: 500 18px/1 var(--font-ui);
+  cursor: pointer;
+}
+
+.map-zoom-btn:hover:not(:disabled) {
+  background: var(--border-strong);
+}
+
+.map-zoom-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.task-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.plate.plate-compact {
+  min-height: 0;
+  padding: var(--s-4);
+}
+
+.map-mini,
+.map-intro {
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.map-mini .map-svg { max-height: 220px; }
+.map-intro .map-svg { max-height: 260px; }
+
+.fb-place.has-map .map-mini {
+  margin: 0 0 var(--s-2);
+}
+
+/* Map label toggle */
+.ltoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+}
+
+.ltoggle-label {
+  padding: 0 var(--s-2) 0 var(--s-3);
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.ltoggle-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font: 500 13px/1.2 var(--font-ui);
+  cursor: pointer;
+}
+
+.ltoggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.ltoggle-btn.is-on {
+  background: var(--surface-3);
+  color: var(--text-primary);
+}
+
+.ltoggle-btn:focus-visible {
+  outline: 2px solid var(--accent-ring);
+}
+
+/* Map page */
+.map-page-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.map-page-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: var(--s-5);
+  align-items: start;
+}
+
+.map-explore .map-svg {
+  max-height: min(78vh, 900px);
+}
+
+.map-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  position: sticky;
+  top: var(--s-4);
+}
+
+.map-info .glyph {
+  display: block;
+  line-height: 1.2;
+}
+
+.map-info-translit {
+  font-size: 20px;
+  font-weight: 600;
+  margin: var(--s-1) 0 0;
+}
+
+.map-info-state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.map-hint {
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
+}
+
+.map-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.map-legend li {
+  display: grid;
+  grid-template-columns: 14px auto 1fr auto;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 14px;
+}
+
+.map-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+}
+
+.map-swatch.map-tint-0 { background: #2f3843; }
+.map-swatch.map-tint-1 { background: #3a3345; }
+.map-swatch.map-tint-2 { background: #2e3f37; }
+.map-swatch.map-tint-3 { background: #433a2e; }
+.map-swatch.map-tint-4 { background: #412f38; }
+.map-swatch.map-tint-5 { background: #383f2c; }
+.map-swatch.map-tint-6 { background: #2b3e41; }
+.map-swatch.map-tint-7 { background: #3f3b2b; }
+
+@media (max-width: 820px) {
+  .map-page-body {
+    grid-template-columns: 1fr;
+  }
+  .map-side {
+    position: static;
+  }
+}
+
+/* District goal */
+.goal-bar {
+  position: relative;
+  height: 10px;
+  border-radius: var(--r-pill);
+  background: var(--track);
+  overflow: hidden;
+  margin: var(--s-3) 0 var(--s-2);
+}
+
+.goal-bar-seen,
+.goal-bar-sure {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--r-pill);
+}
+
+.goal-bar-seen { background: var(--state-learning); opacity: 0.45; }
+.goal-bar-sure { background: var(--success); }
+
+.task-map {
+  position: relative;
+}
+
+.task-map .ltoggle {
+  position: absolute;
+  top: var(--s-2);
+  left: var(--s-2);
+  background: rgba(34, 38, 43, 0.92);
+}
+
+.task-map .ltoggle-btn {
+  padding: 4px 9px;
+  font-size: 12px;
+}
+
+@media (max-width: 640px) {
+  .task-map .map-svg {
+    max-height: 56svh;
+  }
+}

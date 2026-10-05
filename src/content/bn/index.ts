@@ -1,6 +1,6 @@
-import type { CourseContent } from '../../domain/types';
+import type { CourseContent, CourseMap } from '../../domain/types';
 import { LESSONS, PHASES } from './lessons';
-import { CITIES, DIVISIONS } from './places';
+import { CITIES, DISTRICTS, DIVISIONS } from './places';
 import { CONJUNCTS, CONTRAST_SETS, ENDINGS, PHALAS, requiredUnitsBn, SYLLABLES, UNITS } from './units';
 import { TERMS, WORDS } from './words';
 import { withCoords } from '../coords';
@@ -15,13 +15,14 @@ const content: CourseContent = {
   letters: UNITS,
   combos: [...SYLLABLES, ...PHALAS, ...CONJUNCTS, ...ENDINGS],
   words: [...WORDS, ...TERMS],
-  places: withCoords([...CITIES, ...DIVISIONS], COORDS),
+  places: withCoords([...CITIES, ...DIVISIONS, ...DISTRICTS], COORDS),
   contrastSets: CONTRAST_SETS,
   phases: PHASES,
   lessons: LESSONS,
   segments: () => [],
   requiredLetters: requiredUnitsBn,
   hasCase: false,
+  loadMap: () => import('./map.json').then((m) => m.default as CourseMap),
 };
 
 export default content;

@@ -4,6 +4,8 @@ import type { SessionState } from '../../domain/sessionEngine';
 import type { GradedTask } from '../../domain/tasks';
 import type { PlaceItem } from '../../domain/types';
 import { placeNames, useLang, useT } from '../../i18n';
+import { MapLabelToggle, useMapLabels } from '../map/MapLabelToggle';
+import { MapView, type Mark } from '../map/MapView';
 
 /** Glyph size by length so long names never overflow and nothing jumps. */
 export function sizeFor(text: string): 'xl' | 'l' | 'm' | 's' {
@@ -23,26 +25,43 @@ interface Props {
   inputRef: RefObject<HTMLInputElement | null>;
   onChoose: (i: number) => void;
   onSubmit: () => void;
+  onLocate: (id: string) => void;
 }
 
-export function TaskPrompt({ index, task, state, input, setInput, inputRef, onChoose }: Props) {
+export function TaskPrompt({ index, task, state, input, setInput, inputRef, onChoose, onLocate }: Props) {
   const t = useT();
   const lang = useLang();
   const item = index.byId.get(task.itemId);
   const feedback = state.phase === 'feedback';
+  const taskLabels = useMapLabels('taskMapLabels');
+  const isDistrict = item?.kind === 'region' && item.regionType === 'district';
 
   let prompt: string;
-  if (task.kind === 'identify') prompt = item?.kind === 'region' ? t('session.identifyRegion') : t('session.identifyCity');
+  if (task.kind === 'identify') prompt = isDistrict ? t('session.identifyDistrict') : item?.kind === 'region' ? t('session.identifyRegion') : t('session.identifyCity');
+  else if (task.kind === 'locate') prompt = isDistrict ? t('session.locateDistrict') : t('session.locate');
   else if (task.kind === 'meaning') prompt = t('session.meaning');
   else if (task.kind === 'read') prompt = item?.kind === 'letter' ? t('session.readLetter') : t('session.read');
   else if (task.question === 'reading') prompt = t('session.choiceReading');
   else if (task.question === 'glyph') prompt = t('session.choiceGlyph', { r: task.display });
   else if (task.question === 'function') prompt = t('session.choiceFunction');
+  else if (task.question === 'map') prompt = isDistrict ? t('session.choiceMapDistrict') : t('session.choiceMap');
   else prompt = t('session.scan', { name: placeNames(item as PlaceItem, lang)[0] });
 
   const isScan = task.kind === 'choice' && task.question === 'scan';
   const isGlyphChoice = task.kind === 'choice' && task.question === 'glyph';
-  const display = task.kind === 'choice' && (isScan || isGlyphChoice) ? null : task.display;
+  const isMapChoice = task.kind === 'choice' && task.question === 'map';
+  const nativeChoice = isScan || isGlyphChoice || isMapChoice;
+  const display = task.kind === 'choice' && nativeChoice ? null : task.display;
+
+  // Marks on the map: the wrong first click stays red; feedback shows the answer in green.
+  const marks: Record<string, Mark> = {};
+  if (task.kind === 'locate') {
+    const clicked = state.lastInput;
+    if (clicked && clicked !== task.itemId && (feedback || state.attempt === 1)) marks[clicked] = 'wrong';
+    if (feedback) marks[task.itemId] = state.lastResult === 'W' ? 'target' : 'correct';
+  }
+  if (isMapChoice) marks[task.itemId] = feedback ? (state.lastResult === 'W' ? 'target' : 'correct') : 'target';
+  const hidden = new Set([task.itemId]);
 
   const inputState = feedback ? (state.lastResult === 'W' ? ' is-wrong' : ' is-correct') : '';
   const placeholder =
@@ -52,8 +71,8 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
     <div className="task">
       <p className="task-prompt">{prompt}</p>
       {display !== null && (
-        <div className="plate">
-          <span className={`glyph glyph-${sizeFor(display)}`} lang={index.content.id}>
+        <div className={`plate${task.kind === 'locate' ? ' plate-compact' : ''}`}>
+          <span className={`glyph glyph-${task.kind === 'locate' && sizeFor(display) !== 's' ? 'm' : sizeFor(display)}`} lang={index.content.id}>
             {display}
           </span>
         </div>
@@ -64,8 +83,24 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
         </div>
       )}
 
-      {task.kind === 'choice' ? (
-        <div className={`choices${isScan ? ' choices-sign' : ''}${task.question === 'function' ? ' choices-text' : ''}`} role="group" aria-label={prompt}>
+      {(task.kind === 'locate' || isMapChoice) && index.map && (
+        <div className="task-map">
+          <MapView
+            index={index}
+            label={t('map.label')}
+            marks={marks}
+            labels={taskLabels}
+            hideLabels={feedback ? undefined : hidden}
+            onPick={task.kind === 'locate' && !feedback ? onLocate : undefined}
+            focus={isMapChoice ? [task.itemId] : undefined}
+            zoomable
+          />
+          <MapLabelToggle which="taskMapLabels" compact />
+        </div>
+      )}
+
+      {task.kind === 'locate' ? null : task.kind === 'choice' ? (
+        <div className={`choices${isScan || isMapChoice ? ' choices-sign' : ''}${task.question === 'function' ? ' choices-text' : ''}`} role="group" aria-label={prompt}>
           {task.options.map((opt, i) => {
             const eliminated = state.eliminated.includes(i);
             const reveal = feedback && opt.correct;
@@ -80,7 +115,7 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
                 onClick={() => onChoose(i)}
               >
                 <kbd aria-hidden="true">{i + 1}</kbd>
-                <span className={opt.l10n ? 'choice-text' : isScan || isGlyphChoice ? 'choice-native' : 'choice-latin'} lang={isScan || isGlyphChoice ? index.content.id : undefined}>
+                <span className={opt.l10n ? 'choice-text' : nativeChoice ? 'choice-native' : 'choice-latin'} lang={nativeChoice ? index.content.id : undefined}>
                   {label === '' ? '–' : label}
                 </span>
               </button>

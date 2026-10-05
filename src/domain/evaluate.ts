@@ -1,4 +1,4 @@
-import type { CourseIndex } from './courseIndex';
+import { placeLayer, type CourseIndex } from './courseIndex';
 import { firstMismatch, matchSegments } from './match';
 import { normalize } from './normalize';
 import type { GradedTask } from './tasks';
@@ -43,7 +43,8 @@ export function evaluateTyped(index: CourseIndex, task: GradedTask, input: strin
 
   const result: Evaluation = { correct: false };
   // Confusion: the input is exactly right for a different item of the same kind.
-  const peers = index.byKind[item.kind];
+  // Places compare within their layer (a district is confused with a district, not a division).
+  const peers = index.byKind[item.kind].filter((p) => placeLayer(p) === placeLayer(item));
   const other = peers.find((p) => p.id !== item.id && accepts(index, p, input));
   if (other) result.confusedWith = other.id;
 

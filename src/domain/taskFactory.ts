@@ -127,6 +127,28 @@ export function scanTask(index: CourseIndex, place: PlaceItem, rng: Rng): Task {
   return { key: taskKey('scan'), kind: 'choice', itemId: place.id, question: 'scan', display: '', options };
 }
 
+/** Read the name and click the place on the map. */
+export function locateTask(place: PlaceItem): Task {
+  return { key: taskKey('locate'), kind: 'locate', itemId: place.id, display: place.native };
+}
+
+/** The place is highlighted on the map; pick its name among nearby places (all in native script). */
+export function mapChoiceTask(index: CourseIndex, place: PlaceItem, rng: Rng): Task {
+  const own = index.mapShapes.get(place.id);
+  const dist = (id: string) => {
+    const s = index.mapShapes.get(id)!;
+    return Math.hypot(s.label[0] - own!.label[0], s.label[1] - own!.label[1]);
+  };
+  // Neighbours make the choice about position, not about a random name.
+  const near = [...index.mapShapes.keys()].filter((id) => id !== place.id).sort((a, b) => dist(a) - dist(b));
+  const distractors = shuffle(near.slice(0, 6), rng).slice(0, 3).map((id) => index.byId.get(id) as PlaceItem);
+  const options: ChoiceOption[] = shuffle(
+    [{ label: place.native, correct: true, itemId: place.id }, ...distractors.map((d) => ({ label: d.native, correct: false, itemId: d.id }))],
+    rng,
+  );
+  return { key: taskKey('mapchoice'), kind: 'choice', itemId: place.id, question: 'map', display: '', options };
+}
+
 /** A fresh typed task for re-asking an item later in the session. */
 export function retaskFor(index: CourseIndex, rng: Rng) {
   return (task: Task): Task => {
@@ -134,6 +156,7 @@ export function retaskFor(index: CourseIndex, rng: Rng) {
     if (!item) return { ...task, key: taskKey('re') };
     if (task.kind === 'choice' && task.question === 'function' && item.kind === 'letter') return functionTask(item, rng);
     if (item.kind === 'city' || item.kind === 'region') {
+      if (task.kind === 'locate' || (task.kind === 'choice' && task.question === 'map')) return locateTask(item);
       return task.kind === 'read' ? { ...task, key: taskKey('re') } : identifyTask(item);
     }
     if (task.kind === 'meaning') return meaningTask(item);

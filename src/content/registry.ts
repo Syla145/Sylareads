@@ -58,6 +58,7 @@ export const COURSES: CourseMeta[] = [
     sampleGlyphs: 'অ আ ই ঈ',
     fontClass: 'font-native-bengali',
     status: 'available',
+    hasMap: true,
     load: () => import('./bn').then((m) => m.default),
   },
   {

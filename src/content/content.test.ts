@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildIndex } from '../domain/courseIndex';
 import { accepts } from '../domain/evaluate';
 import { normalize } from '../domain/normalize';
-import type { CourseContent } from '../domain/types';
+import type { CourseContent, PlaceItem } from '../domain/types';
 import bn from './bn';
 import el from './el';
 import th from './th';
@@ -62,10 +62,12 @@ describe.each(courses)('course $id', (course) => {
     }
   });
 
-  it('has no answer that identifies two places of the same kind', () => {
-    for (const kind of ['city', 'region'] as const) {
+  it('has no answer that identifies two places of the same layer', () => {
+    // Districts are their own layer: "Dhaka" names both a division and a district.
+    const layer = (p: PlaceItem) => (p.regionType === 'district' ? 'district' : p.kind);
+    for (const l of ['city', 'region', 'district']) {
       const seen = new Map<string, string>();
-      for (const p of course.places.filter((x) => x.kind === kind)) {
+      for (const p of course.places.filter((x) => layer(x) === l)) {
         for (const a of new Set([p.names.de, p.names.en, p.translit, ...p.accepted].map(normalize))) {
           expect(seen.get(a) ?? p.id, `"${a}" used by ${seen.get(a)} and ${p.id}`).toBe(p.id);
           seen.set(a, p.id);
@@ -89,6 +91,7 @@ describe('regions', () => {
     expect(regions(el, 'periphery')).toHaveLength(13);
     expect(regions(th, 'province')).toHaveLength(77);
     expect(regions(bn, 'division')).toHaveLength(8);
+    expect(regions(bn, 'district')).toHaveLength(64);
   });
   it('places every city in one of its country’s regions', () => {
     for (const c of courses) {

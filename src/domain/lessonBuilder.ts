@@ -10,6 +10,8 @@ import {
   shuffle,
   signCaps,
   type Rng,
+  locateTask,
+  mapChoiceTask,
 } from './taskFactory';
 import type { Task } from './tasks';
 import type { ComboItem, Item, LetterItem, Lesson, PlaceItem } from './types';
@@ -197,7 +199,26 @@ function vocabLesson(index: CourseIndex, lesson: Lesson, rng: Rng): Task[] {
   return tasks;
 }
 
+/**
+ * Places with a map area (districts): every card is followed by finding the
+ * place on the map; then each name is read (typed), and a few are recognised
+ * from their highlighted area.
+ */
+function mapPlaceLesson(index: CourseIndex, lesson: Lesson, rng: Rng): Task[] {
+  const place = (id: string) => index.byId.get(id) as PlaceItem;
+  const tasks = cardsThenRecall(lesson.newIds, 3, (id) => introTask(id), (id) => locateTask(place(id)));
+  shuffle(lesson.newIds, rng).forEach((id) => tasks.push(identifyTask(place(id))));
+  shuffle(lesson.newIds, rng)
+    .slice(0, 4)
+    .forEach((id) => tasks.push(mapChoiceTask(index, place(id), rng)));
+  shuffle(lesson.newIds, rng)
+    .slice(0, 4)
+    .forEach((id) => tasks.push(locateTask(place(id))));
+  return tasks;
+}
+
 function placeLesson(index: CourseIndex, lesson: Lesson, rng: Rng): Task[] {
+  if (lesson.newIds.length && lesson.newIds.every((id) => index.mapShapes.has(id))) return mapPlaceLesson(index, lesson, rng);
   const tasks = cardsThenRecall(lesson.newIds, 3, (id) => introTask(id), (id) => identifyTask(index.byId.get(id) as PlaceItem));
   shuffle(lesson.newIds, rng)
     .slice(0, 6)

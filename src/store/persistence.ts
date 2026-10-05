@@ -1,4 +1,4 @@
-import { emptyCourse, emptyRoot, SCHEMA_VERSION, type ProgressRoot } from '../domain/progress';
+import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRoot } from '../domain/progress';
 import type { Lang } from '../domain/types';
 
 /**
@@ -80,8 +80,10 @@ export function migrate(raw: unknown): ProgressRoot {
       };
     }
   }
+  const labels = (v: unknown): MapLabels | undefined => (v === 'native' || v === 'latin' || v === 'none' ? v : undefined);
   return {
     ...base,
+    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels) },
     updatedAt: typeof raw.updatedAt === 'number' ? raw.updatedAt : Date.now(),
     lastExportAt: typeof raw.lastExportAt === 'number' ? raw.lastExportAt : null,
     profile: {

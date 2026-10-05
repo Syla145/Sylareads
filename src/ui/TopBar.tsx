@@ -109,6 +109,7 @@ export function CourseTabs({ course }: { course: CourseMeta }) {
           {t('nav.practice')}
         </NavLink>
         <NavLink to={`${base}/script`}>{t('nav.script')}</NavLink>
+        {course.hasMap && <NavLink to={`${base}/map`}>{t('nav.map')}</NavLink>}
       </div>
     </nav>
   );

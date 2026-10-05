@@ -163,6 +163,30 @@ export interface Lesson {
 /** A segment of a transliteration: all accepted Latin spellings for one native piece. */
 export type Segment = { alts: string[]; index: number };
 
+/** One clickable area of a course map (a district), pre-projected as an SVG path. */
+export interface MapShape {
+  /** Item id of the place the area stands for. */
+  id: string;
+  /** Parent area (e.g. the division of a district). */
+  group?: string;
+  d: string;
+  /** Label point (pole of inaccessibility) in map units. */
+  label: [number, number];
+  /** Bounding box [x0, y0, x1, y1] in map units. */
+  box: [number, number, number, number];
+}
+
+export interface CourseMap {
+  source: string;
+  width: number;
+  height: number;
+  /** Equirectangular projection: x = pad + (lon − minLon)·kx·s, y = pad + (maxLat − lat)·s. */
+  projection: { minLon: number; maxLat: number; kx: number; s: number; pad: number };
+  outline: string;
+  groups: Omit<MapShape, 'box'>[];
+  shapes: MapShape[];
+}
+
 export interface CourseContent {
   id: string;
   letters: LetterItem[];
@@ -178,6 +202,8 @@ export interface CourseContent {
   requiredLetters: (native: string) => string[];
   /** Feature flags for the course (e.g. upper/lower case). */
   hasCase: boolean;
+  /** Lazily loaded map with clickable areas (only some courses). */
+  loadMap?: () => Promise<CourseMap>;
 }
 
 export interface CourseMeta {
@@ -192,4 +218,6 @@ export interface CourseMeta {
   fontClass: 'font-native-latin' | 'font-native-bengali' | 'font-native-thai';
   status: 'available' | 'soon';
   load?: () => Promise<CourseContent>;
+  /** The course has a clickable map (shows the Map tab). */
+  hasMap?: boolean;
 }

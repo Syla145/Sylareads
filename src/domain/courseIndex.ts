@@ -1,5 +1,5 @@
 import { answerSet, canonical } from './match';
-import type { CourseContent, Item, ItemKind, LetterItem, PlaceItem, Segment, WordItem, ComboItem } from './types';
+import type { ComboItem, CourseContent, CourseMap, Item, ItemKind, LetterItem, MapShape, PlaceItem, Segment, WordItem } from './types';
 
 /**
  * Pre-computed lookups for a loaded course. Built once per course load.
@@ -26,6 +26,27 @@ export interface CourseIndex {
   contrastOf: Map<string, string[]>;
   /** Similar-looking places of the same kind, for scan tasks. */
   lookalikes: Map<string, string[]>;
+  /** Course map and its clickable areas by item id, once loaded (see attachMap). */
+  map?: CourseMap;
+  mapShapes: Map<string, MapShape>;
+}
+
+/** Adds a loaded course map to an index. Areas without a matching item are ignored. */
+export function attachMap(index: CourseIndex, map: CourseMap): CourseIndex {
+  index.map = map;
+  index.mapShapes = new Map(map.shapes.filter((s) => index.byId.has(s.id)).map((s) => [s.id, s]));
+  return index;
+}
+
+/** Projects [lat, lon] into map units. */
+export function project(map: CourseMap, [lat, lon]: [number, number]): [number, number] {
+  const p = map.projection;
+  return [p.pad + (lon - p.minLon) * p.kx * p.s, p.pad + (p.maxLat - lat) * p.s];
+}
+
+/** Places are compared within their layer: cities, regions, or districts (a district shares its name with a division). */
+export function placeLayer(item: Item): string {
+  return item.kind === 'region' && item.regionType === 'district' ? 'district' : item.kind;
 }
 
 export function nativeOf(item: Item, lower = false): string {
@@ -89,7 +110,7 @@ export function buildIndex(content: CourseContent): CourseIndex {
     const list = byKind[kind] as PlaceItem[];
     for (const p of list) {
       const scored = list
-        .filter((o) => o.id !== p.id)
+        .filter((o) => o.id !== p.id && placeLayer(o) === placeLayer(p))
         .map((o) => ({ id: o.id, score: similarity(p.native, o.native) }))
         .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
       lookalikes.set(p.id, scored.slice(0, 6).map((s) => s.id));
@@ -98,7 +119,7 @@ export function buildIndex(content: CourseContent): CourseIndex {
 
   const units = new Set<string>([...content.letters.map((l) => l.id), ...content.combos.filter((c) => c.unit).map((c) => c.id)]);
 
-  return { content, items, byId, byKind, answers, segments, extraSegments, required, units, lessonOf, contrastOf, lookalikes };
+  return { content, items, byId, byKind, answers, segments, extraSegments, required, units, lessonOf, contrastOf, lookalikes, mapShapes: new Map() };
 }
 
 /** Visual similarity for scan distractors: shared ending, shared start, similar length. */

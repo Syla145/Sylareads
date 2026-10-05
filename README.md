@@ -30,9 +30,17 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 
 ### Bengali
 
-- 31 Lektionen: 36 Konsonanten, 11 unabhängige Vokale, 10 Vokalzeichen und 4 Sonderzeichen in 11 Buchstabenlektionen, Phala und Reph, 2 Lektionen Ligaturen (ট্ট ল্ল ক্স ঞ্জ ঙ্গ ক্ষ ষ্ট হ্ম ন্ধ ঞ্চ স্ট স্ক), Ortsnamen-Endungen (-পুর, -গঞ্জ, -বাজার, -হাট, -গ্রাম, -খালী), 4 Begriffslektionen, 11 Städte- und 1 Divisionslektion
-- 100 Städte (alle 64 Distrikthauptstädte plus 36 große Orte wie Savar, Sreemangal, Teknaf, Benapole), alle 8 Divisionen, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
+- 41 Lektionen: 36 Konsonanten, 11 unabhängige Vokale, 10 Vokalzeichen und 4 Sonderzeichen in 11 Buchstabenlektionen, Phala und Reph, 2 Lektionen Ligaturen (ট্ট ল্ল ক্স ঞ্জ ঙ্গ ক্ষ ষ্ট হ্ম ন্ধ ঞ্চ স্ট স্ক), Ortsnamen-Endungen (-পুর, -গঞ্জ, -বাজার, -হাট, -গ্রাম, -খালী), 4 Begriffslektionen, 1 Divisionslektion, 10 Distriktlektionen und 11 Städtelektionen
+- 100 Städte (alle 64 Distrikthauptstädte plus 36 große Orte wie Savar, Sreemangal, Teknaf, Benapole), alle 8 Divisionen und alle 64 Distrikte, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
 - Englische Namen nach der offiziellen Schreibweise von 2018 (Chattogram, Cumilla, Barishal, Jashore, Bogura); die älteren Formen (Chittagong, Comilla, Barisal, Jessore, Bogra) gelten ebenfalls. Ligaturen sind eigene Leseeinheiten, weil man sie als Ganzes erkennt.
+
+### Karte (Bengali)
+
+- Alle 64 Distrikte Bangladeschs als eigene Lernobjekte, in 10 Lektionen nach Divisionen geordnet (Dhaka & Umgebung, Südlich der Padma, Cumilla bis Noakhali, Chattogram & Bergland, Sylhet & Mymensingh, Rajshahi, Rangpur, Khulna & Sundarbans, Kushtia bis Magura, Barishal).
+- Neue Aufgaben: **Wo liegt …?** (bengalischen Namen lesen, Distrikt auf der Karte anklicken) und **Welcher Distrikt ist markiert?** (markierte Fläche, Auswahl aus vier Nachbardistrikten in bengalischer Schrift). Dazu wie gewohnt den Namen tippen.
+- Tab **Karte** zum Erkunden mit Zoom (Mausrad, Ziehen, zwei Finger, +/−) und Beschriftung wahlweise in Originalschrift, Latein oder aus. In Kartenaufgaben ist die Beschriftung standardmäßig aus und lässt sich zuschalten; der gesuchte Distrikt ist nie beschriftet.
+- Auf der Übersicht zeigt eine Zielkarte „Ziel: alle 64 Distrikte“, wie viele sicher sitzen; „Distrikte üben“ startet eine Übung nur mit Distrikten (`?layer=district`).
+- Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen BGD ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/bn/map.json` (≈ 100 KB, wird nur mit dem Bengali-Kurs geladen). Jede Distrikthauptstadt liegt geprüft innerhalb ihres Distrikts.
 
 ### Koordinaten und Quellen
 

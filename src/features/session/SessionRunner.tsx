@@ -73,7 +73,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
   const submitTyped = useCallback(() => {
     const s = stateRef.current;
     const tk = currentTask(s);
-    if (!tk || tk.kind === 'intro' || tk.kind === 'choice' || s.phase !== 'answer') return;
+    if (!tk || tk.kind === 'intro' || tk.kind === 'choice' || tk.kind === 'locate' || s.phase !== 'answer') return;
     const value = inputValueRef.current;
     if (!value.trim()) return;
     doSubmit(value, evaluateTyped(index, tk, value));
@@ -87,6 +87,19 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
       const opt = tk.options[i];
       if (!opt) return;
       doSubmit(opt.label ?? '', { correct: opt.correct, confusedWith: opt.correct ? undefined : opt.itemId }, i);
+    },
+    [doSubmit],
+  );
+
+  /** A click on the map: the clicked area's id is the answer. */
+  const locate = useCallback(
+    (id: string) => {
+      const s = stateRef.current;
+      const tk = currentTask(s);
+      if (!tk || tk.kind !== 'locate' || s.phase !== 'answer') return;
+      if (s.attempt === 1 && id === s.lastInput) return; // same wrong area again
+      const correct = id === tk.itemId;
+      doSubmit(id, { correct, confusedWith: correct ? undefined : id });
     },
     [doSubmit],
   );
@@ -121,7 +134,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
 
   // Focus the input for every typed task (keeps the phone keyboard open).
   useEffect(() => {
-    if (task && task.kind !== 'intro' && task.kind !== 'choice') inputRef.current?.focus({ preventScroll: true });
+    if (task && task.kind !== 'intro' && task.kind !== 'choice' && task.kind !== 'locate') inputRef.current?.focus({ preventScroll: true });
   }, [task, state.phase, state.attempt]);
 
   useEffect(() => {
@@ -139,6 +152,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
         if (e.repeat) return;
         const target = e.target as HTMLElement | null;
         if (target?.tagName === 'BUTTON' && s.phase === 'answer' && tk.kind === 'choice') return; // native button press
+        if (s.phase === 'answer' && tk.kind === 'locate') return; // areas handle Enter themselves
         e.preventDefault();
         if (tk.kind === 'intro' || s.phase === 'feedback') next();
         else submitTyped();
@@ -196,6 +210,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
               inputRef={inputRef}
               onChoose={choose}
               onSubmit={submitTyped}
+              onLocate={locate}
             />
             <div className="session-response" aria-live="polite">
               {showRetry && <RetryHint index={index} task={task} evaluation={state.evaluation} input={state.lastInput} />}
@@ -203,11 +218,11 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
             </div>
             <div className="session-actions">
               {showFeedback ? (
-                <Button variant="primary" block onClick={next} autoFocus={task.kind === 'choice'}>
+                <Button variant="primary" block onClick={next} autoFocus={task.kind === 'choice' || task.kind === 'locate'}>
                   {t('session.continue')}
                   <kbd>{t('session.enterHint')}</kbd>
                 </Button>
-              ) : task.kind === 'choice' ? (
+              ) : task.kind === 'choice' || task.kind === 'locate' ? (
                 <Button variant="ghost" block onClick={dontKnow}>
                   {t('session.dontKnow')}
                 </Button>
@@ -253,6 +268,14 @@ function RetryHint({ index, task, evaluation, input }: { index: CourseIndex; tas
   } else if (evaluation?.mismatchAt !== undefined) {
     hint = t('session.hintCheckChar', { n: evaluation.mismatchAt + 1 });
   }
+  if (task.kind === 'locate') {
+    return (
+      <div className="retry">
+        <p className="retry-title">{t('session.tryAgain')}</p>
+        <ClickedLine index={index} id={input} />
+      </div>
+    );
+  }
   return (
     <div className="retry">
       <p className="retry-title">{t('session.tryAgain')}</p>
@@ -269,4 +292,16 @@ export function ConfusionLine({ index, input, otherId }: { index: CourseIndex; i
   if (!other || !input) return null;
   const native = other.kind === 'letter' ? other.upper : other.native;
   return <p className="confusion">{t('session.thatWouldBe', { input, native })}</p>;
+}
+
+/** Names the area that was clicked instead (map tasks). */
+export function ClickedLine({ index, id }: { index: CourseIndex; id: string }) {
+  const t = useT();
+  const other = index.byId.get(id);
+  if (!other || other.kind !== 'region') return null;
+  return (
+    <p className="confusion">
+      {t('session.clickedOther', { native: other.native, name: other.translit })}
+    </p>
+  );
 }

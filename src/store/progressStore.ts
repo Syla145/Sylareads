@@ -10,6 +10,7 @@ import {
   recordIntro,
   unlockAchievements,
   type AnswerInput,
+  type MapLabels,
   type PracticeConfigStored,
   type ProgressRoot,
 } from '../domain/progress';
@@ -19,6 +20,7 @@ import { backupCurrent, clearAll, loadRoot, saveRoot } from './persistence';
 interface ProgressState {
   root: ProgressRoot;
   setLang: (lang: Lang) => void;
+  setMapLabels: (which: 'mapLabels' | 'taskMapLabels', value: MapLabels) => void;
   startCourse: (courseId: string) => void;
   intro: (courseId: string, itemId: string) => void;
   answer: (courseId: string, a: AnswerInput) => void;
@@ -48,6 +50,7 @@ export const useProgress = create<ProgressState>((set, get) => {
   return {
     root: loadRoot(),
     setLang: (uiLang) => commit({ ...get().root, settings: { ...get().root.settings, uiLang } }, true),
+    setMapLabels: (which, value) => commit({ ...get().root, settings: { ...get().root.settings, [which]: value } }, true),
     startCourse: (courseId) => {
       const root = get().root;
       if (!root.courses[courseId]) commit({ ...root, courses: { ...root.courses, [courseId]: emptyCourse() } }, true);

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { buildIndex, type CourseIndex } from '../../domain/courseIndex';
+import { attachMap, buildIndex, type CourseIndex } from '../../domain/courseIndex';
 import type { CourseMeta } from '../../domain/types';
 
 const cache = new Map<string, Promise<CourseIndex>>();
@@ -9,7 +9,11 @@ export function loadCourseIndex(meta: CourseMeta): Promise<CourseIndex> {
   if (!meta.load) return Promise.reject(new Error('course-unavailable'));
   let p = cache.get(meta.id);
   if (!p) {
-    p = meta.load().then(buildIndex);
+    p = meta.load().then(async (content) => {
+      const index = buildIndex(content);
+      if (content.loadMap) attachMap(index, await content.loadMap());
+      return index;
+    });
     cache.set(meta.id, p);
   }
   return p;

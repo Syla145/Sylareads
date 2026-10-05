@@ -1,4 +1,4 @@
-import type { CourseIndex } from './courseIndex';
+import { placeLayer, type CourseIndex } from './courseIndex';
 import { dayKey } from './dates';
 import { isDue, isWeak, priority, type ItemProgress } from './srs';
 import {
@@ -10,6 +10,8 @@ import {
   scanTask,
   shuffle,
   type Rng,
+  locateTask,
+  mapChoiceTask,
 } from './taskFactory';
 import type { Task } from './tasks';
 import { CATEGORY_KINDS, categoryOf, type Category, type Item, type PlaceItem } from './types';
@@ -21,6 +23,8 @@ export interface PracticeConfig {
   scope: 'learned' | 'all';
   prioritizeWeak: boolean;
   count: number;
+  /** Restrict places to one layer (e.g. only the districts of Bangladesh). */
+  layer?: 'district';
 }
 
 export const ALL_CATEGORIES: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
@@ -55,6 +59,7 @@ export function poolFor(index: CourseIndex, config: PracticeConfig, ctx: Practic
   const kinds = new Set(cats.flatMap((c) => CATEGORY_KINDS[c]));
   return index.items.filter((it) => {
     if (!kinds.has(it.kind)) return false;
+    if (config.layer && placeLayer(it) !== config.layer) return false;
     if (config.weakOnly) return weak.has(it.id);
     if (config.scope === 'learned') return (ctx.items[it.id]?.box ?? 0) >= 1;
     return true;
@@ -170,6 +175,12 @@ export function practiceTasksFor(index: CourseIndex, item: Item, p: ItemProgress
     const hasContrast = (index.contrastOf.get(item.id)?.length ?? 0) > 0;
     if (!item.functionChoice && hasContrast && box >= 2 && rng() < 0.2) tasks.push(glyphChoiceTask(index, item, rng, rng() < 0.5));
     else tasks.push(readTask(item, rng));
+  } else if ((item.kind === 'city' || item.kind === 'region') && index.mapShapes.has(item.id)) {
+    // Map places: finding on the map, recognising the highlighted area, and reading the name.
+    const r = rng();
+    if (box === 0 || r < 0.4) tasks.push(locateTask(item as PlaceItem));
+    else if (r < 0.65) tasks.push(mapChoiceTask(index, item as PlaceItem, rng));
+    else tasks.push(identifyTask(item as PlaceItem));
   } else if (item.kind === 'city' || item.kind === 'region') {
     if (box >= 3 && rng() < 0.2 && (index.lookalikes.get(item.id)?.length ?? 0) >= 3) tasks.push(scanTask(index, item as PlaceItem, rng));
     else tasks.push(identifyTask(item as PlaceItem));

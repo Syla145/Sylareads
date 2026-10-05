@@ -45,12 +45,23 @@ export interface Profile {
   totalAnswers: number;
 }
 
+/** How places are labelled on maps: native script, Latin script, or not at all. */
+export type MapLabels = 'native' | 'latin' | 'none';
+
+export interface Settings {
+  uiLang: Lang;
+  /** Labels on the explore map. */
+  mapLabels?: MapLabels;
+  /** Labels around the target in map tasks (off by default, the target itself is never labelled). */
+  taskMapLabels?: MapLabels;
+}
+
 export interface ProgressRoot {
   schemaVersion: number;
   createdAt: number;
   updatedAt: number;
   lastExportAt: number | null;
-  settings: { uiLang: Lang };
+  settings: Settings;
   profile: Profile;
   courses: Record<string, CourseProgress>;
 }

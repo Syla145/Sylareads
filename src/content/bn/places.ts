@@ -164,3 +164,47 @@ export const DIVISIONS: PlaceItem[] = [
   division('rangpur', 'রংপুর', 'Rangpur', 'Rangpur', 'Rangpur'),
   division('mymensingh', 'ময়মনসিংহ', 'Mymensingh', 'Mymensingh', 'Mymensingh'),
 ];
+
+const DISTRICT: L10n = { de: 'Distrikt (জেলা, jela)', en: 'District (জেলা, jela)' };
+
+/**
+ * The 64 districts, grouped into map-coherent lessons (division by division,
+ * starting in the centre). Each district carries the name of its main town,
+ * so names and spellings come from the district town above.
+ */
+export const DISTRICT_GROUPS: { id: string; title: L10n; slugs: string[] }[] = [
+  { id: 'dhaka-1', title: { de: 'Dhaka & Umgebung', en: 'Dhaka & Surroundings' }, slugs: ['dhaka', 'gazipur', 'narayanganj', 'narsingdi', 'munshiganj', 'manikganj', 'tangail', 'kishoreganj'] },
+  { id: 'dhaka-2', title: { de: 'Südlich der Padma', en: 'South of the Padma' }, slugs: ['faridpur', 'rajbari', 'madaripur', 'shariatpur', 'gopalganj'] },
+  { id: 'chattogram-1', title: { de: 'Cumilla bis Noakhali', en: 'Cumilla to Noakhali' }, slugs: ['cumilla', 'brahmanbaria', 'chandpur', 'feni', 'noakhali', 'lakshmipur'] },
+  { id: 'chattogram-2', title: { de: 'Chattogram & Bergland', en: 'Chattogram & the Hills' }, slugs: ['chattogram', 'coxs-bazar', 'rangamati', 'khagrachhari', 'bandarban'] },
+  { id: 'northeast', title: { de: 'Sylhet & Mymensingh', en: 'Sylhet & Mymensingh' }, slugs: ['sylhet', 'moulvibazar', 'habiganj', 'sunamganj', 'mymensingh', 'jamalpur', 'sherpur', 'netrokona'] },
+  { id: 'rajshahi', title: { de: 'Division Rajshahi', en: 'Rajshahi Division' }, slugs: ['rajshahi', 'chapai-nawabganj', 'naogaon', 'natore', 'bogura', 'joypurhat', 'sirajganj', 'pabna'] },
+  { id: 'rangpur', title: { de: 'Division Rangpur', en: 'Rangpur Division' }, slugs: ['rangpur', 'dinajpur', 'thakurgaon', 'panchagarh', 'nilphamari', 'lalmonirhat', 'kurigram', 'gaibandha'] },
+  { id: 'khulna-1', title: { de: 'Khulna & Sundarbans', en: 'Khulna & the Sundarbans' }, slugs: ['khulna', 'bagerhat', 'satkhira', 'jashore', 'narail'] },
+  { id: 'khulna-2', title: { de: 'Kushtia bis Magura', en: 'Kushtia to Magura' }, slugs: ['kushtia', 'meherpur', 'chuadanga', 'jhenaidah', 'magura'] },
+  { id: 'barishal', title: { de: 'Division Barishal', en: 'Barishal Division' }, slugs: ['barishal', 'patuakhali', 'bhola', 'pirojpur', 'jhalokathi', 'barguna'] },
+];
+
+const townBySlug = new Map(CITIES.map((c) => [c.id.slice('bn:city:'.length), c]));
+
+export const DISTRICTS: PlaceItem[] = DISTRICT_GROUPS.flatMap((g) =>
+  g.slugs.map((slug): PlaceItem => {
+    const town = townBySlug.get(slug);
+    if (!town) throw new Error(`district town missing: ${slug}`);
+    const { translit } = town;
+    const { en, de } = town.names;
+    return {
+      id: `bn:district:${slug}`,
+      kind: 'region',
+      native: town.native,
+      translit,
+      names: { en: `${en} District`, de: `Distrikt ${de}` },
+      accepted: [...town.accepted, `${en} District`, `${translit} District`, `${translit} Zila`, `${translit} Zilla`, `${translit} Jela`, `Distrikt ${de}`],
+      countryId: 'BD',
+      regionId: town.regionId,
+      regionType: 'district',
+      tier: town.tier,
+      hint: DISTRICT,
+    };
+  }),
+);

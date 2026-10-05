@@ -36,6 +36,7 @@ export function parsePracticeParams(params: URLSearchParams): PracticeRequest {
       scope: params.get('scope') === 'all' ? 'all' : 'learned',
       prioritizeWeak: params.get('weak') !== '0',
       count,
+      layer: params.get('layer') === 'district' ? 'district' : undefined,
     },
   };
 }
@@ -47,5 +48,6 @@ export function practiceQuery(config: PracticeConfig): string {
   p.set('weak', config.prioritizeWeak ? '1' : '0');
   p.set('n', String(config.count));
   if (config.weakOnly) p.set('only', 'weak');
+  if (config.layer) p.set('layer', config.layer);
   return p.toString();
 }

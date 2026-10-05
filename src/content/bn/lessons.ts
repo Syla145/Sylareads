@@ -1,5 +1,5 @@
 import type { Lesson, PhaseDef, PlaceItem } from '../../domain/types';
-import { CITIES, DIVISIONS } from './places';
+import { CITIES, DISTRICT_GROUPS, DIVISIONS } from './places';
 import { unitId } from './units';
 
 export const PHASES: PhaseDef[] = [
@@ -9,8 +9,9 @@ export const PHASES: PhaseDef[] = [
   { id: 'vowels', title: { de: 'Zeichen & Vokale', en: 'Marks & Vowels' } },
   { id: 'clusters', title: { de: 'Verbundene Konsonanten', en: 'Joined Consonants' } },
   { id: 'terms', title: { de: 'GeoGuessr-Begriffe', en: 'GeoGuessr Terms' } },
-  { id: 'cities', title: { de: 'Ortsnamen', en: 'Place Names' } },
   { id: 'regions', title: { de: 'Divisionen', en: 'Divisions' } },
+  { id: 'districts', title: { de: 'Die 64 Distrikte', en: 'The 64 Districts' } },
+  { id: 'cities', title: { de: 'Ortsnamen', en: 'Place Names' } },
 ];
 
 const U = (...s: string[]) => s.map(unitId);
@@ -179,4 +180,18 @@ const divisionLesson: Omit<Lesson, 'number'> = {
   newIds: DIVISIONS.map((d) => d.id),
 };
 
-export const LESSONS: Lesson[] = [...core, ...cityLessons, divisionLesson].map((l, i) => ({ ...l, number: i + 1 }));
+const districtLessons: Omit<Lesson, 'number'>[] = DISTRICT_GROUPS.map((g) => ({
+  id: `bn-district-${g.id}`,
+  phaseId: 'districts',
+  type: 'places',
+  title: g.title,
+  goal: {
+    de: `${g.slugs.length} Distrikte lesen und auf der Karte finden. Jeder Distrikt heißt wie seine Hauptstadt.`,
+    en: `Read ${g.slugs.length} districts and find them on the map. Each district is named after its main town.`,
+  },
+  newIds: g.slugs.map((s) => `bn:district:${s}`),
+}));
+
+// Divisions and districts come before the cities: the 64 district names are
+// the backbone of every sign in Bangladesh.
+export const LESSONS: Lesson[] = [...core, divisionLesson, ...districtLessons, ...cityLessons].map((l, i) => ({ ...l, number: i + 1 }));
