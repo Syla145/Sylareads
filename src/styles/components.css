@@ -2232,3 +2232,7 @@
   from { opacity: 0.35; }
   to { opacity: 1; }
 }
+
+.course-card-facts {
+  color: var(--text-tertiary);
+}

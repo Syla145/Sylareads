@@ -10,6 +10,8 @@ import { Button, ProgressBar } from '../../ui/primitives';
 import { TopBar } from '../../ui/TopBar';
 import { loadCourseIndex } from '../course/useCourse';
 import { recommendedPath } from '../dashboard/recommend';
+import { mapGoalCounts, mapLayer } from '../map/layer';
+import { useSync } from '../../sync/syncStore';
 
 function CourseCard({ meta }: { meta: CourseMeta }) {
   const t = useT();
@@ -24,6 +26,7 @@ function CourseCard({ meta }: { meta: CourseMeta }) {
   }, [meta, started]);
 
   const stats = index && started ? courseStats(index, cp) : null;
+  const map = index?.map && cp ? mapGoalCounts(index, cp.items) : null;
   const countries = meta.countryIds.map((id) => COUNTRIES[id].name[lang]).join(' · ');
   const soon = meta.status !== 'available';
 
@@ -41,6 +44,10 @@ function CourseCard({ meta }: { meta: CourseMeta }) {
           <div className="course-card-progress">
             <ProgressBar value={stats.mastery} size="sm" label={t('home.mastery', { n: formatPercent(stats.mastery) })} />
             <span>{t('home.mastery', { n: formatPercent(stats.mastery) })}</span>
+            <span className="course-card-facts">
+              {t('home.lessonsDone', { n: stats.completedLessons, total: index!.content.lessons.length })}
+              {map && ` · ${t('home.mapGoal', { n: map.sure, total: map.total, what: t(`map.what.${mapLayer(index!)}`) })}`}
+            </span>
           </div>
         )}
       </div>
@@ -80,8 +87,21 @@ export function HomePage() {
             <CourseCard key={c.id} meta={c} />
           ))}
         </section>
-        <p className="home-note">{t('home.storageNote')}</p>
+        <StorageNote />
       </main>
     </div>
   );
+}
+
+/** Where progress lives: this browser only, or online when signed in. */
+function StorageNote() {
+  const t = useT();
+  const status = useSync((s) => s.status);
+  const user = useSync((s) => s.user);
+  const text = user
+    ? t('home.storageOnline', { name: user.name ?? user.email ?? '' })
+    : status === 'unconfigured'
+      ? t('home.storageNote')
+      : t('home.storageCanSync');
+  return <p className="home-note">{text}</p>;
 }

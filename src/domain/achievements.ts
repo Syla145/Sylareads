@@ -2,7 +2,7 @@ import type { CourseIndex } from './courseIndex';
 import type { ProgressRoot } from './progress';
 import type { L10n } from './types';
 
-/** Twelve quiet achievements (spec section 10). Conditions are pure functions over stored progress. */
+/** Quiet achievements (spec section 10). Conditions are pure functions over stored progress. */
 export interface AchievementDef {
   id: string;
   title: L10n;
@@ -13,6 +13,14 @@ export interface AchievementDef {
 const course = (root: ProgressRoot, id: string) => root.courses[id];
 const anyCourse = (root: ProgressRoot, pred: (items: ProgressRoot['courses'][string]) => boolean) =>
   Object.values(root.courses).some(pred);
+
+/** Share of a course map's areas recognised reliably (0 when the course has no map). */
+const mapShare = (root: ProgressRoot, courseId: string, index: CourseIndex | null) => {
+  const cp = course(root, courseId);
+  if (!cp || !index || !index.mapShapes.size) return 0;
+  const sure = [...index.mapShapes.keys()].filter((id) => (cp.items[id]?.box ?? 0) >= 3).length;
+  return sure / index.mapShapes.size;
+};
 
 const citiesRecognized = (root: ProgressRoot, courseId: string, index: CourseIndex | null) => {
   const cp = course(root, courseId);
@@ -82,6 +90,18 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: { de: 'Stadtleser 100', en: 'City Reader 100' },
     description: { de: 'Alle 100 Städte eines Landes sicher erkannt', en: 'Recognise all 100 cities of a country reliably' },
     check: (root, courseId, index) => citiesRecognized(root, courseId, index) >= 100,
+  },
+  {
+    id: 'map-half',
+    title: { de: 'Halbe Karte', en: 'Half the Map' },
+    description: { de: 'Die Hälfte aller Gebiete einer Karte sicher erkannt', en: 'Recognise half of a map’s areas reliably' },
+    check: (root, courseId, index) => mapShare(root, courseId, index) >= 0.5,
+  },
+  {
+    id: 'map-all',
+    title: { de: 'Ganze Karte', en: 'The Whole Map' },
+    description: { de: 'Alle Gebiete einer Karte sicher erkannt – z. B. alle 64 Distrikte', en: 'Recognise every area of a map reliably – e.g. all 64 districts' },
+    check: (root, courseId, index) => mapShare(root, courseId, index) >= 1,
   },
   {
     id: 'flawless',

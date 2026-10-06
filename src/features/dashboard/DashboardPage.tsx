@@ -37,7 +37,6 @@ export function DashboardPage() {
             </p>
             <h2 className="card-title">{firstLesson.title[lang]}</h2>
             <p className="muted">{firstLesson.goal[lang]}</p>
-            <p className="muted small">{t('dash.firstIntro')}</p>
             <div className="actions">
               <ButtonLink variant="primary" to={`${base}/lesson/${firstLesson.id}`}>
                 {t('dash.startLesson1')}

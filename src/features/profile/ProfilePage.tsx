@@ -110,7 +110,7 @@ export function ProfilePage() {
 
         <Card>
           <h2 className="card-label">{t('profile.data')}</h2>
-          <p className="muted">{t('profile.dataNote')}</p>
+          <p className="muted">{signedIn ? t('profile.dataNoteOnline') : t('profile.dataNote')}</p>
           <p className="small">{root.lastExportAt ? t('profile.lastExport', { d: formatDate(root.lastExportAt, lang) }) : t('profile.neverExported')}</p>
           <div className="actions">
             <Button variant="primary" onClick={doExport}>

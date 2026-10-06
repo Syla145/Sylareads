@@ -1,4 +1,5 @@
 import type { CourseIndex } from '../../domain/courseIndex';
+import type { ItemProgress } from '../../domain/srs';
 import type { Item, L10n } from '../../domain/types';
 
 /** What the clickable areas of a map are called: districts (BD), provinces (TH) or regions (RU). */
@@ -27,3 +28,13 @@ export function mapGroupOf(index: CourseIndex, id: string): { native?: string; n
 
 /** Wide maps (Russia) get a wider session layout. */
 export const isWideMap = (index: CourseIndex) => !!index.map && index.map.width > index.map.height * 1.2;
+
+/** Map goal: areas recognised reliably (box ≥ 3, as for cities) and areas started. */
+export function mapGoalCounts(index: CourseIndex, items: Record<string, ItemProgress | undefined>): { sure: number; seen: number; total: number } {
+  const ids = [...index.mapShapes.keys()];
+  return {
+    sure: ids.filter((id) => (items[id]?.box ?? 0) >= 3).length,
+    seen: ids.filter((id) => items[id]).length,
+    total: ids.length,
+  };
+}

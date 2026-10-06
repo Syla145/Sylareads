@@ -11,7 +11,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
-- XP, Level, Streak, 15 Achievements, Lesbarkeits-Meilenstein („31 / 100 cities readable“)
+- XP, Level, Streak, 17 Achievements (u. a. „Halbe Karte“ und „Ganze Karte“), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 

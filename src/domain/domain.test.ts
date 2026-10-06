@@ -204,3 +204,26 @@ describe('content updates', () => {
     expect(tasks.every((t) => !('itemId' in t) || index.byId.has(t.itemId!))).toBe(true);
   });
 });
+
+describe('map achievements', () => {
+  it('unlock for half and for all areas of a map', async () => {
+    const { ACHIEVEMENTS } = await import('./achievements');
+    const { attachMap } = await import('./courseIndex');
+    const bn = (await import('../content/bn')).default;
+    const map = (await import('../content/bn/map.json')).default as unknown as import('./types').CourseMap;
+    const index = attachMap(buildIndex(bn), map);
+    const ids = [...index.mapShapes.keys()];
+    const root = { courses: { bn: { items: {} as Record<string, { box: number }> } } } as never as import('./progress').ProgressRoot;
+    const half = ACHIEVEMENTS.find((a) => a.id === 'map-half')!;
+    const all = ACHIEVEMENTS.find((a) => a.id === 'map-all')!;
+    const set = (n: number) => { for (const id of ids.slice(0, n)) (root.courses.bn.items as Record<string, unknown>)[id] = { box: 3 }; };
+    set(31);
+    expect(half.check(root, 'bn', index)).toBe(false);
+    set(32);
+    expect(half.check(root, 'bn', index)).toBe(true);
+    expect(all.check(root, 'bn', index)).toBe(false);
+    set(64);
+    expect(all.check(root, 'bn', index)).toBe(true);
+    expect(all.check(root, 'ru', index)).toBe(false);
+  });
+});

@@ -15,6 +15,24 @@ import { startSync } from './sync/syncStore';
 installFlushHandlers();
 startSync();
 
+// After a new deployment the file names change. A tab that still runs the old
+// version then requests files that no longer exist (404): reload once to get
+// the new version instead of failing.
+window.addEventListener('vite:preloadError', (event) => {
+  const key = 'sylareads.reloadedAt';
+  let last = 0;
+  try {
+    last = Number(sessionStorage.getItem(key)) || 0;
+    sessionStorage.setItem(key, String(Date.now()));
+  } catch {
+    /* storage blocked: reload anyway */
+  }
+  if (Date.now() - last > 10000) {
+    event.preventDefault();
+    window.location.reload();
+  }
+});
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

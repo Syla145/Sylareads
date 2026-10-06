@@ -7,7 +7,8 @@ import { useProgress } from '../../store/progressStore';
 import { ButtonLink, Card, StateDot } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { MapLabelToggle, useMapLabels } from './MapLabelToggle';
-import { isWideMap, mapGroupOf, mapLayer } from './layer';
+import type { CourseIndex } from '../../domain/courseIndex';
+import { isWideMap, mapGoalCounts, mapGroupOf, mapLayer } from './layer';
 import { MapView } from './MapView';
 
 const NO_ITEMS = {};
@@ -80,11 +81,11 @@ export function MapPage() {
             <p className="muted map-hint">{t('map.tapHint')}</p>
           )}
           <ul className="map-legend">
-            {map.groups.map((g, i) => {
+            {legendOrder(index).map(({ g, tint }) => {
               const info = mapGroupOf(index, map.shapes.find((s) => s.group === g.id)!.id);
               return (
                 <li key={g.id}>
-                  <span className={`map-swatch map-tint-${i % 8}`} aria-hidden="true" />
+                  <span className={`map-swatch map-tint-${tint % 8}`} aria-hidden="true" />
                   <span className="native">{info?.native}</span>
                   <span className="muted">{info?.name?.[lang]}</span>
                   <span className="muted tabular">{map.shapes.filter((s) => s.group === g.id).length}</span>
@@ -105,6 +106,18 @@ export function MapPage() {
   );
 }
 
+/**
+ * Legend order: groups that are learning items (Bangladesh's divisions) follow
+ * the course order; named groups (federal districts, parts of Thailand) keep
+ * the map's order. The tint always follows the map's group order.
+ */
+function legendOrder(index: CourseIndex) {
+  const groups = index.map!.groups.map((g, tint) => ({ g, tint }));
+  const rank = new Map(index.byKind.region.map((r, i) => [r.id, i]));
+  if (!groups.every(({ g }) => rank.has(g.id))) return groups;
+  return [...groups].sort((a, b) => rank.get(a.g.id)! - rank.get(b.g.id)!);
+}
+
 /** Practice only the map areas (districts, provinces, regions), smart selection over all of them. */
 export function mapPracticeQuery(count = 20): string {
   return `c=regions&scope=all&weak=1&n=${count}&layer=map`;
@@ -117,16 +130,14 @@ export function MapGoal() {
   const items = useProgress((s) => s.root.courses[meta.id]?.items) ?? NO_ITEMS;
   if (!index.map) return null;
   const layer = mapLayer(index);
-  const ids = [...index.mapShapes.keys()];
-  const sure = ids.filter((id) => ((items as Record<string, { box: number }>)[id]?.box ?? 0) >= 3).length;
-  const seen = ids.filter((id) => (items as Record<string, unknown>)[id]).length;
+  const { sure, seen, total } = mapGoalCounts(index, items);
   const base = `/${meta.slug}`;
   return (
     <Card className="goal-card">
-      <h2 className="card-label">{t('map.goalTitle', { n: ids.length, what: t(`map.what.${layer}`) })}</h2>
-      <div className="goal-bar" role="progressbar" aria-valuemin={0} aria-valuemax={ids.length} aria-valuenow={sure}>
-        <div className="goal-bar-seen" style={{ width: `${(seen / ids.length) * 100}%` }} />
-        <div className="goal-bar-sure" style={{ width: `${(sure / ids.length) * 100}%` }} />
+      <h2 className="card-label">{t('map.goalTitle', { n: total, what: t(`map.what.${layer}`) })}</h2>
+      <div className="goal-bar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={sure}>
+        <div className="goal-bar-seen" style={{ width: `${(seen / total) * 100}%` }} />
+        <div className="goal-bar-sure" style={{ width: `${(sure / total) * 100}%` }} />
       </div>
       <p className="muted small">{t('map.goalBody', { sure, seen })}</p>
       <div className="actions">
