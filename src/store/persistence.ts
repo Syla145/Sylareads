@@ -1,4 +1,5 @@
 import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRoot, type TempoSettings } from '../domain/progress';
+import type { MistakeLog } from '../domain/mistakes';
 import { clampFlash, clampSeconds, type TempoProgress } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 
@@ -79,6 +80,7 @@ export function migrate(raw: unknown): ProgressRoot {
         recent: typeof c.recent === 'string' ? c.recent : '',
         lastPracticeConfig: isObj(c.lastPracticeConfig) ? (c.lastPracticeConfig as never) : undefined,
         ...(isObj(c.tempo) ? { tempo: tempoOf(c.tempo) } : {}),
+        ...(isObj(c.mistakes) ? { mistakes: c.mistakes as MistakeLog } : {}),
       };
     }
   }

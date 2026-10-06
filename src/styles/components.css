@@ -2664,3 +2664,75 @@
 .placement-verdict.accent {
   color: var(--accent);
 }
+
+/* ---------- Fehler-Review ---------- */
+.mistakes-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+.mistakes-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-2) 0 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+/* Rows share the columns of the list (subgrid), so names line up. */
+.mistakes-list li {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.mistakes-list li:last-child {
+  border-bottom: 0;
+}
+
+.mistakes-list .native {
+  font-size: 20px;
+  font-weight: 500;
+  overflow-wrap: break-word;
+}
+
+.mistakes-list .muted {
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .mistakes-fixed-label {
+    display: none;
+  }
+}
+
+.mistakes-list li.is-fixed .native {
+  color: var(--text-secondary);
+}
+
+.mistakes-mark {
+  color: var(--error);
+  text-align: right;
+}
+
+.mistakes-fixed {
+  color: var(--success);
+  white-space: nowrap;
+}
+
+.dash-grid > .mistakes-card,
+.dash-grid > .goal-card {
+  align-self: start;
+}
+
+.practice-mistakes {
+  margin-top: var(--s-4);
+}

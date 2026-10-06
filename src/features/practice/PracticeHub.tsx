@@ -8,6 +8,7 @@ import { useProgress } from '../../store/progressStore';
 import { Button, Card } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { practiceQuery } from './config';
+import { MistakesCard } from '../mistakes/MistakesCard';
 
 const COUNTS = [10, 20, 30, 50];
 
@@ -76,6 +77,8 @@ export function PracticeHub() {
           {t('practice.start')}
         </Button>
       </Card>
+
+      <MistakesCard className="practice-mistakes" />
 
       <h2 className="section-label">{t('practice.modes')}</h2>
       <div className="mode-grid">

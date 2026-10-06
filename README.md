@@ -50,6 +50,13 @@ Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungse
 - Zielkarte auf der Übersicht („Ziel: alle 64 Distrikte“ usw.) und „… üben“ startet eine Übung nur mit Kartengebieten (`?layer=map`).
 - Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand und Bangladesch eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets.
 
+### Fehler-Review („Heute falsch“)
+
+Auf der Übersicht und unter „Üben“ steht eine Liste aller Elemente, die heute falsch beantwortet wurden (am Morgen die von gestern, bis heute etwas falsch läuft). Pro Element: Originalschrift, Name, wie oft falsch und ob es inzwischen wieder richtig war. „Genau diese üben“ startet eine Übung mit genau diesen Elementen, „Nur die … offenen“ lässt die schon wieder richtigen weg.
+
+- Fehler zählen aus Lektionen, Übungen und Tempo-Runden. Antworten der Einstufung („kann ich noch nicht“) und abgelaufene Tempo-Zeit (zu langsam, nicht falsch) zählen nicht.
+- Gespeichert pro Kurs und Tag für eine Woche (`mistakes`), auch bei der Online-Speicherung zusammengeführt. Logik in `src/domain/mistakes.ts`, Karte in `src/features/mistakes/`.
+
 ### Einstufung („Kann ich schon“)
 
 Wer eine Schrift schon lesen kann, übernimmt sein Vorwissen, statt alle Lektionen durchzuklicken. Beim ersten Öffnen eines Kurses fragt die Übersicht „Kennst du diese Schrift schon?“, auf der Lernen-Seite hat jeder Abschnitt einen Knopf „Kann ich schon“.
@@ -158,7 +165,7 @@ src/
   store/       Zustand-Store, localStorage, Migrationen, Import/Export
   sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
-  features/    Seiten: home, dashboard, learn, practice, session, placement, tempo, map, script, profile
+  features/    Seiten: home, dashboard, learn, practice, session, mistakes, placement, tempo, map, script, profile
   ui/          Bausteine: Buttons, Balken, Top-Bar, Modal
   styles/      Design-Tokens und Styles
 ```

@@ -350,6 +350,13 @@ export const en = {
   'placement.phaseCheck': 'Check everything once',
   'placement.phaseCheckDesc': '{n} tasks. From {need} right everything counts as familiar; otherwise what you knew counts as learning.',
   'learn.placed': 'placed',
+  'mistakes.today': 'Wrong today · {n}',
+  'mistakes.yesterday': 'Wrong yesterday · {n}',
+  'mistakes.fixedCount': '{n} right again already',
+  'mistakes.fixed': 'right again',
+  'mistakes.more': '+{n} more',
+  'mistakes.practise': 'Practise exactly these',
+  'mistakes.practiseOpen': 'Only the {n} still open',
 } as const;
 
 export type MessageKey = keyof typeof en;

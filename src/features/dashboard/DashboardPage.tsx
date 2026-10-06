@@ -8,6 +8,7 @@ import { Button, ButtonLink, Card, MasteryBar } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { MapGoal } from '../map/MapPage';
 import { PlacementCard } from '../placement/PlacementOptions';
+import { MistakesCard } from '../mistakes/MistakesCard';
 import { recommendedPath } from './recommend';
 
 const BAR_ORDER: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
@@ -81,6 +82,7 @@ export function DashboardPage() {
       </header>
 
       <div className="dash-grid">
+        <MistakesCard />
         <MapGoal />
         <Card className="card-recommended">
           <h2 className="card-label">{t('dash.recommended')}</h2>

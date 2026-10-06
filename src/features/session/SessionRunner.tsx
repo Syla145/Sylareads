@@ -58,9 +58,11 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
         result: o.result,
         applySrs: isFirst && !deferredIds?.has(o.itemId),
         confusedWith: o.confusedWith,
+        // placement: "not known yet" is no mistake for the Fehler-Review
+        logMistake: !noRepeat,
       });
     },
-    [courseId, deferredIds, recordAnswer],
+    [courseId, deferredIds, noRepeat, recordAnswer],
   );
 
   const doSubmit = useCallback(

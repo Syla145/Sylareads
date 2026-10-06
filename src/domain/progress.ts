@@ -1,5 +1,6 @@
 import { dayKey } from './dates';
 import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } from './gamification';
+import { logAnswer, type MistakeLog } from './mistakes';
 import type { PlacementOutcome } from './placement';
 import { applyAnswer, introduce, raiseTo, settleNewItem, type ItemProgress, type Result } from './srs';
 import { applyTempoSession, type TempoContent, type TempoProgress, type TempoState } from './tempo';
@@ -39,6 +40,8 @@ export interface CourseProgress {
   /** Last 200 graded results (C/R/W) for the accuracy figure. */
   recent: string;
   lastPracticeConfig?: PracticeConfigStored;
+  /** Wrong answers per day (last week) for the Fehler-Review. */
+  mistakes?: MistakeLog;
   /** Reading times and best scores from "Lesen auf Zeit" (absent until the first tempo session). */
   tempo?: TempoProgress;
 }
@@ -136,6 +139,8 @@ export interface AnswerInput {
   /** Update long-term SRS state (first graded answer of the session, not a new lesson item). */
   applySrs: boolean;
   confusedWith?: string;
+  /** false: not a mistake for the Fehler-Review (placement answers). */
+  logMistake?: boolean;
 }
 
 export function recordAnswer(root: ProgressRoot, courseId: string, a: AnswerInput, now = Date.now()): ProgressRoot {
@@ -145,7 +150,8 @@ export function recordAnswer(root: ProgressRoot, courseId: string, a: AnswerInpu
     const confusions = a.confusedWith
       ? { ...c.confusions, [`${a.itemId}>${a.confusedWith}`]: (c.confusions[`${a.itemId}>${a.confusedWith}`] ?? 0) + 1 }
       : c.confusions;
-    return { ...c, items, confusions, recent: (c.recent + a.result).slice(-200), lastSessionAt: now };
+    const mistakes = a.logMistake === false ? c.mistakes : logAnswer(c.mistakes, a.itemId, a.result === 'W', today, now);
+    return { ...c, items, confusions, recent: (c.recent + a.result).slice(-200), lastSessionAt: now, ...(mistakes ? { mistakes } : {}) };
   });
   next = { ...next, profile: { ...next.profile, totalAnswers: next.profile.totalAnswers + 1 } };
   return addXp(next, courseId, xpForResult(a.result), today, { answers: 1 });
@@ -201,12 +207,15 @@ export function recordTempo(
   const today = dayKey(new Date(now));
   let next = withCourse(root, courseId, now, (c) => {
     const confusions = { ...c.confusions };
+    let mistakes = c.mistakes;
     for (const a of s.answers) {
+      if (a.timeout) continue; // too slow is not wrong
+      mistakes = logAnswer(mistakes, a.itemId, !a.correct, today, now);
       if (a.correct || !a.pickedId) continue;
       const key = `${a.itemId}>${a.pickedId}`;
       confusions[key] = (confusions[key] ?? 0) + 1;
     }
-    return { ...c, tempo, confusions, lastSessionAt: now };
+    return { ...c, tempo, confusions, lastSessionAt: now, ...(mistakes ? { mistakes } : {}) };
   });
   next = { ...next, profile: { ...next.profile, totalAnswers: next.profile.totalAnswers + answered } };
   const correct = s.answers.filter((a) => a.correct).length;

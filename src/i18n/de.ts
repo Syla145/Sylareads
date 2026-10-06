@@ -352,4 +352,11 @@ export const de: Record<MessageKey, string> = {
   'placement.phaseCheck': 'Alles einmal prüfen',
   'placement.phaseCheckDesc': '{n} Aufgaben. Ab {need} richtigen gilt alles als vertraut, sonst zählt, was du wusstest, als gelernt.',
   'learn.placed': 'eingestuft',
+  'mistakes.today': 'Heute falsch · {n}',
+  'mistakes.yesterday': 'Gestern falsch · {n}',
+  'mistakes.fixedCount': '{n} schon wieder richtig',
+  'mistakes.fixed': 'wieder richtig',
+  'mistakes.more': '+{n} weitere',
+  'mistakes.practise': 'Genau diese üben',
+  'mistakes.practiseOpen': 'Nur die {n} offenen',
 };
