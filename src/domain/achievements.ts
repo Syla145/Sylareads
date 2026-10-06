@@ -1,5 +1,6 @@
 import type { CourseIndex } from './courseIndex';
 import { playedLessons, type ProgressRoot } from './progress';
+import { SCRIPT_ENTRIES } from '../content/scripts/data';
 import type { L10n } from './types';
 
 /** Quiet achievements (spec section 10). Conditions are pure functions over stored progress. */
@@ -108,6 +109,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: { de: 'Blitzleser', en: 'Lightning Reader' },
     description: { de: '30 richtige Antworten in einer Blitzrunde', en: '30 correct answers in one Blitz round' },
     check: (root) => anyCourse(root, (c) => Object.values(c.tempo?.best ?? {}).some((b) => b.score >= 30)),
+  },
+  {
+    id: 'script-spotter',
+    title: { de: 'Schriftkenner', en: 'Script Spotter' },
+    description: { de: `Alle ${SCRIPT_ENTRIES.length} Schriften sicher erkannt`, en: `Recognise all ${SCRIPT_ENTRIES.length} scripts reliably` },
+    check: (root) => SCRIPT_ENTRIES.every((e) => (root.courses.scripts?.items[e.id]?.box ?? 0) >= 3),
   },
   {
     id: 'flawless',

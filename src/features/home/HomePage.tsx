@@ -12,6 +12,43 @@ import { loadCourseIndex } from '../course/useCourse';
 import { recommendedPath } from '../dashboard/recommend';
 import { mapGoalCounts, mapLayer } from '../map/layer';
 import { useSync } from '../../sync/syncStore';
+import { SCRIPT_ENTRIES } from '../../content/scripts/data';
+import { SCRIPTS_COURSE_ID, scriptsKnown, scriptsStarted } from '../../domain/scriptCourse';
+
+/** The cross-script course: which script, which country. */
+function ScriptsCourseCard() {
+  const t = useT();
+  const navigate = useNavigate();
+  const items = useProgress((s) => s.root.courses[SCRIPTS_COURSE_ID]?.items);
+  const total = SCRIPT_ENTRIES.length;
+  const started = items ? scriptsStarted(items) : 0;
+  const known = items ? scriptsKnown(items) : 0;
+  return (
+    <article className="course-card font-native-latin">
+      <div className="course-card-glyphs" aria-hidden="true">
+        Ж Ω ก অ
+      </div>
+      <div className="course-card-body">
+        <h2 className="course-card-title">
+          <Link to="/scripts">{t('scripts.title')}</Link>
+        </h2>
+        <p className="course-card-countries">{t('scripts.card', { n: total })}</p>
+        {started > 0 && (
+          <div className="course-card-progress">
+            <ProgressBar value={known / total} size="sm" label={t('scripts.known', { n: known, total })} />
+            <span className="course-card-facts">{t('scripts.known', { n: known, total })}</span>
+          </div>
+        )}
+      </div>
+      <div className="course-card-actions">
+        <Button variant="primary" onClick={() => navigate('/scripts')}>
+          {started ? t('home.continue') : t('home.startLearning')}
+        </Button>
+        {started > 0 && <Button onClick={() => navigate('/scripts/practice')}>{t('home.practice')}</Button>}
+      </div>
+    </article>
+  );
+}
 
 function CourseCard({ meta }: { meta: CourseMeta }) {
   const t = useT();
@@ -86,6 +123,7 @@ export function HomePage() {
           {COURSES.map((c) => (
             <CourseCard key={c.id} meta={c} />
           ))}
+          <ScriptsCourseCard />
         </section>
         <StorageNote />
       </main>

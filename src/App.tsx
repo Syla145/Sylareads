@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { HashRouter, Link, Route, Routes } from 'react-router-dom';
 import { CourseGate } from './features/course/CourseLayout';
 import { DashboardPage } from './features/dashboard/DashboardPage';
@@ -15,6 +15,21 @@ import { TopBar } from './ui/TopBar';
 import { TempoPage } from './features/tempo/TempoPage';
 import { TempoRoute } from './features/tempo/TempoRun';
 import { PlacementRoute } from './features/placement/PlacementRoute';
+
+// The scripts course brings its own fonts; load it only when it is opened.
+const ScriptsHome = lazy(() => import('./features/scripts/ScriptsHome'));
+const ScriptSession = lazy(() => import('./features/scripts/ScriptSession'));
+
+function Loading() {
+  const t = useT();
+  return (
+    <div className="loading" role="status">
+      {t('common.loading')}
+    </div>
+  );
+}
+
+const lazyPage = (node: React.ReactNode) => <Suspense fallback={<Loading />}>{node}</Suspense>;
 
 function NotFound() {
   const t = useT();
@@ -42,6 +57,9 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/scripts" element={lazyPage(<ScriptsHome />)} />
+        <Route path="/scripts/lesson/:lessonId" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />
+        <Route path="/scripts/practice" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />
         <Route path="/:slug" element={<CourseGate />}>
           <Route index element={<DashboardPage />} />
           <Route path="learn" element={<LearnPage />} />

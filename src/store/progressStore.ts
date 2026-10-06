@@ -33,9 +33,9 @@ interface ProgressState {
     courseId: string,
     lessonId: string,
     info: { correct: number; total: number; newItems: { itemId: string; solid: boolean }[] },
-    index: CourseIndex,
+    index: CourseIndex | null,
   ) => string[];
-  finishPractice: (courseId: string, answered: number, index: CourseIndex) => string[];
+  finishPractice: (courseId: string, answered: number, index: CourseIndex | null) => string[];
   savePracticeConfig: (courseId: string, config: PracticeConfigStored) => void;
   finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
@@ -54,7 +54,7 @@ export const useProgress = create<ProgressState>((set, get) => {
     set({ root });
     saveRoot(root, immediate);
   };
-  const unlock = (courseId: string, index: CourseIndex) => {
+  const unlock = (courseId: string, index: CourseIndex | null) => {
     const ids = newlyUnlocked(get().root, courseId, index);
     if (ids.length) commit(unlockAchievements(get().root, ids), true);
     return ids;

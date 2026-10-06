@@ -11,7 +11,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
-- XP, Level, Streak, 18 Achievements (u. a. „Halbe Karte“, „Ganze Karte“ und „Blitzleser“), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
+- XP, Level, Streak, 19 Achievements (u. a. „Halbe Karte“, „Ganze Karte“, „Blitzleser“ und „Schriftkenner“), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 
@@ -49,6 +49,26 @@ Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungse
 - Tab **Karte** zum Erkunden mit Zoom (Mausrad, Ziehen, zwei Finger, +/−) und Beschriftung in Originalschrift, Latein oder aus. In Kartenaufgaben ist die Beschriftung standardmäßig aus; das gesuchte Gebiet ist nie beschriftet.
 - Zielkarte auf der Übersicht („Ziel: alle 64 Distrikte“ usw.) und „… üben“ startet eine Übung nur mit Kartengebieten (`?layer=map`).
 - Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand und Bangladesch eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets.
+
+### Kurs „Schriften erkennen“ (`#/scripts`)
+
+Ein Blick aufs Schild verrät oft schon das Land. Der Kurs zeigt Ortsnamen in 28 Schriften; die Antwort ist immer der Ort (Land oder Region), der Name der Schrift steht als Info dabei. Nur Länder mit Street View in GeoGuessr.
+
+| Lektion | Schriften |
+|---------|-----------|
+| 1 Erster Blick | Kyrillisch, Griechisch, Arabisch, Hebräisch, Thai, Devanagari |
+| 2 Ostasien | Japanisch, Chinesisch (Langzeichen: Taiwan, Hongkong, Macau), Koreanisch |
+| 3 Südostasien | Laotisch, Khmer (+ Thai) |
+| 4 Nordindien, Bangladesch, Bhutan | Bengalisch, Gurmukhi, Gujarati, Odia, Tibetisch (+ Devanagari) |
+| 5 Südindien und Sri Lanka | Tamil, Telugu, Kannada, Malayalam, Singhalesisch |
+| 6 Kyrillisch I | Russisch, Ukrainisch, Bulgarisch |
+| 7 Kyrillisch II | Serbisch, Mazedonisch, Kasachisch, Mongolisch (+ Russisch, Bulgarisch) |
+
+- Jede Schrift hat zwei, drei Erkennungszeichen mit Beispielzeichen und echte Ortsnamen von Schildern. Bei den Kyrillisch-Varianten enthält jedes Beispiel sein Erkennungszeichen (ы/э, ї/є/ґ, ъ, ђ/ћ/џ, ѓ/ќ/ѕ, қ/ғ/ә/ұ/һ, doppelte Vokale); ein Test prüft das. Kirgisistan fehlt bewusst: seine Schrift ist von Kasachisch und Mongolisch an einzelnen Buchstaben kaum sicher zu trennen.
+- Aufgaben: **Wo bist du?** (ein Ortsname, vier Orte zur Wahl) und **Welcher Name steht in …?** (drei Namen, einer ist gesucht). Falsche Optionen kommen bevorzugt aus der Verwechslungsgruppe derselben Familie. Nach einem Fehler zeigt das Feedback das Erkennungszeichen; die Schrift kommt einmal wieder.
+- Fortschritt im normalen Speicher unter dem Kurs `scripts` (SRS, XP, Streak, Fehler-Review, Online-Speicherung). Seite mit allen Schriften zum Nachschlagen, Erfolg „Schriftkenner“ für alle 28.
+- Schriftarten: Noto (SIL OFL 1.1). `tools/script-fonts.mjs` kopiert nur die nötigen Teilmengen nach `src/features/scripts/fonts/` (≈ 1,5 MB, der Browser lädt nur, was er anzeigt); nach Änderungen an `src/content/scripts/data.ts` neu ausführen – ein Test meldet fehlende Zeichen. Der Kurs wird erst beim Öffnen geladen.
+- Nächste Ausbaustufe: lateinische Sonderzeichen (ő ű → Ungarn, ł → Polen, ș ț → Rumänien, ğ ş → Türkei, å ø æ → Skandinavien).
 
 ### Fehler-Review („Heute falsch“)
 
@@ -165,7 +185,7 @@ src/
   store/       Zustand-Store, localStorage, Migrationen, Import/Export
   sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
-  features/    Seiten: home, dashboard, learn, practice, session, mistakes, placement, tempo, map, script, profile
+  features/    Seiten: home, dashboard, learn, practice, session, mistakes, placement, tempo, map, script, scripts, profile
   ui/          Bausteine: Buttons, Balken, Top-Bar, Modal
   styles/      Design-Tokens und Styles
 ```
