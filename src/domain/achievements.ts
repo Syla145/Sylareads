@@ -104,6 +104,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: (root, courseId, index) => mapShare(root, courseId, index) >= 1,
   },
   {
+    id: 'blitz-30',
+    title: { de: 'Blitzleser', en: 'Lightning Reader' },
+    description: { de: '30 richtige Antworten in einer Blitzrunde', en: '30 correct answers in one Blitz round' },
+    check: (root) => anyCourse(root, (c) => Object.values(c.tempo?.best ?? {}).some((b) => b.score >= 30)),
+  },
+  {
     id: 'flawless',
     title: { de: 'Fehlerfrei', en: 'Flawless' },
     description: { de: 'Eine Lektion ohne Fehler', en: 'A lesson without a single mistake' },

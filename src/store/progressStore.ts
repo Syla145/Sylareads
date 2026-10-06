@@ -8,12 +8,15 @@ import {
   emptyRoot,
   recordAnswer,
   recordIntro,
+  recordTempo,
   unlockAchievements,
   type AnswerInput,
   type MapLabels,
   type PracticeConfigStored,
   type ProgressRoot,
+  type TempoSettings,
 } from '../domain/progress';
+import type { TempoContent, TempoState } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 import { backupCurrent, clearAll, loadRoot, saveRoot } from './persistence';
 
@@ -32,12 +35,16 @@ interface ProgressState {
   ) => string[];
   finishPractice: (courseId: string, answered: number, index: CourseIndex) => string[];
   savePracticeConfig: (courseId: string, config: PracticeConfigStored) => void;
+  setTempoSettings: (patch: Partial<TempoSettings>) => void;
+  finishTempo: (courseId: string, s: TempoState, content: TempoContent, index: CourseIndex) => { unlocked: string[]; newBest: boolean; prevBest: number };
   replaceAll: (root: ProgressRoot) => void;
   /** Progress merged with the cloud copy (no backup: nothing is lost by a merge). */
   applyMerged: (root: ProgressRoot) => void;
   markExported: () => void;
   reset: () => void;
 }
+
+export const DEFAULT_TEMPO: TempoSettings = { seconds: 5, flashMs: 1000 };
 
 export const useProgress = create<ProgressState>((set, get) => {
   const commit = (root: ProgressRoot, immediate = false) => {
@@ -71,6 +78,16 @@ export const useProgress = create<ProgressState>((set, get) => {
       const root = get().root;
       const course = root.courses[courseId] ?? emptyCourse();
       commit({ ...root, courses: { ...root.courses, [courseId]: { ...course, lastPracticeConfig: config } } });
+    },
+    setTempoSettings: (patch) => {
+      const root = get().root;
+      const tempo = { ...DEFAULT_TEMPO, ...root.settings.tempo, ...patch };
+      commit({ ...root, settings: { ...root.settings, tempo } }, true);
+    },
+    finishTempo: (courseId, s, content, index) => {
+      const r = recordTempo(get().root, courseId, s, content);
+      commit(r.root, true);
+      return { unlocked: unlock(courseId, index), newBest: r.newBest, prevBest: r.prevBest };
     },
     replaceAll: (root) => {
       backupCurrent(get().root);

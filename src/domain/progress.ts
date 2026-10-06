@@ -1,6 +1,7 @@
 import { dayKey } from './dates';
 import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } from './gamification';
 import { applyAnswer, introduce, settleNewItem, type ItemProgress, type Result } from './srs';
+import { applyTempoSession, type TempoContent, type TempoProgress, type TempoState } from './tempo';
 import type { Lang } from './types';
 
 /**
@@ -35,6 +36,8 @@ export interface CourseProgress {
   /** Last 200 graded results (C/R/W) for the accuracy figure. */
   recent: string;
   lastPracticeConfig?: PracticeConfigStored;
+  /** Reading times and best scores from "Lesen auf Zeit" (absent until the first tempo session). */
+  tempo?: TempoProgress;
 }
 
 export interface Profile {
@@ -54,6 +57,16 @@ export interface Settings {
   mapLabels?: MapLabels;
   /** Labels around the target in map tasks (off by default, the target itself is never labelled). */
   taskMapLabels?: MapLabels;
+  /** Tempo settings of this device. */
+  tempo?: TempoSettings;
+}
+
+export interface TempoSettings {
+  /** Seconds per task in timer mode (1–15). */
+  seconds: number;
+  /** How long a name is visible in flash mode, ms (500–2000). */
+  flashMs: number;
+  content?: TempoContent;
 }
 
 export interface ProgressRoot {
@@ -165,6 +178,37 @@ export function completeLesson(
 export function completePractice(root: ProgressRoot, courseId: string, answered: number, now = Date.now()): ProgressRoot {
   if (answered < 10) return root;
   return addXp(root, courseId, XP.practiceComplete, dayKey(new Date(now)));
+}
+
+/**
+ * End of a tempo session. Learning boxes stay untouched (slow reading is never
+ * punished while learning); reading times, best scores, confusions, XP and the
+ * daily activity are recorded.
+ */
+export function recordTempo(
+  root: ProgressRoot,
+  courseId: string,
+  s: TempoState,
+  content: TempoContent,
+  now = Date.now(),
+): { root: ProgressRoot; newBest: boolean; prevBest: number } {
+  const answered = s.answers.length;
+  const { tempo, newBest, prevBest } = applyTempoSession(root.courses[courseId]?.tempo, s, content, now);
+  if (!answered) return { root, newBest: false, prevBest };
+  const today = dayKey(new Date(now));
+  let next = withCourse(root, courseId, now, (c) => {
+    const confusions = { ...c.confusions };
+    for (const a of s.answers) {
+      if (a.correct || !a.pickedId) continue;
+      const key = `${a.itemId}>${a.pickedId}`;
+      confusions[key] = (confusions[key] ?? 0) + 1;
+    }
+    return { ...c, tempo, confusions, lastSessionAt: now };
+  });
+  next = { ...next, profile: { ...next.profile, totalAnswers: next.profile.totalAnswers + answered } };
+  const correct = s.answers.filter((a) => a.correct).length;
+  const xp = correct * XP.tempoCorrect + (answered >= 10 ? XP.practiceComplete : 0);
+  return { root: addXp(next, courseId, xp, today, { answers: answered }), newBest, prevBest };
 }
 
 export function unlockAchievements(root: ProgressRoot, ids: string[], now = Date.now()): ProgressRoot {

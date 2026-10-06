@@ -11,7 +11,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
-- XP, Level, Streak, 17 Achievements (u. a. „Halbe Karte“ und „Ganze Karte“), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
+- XP, Level, Streak, 18 Achievements (u. a. „Halbe Karte“, „Ganze Karte“ und „Blitzleser“), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 
@@ -49,6 +49,20 @@ Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungse
 - Tab **Karte** zum Erkunden mit Zoom (Mausrad, Ziehen, zwei Finger, +/−) und Beschriftung in Originalschrift, Latein oder aus. In Kartenaufgaben ist die Beschriftung standardmäßig aus; das gesuchte Gebiet ist nie beschriftet.
 - Zielkarte auf der Übersicht („Ziel: alle 64 Distrikte“ usw.) und „… üben“ startet eine Übung nur mit Kartengebieten (`?layer=map`).
 - Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand und Bangladesch eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets.
+
+### Lesen auf Zeit (Tab „Tempo“)
+
+Trainiert, Namen so schnell zu lesen wie in einer GeoGuessr-Runde. Mitmachen nur Dinge, die man schon gelernt hat (mindestens 4).
+
+| Modus | Ablauf |
+|-------|--------|
+| Zeit pro Aufgabe | 20 Aufgaben, Zeit einstellbar von 1 bis 15 Sekunden; läuft sie ab, zählt die Aufgabe als nicht gewusst |
+| Blitzrunde | 60 Sekunden, so viele richtige Antworten wie möglich; Bestwert pro Inhalt |
+| Aufblitzen | Der Name ist nur 0,5 bis 2 Sekunden zu sehen, danach erscheinen die Antworten |
+
+- Inhalte: **Buchstaben** (Zeichen → Lesung), **Ortsnamen** (Originalschrift → einer von vier ähnlich aussehenden Orten) und **Auf der Karte** (Name lesen, Gebiet antippen).
+- Das Tempo zählt nur hier: Tempo-Runden ändern die Lernboxen nicht, langsames Lesen beim Lernen und Üben wird nie bestraft. Gespeichert werden eine geglättete Lesezeit pro Element, der Tagesdurchschnitt pro Inhalt (Verlauf auf der Tempo-Seite) und die Bestwerte. Langsame Namen kommen in den Tempo-Runden öfter dran; „Diese mit Zeit üben“ trainiert gezielt die langsamsten oder die falschen.
+- Logik ohne React in `src/domain/tempo.ts` (Auswahl, Aufgaben, Ablauf, Lesezeiten, Zusammenführen bei der Online-Speicherung), Seiten in `src/features/tempo/`.
 
 ### Koordinaten und Quellen
 
@@ -131,7 +145,7 @@ src/
   store/       Zustand-Store, localStorage, Migrationen, Import/Export
   sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
-  features/    Seiten: home, dashboard, learn, practice, session, script, profile
+  features/    Seiten: home, dashboard, learn, practice, session, tempo, map, script, profile
   ui/          Bausteine: Buttons, Balken, Top-Bar, Modal
   styles/      Design-Tokens und Styles
 ```

@@ -1,4 +1,5 @@
-import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRoot } from '../domain/progress';
+import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRoot, type TempoSettings } from '../domain/progress';
+import { clampFlash, clampSeconds, type TempoProgress } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 
 /**
@@ -77,13 +78,15 @@ export function migrate(raw: unknown): ProgressRoot {
         confusions: isObj(c.confusions) ? (c.confusions as Record<string, number>) : {},
         recent: typeof c.recent === 'string' ? c.recent : '',
         lastPracticeConfig: isObj(c.lastPracticeConfig) ? (c.lastPracticeConfig as never) : undefined,
+        ...(isObj(c.tempo) ? { tempo: tempoOf(c.tempo) } : {}),
       };
     }
   }
   const labels = (v: unknown): MapLabels | undefined => (v === 'native' || v === 'latin' || v === 'none' ? v : undefined);
+  const tempo = isObj(settings.tempo) ? tempoSettingsOf(settings.tempo) : undefined;
   return {
     ...base,
-    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels) },
+    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}) },
     updatedAt: typeof raw.updatedAt === 'number' ? raw.updatedAt : Date.now(),
     lastExportAt: typeof raw.lastExportAt === 'number' ? raw.lastExportAt : null,
     profile: {
@@ -99,6 +102,19 @@ export function migrate(raw: unknown): ProgressRoot {
     },
     courses,
   };
+}
+
+function tempoOf(t: Json): TempoProgress {
+  return {
+    items: isObj(t.items) ? (t.items as TempoProgress['items']) : {},
+    days: isObj(t.days) ? (t.days as TempoProgress['days']) : {},
+    best: isObj(t.best) ? (t.best as TempoProgress['best']) : {},
+  };
+}
+
+function tempoSettingsOf(t: Json): TempoSettings {
+  const content = t.content === 'letters' || t.content === 'places' || t.content === 'map' ? t.content : undefined;
+  return { seconds: clampSeconds(Number(t.seconds)), flashMs: clampFlash(Number(t.flashMs)), ...(content ? { content } : {}) };
 }
 
 export function loadRoot(): ProgressRoot {

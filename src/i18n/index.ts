@@ -63,3 +63,9 @@ export function formatDateTime(ts: number, lang: Lang): string {
 export function formatDate(ts: number, lang: Lang): string {
   return new Date(ts).toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
+
+/** "1,4 s" / "1.4 s" (one decimal). */
+export function formatSeconds(ms: number, lang: Lang): string {
+  const v = (ms / 1000).toLocaleString(lang === 'de' ? 'de-DE' : 'en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return `${v} s`;
+}

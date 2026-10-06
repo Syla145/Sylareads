@@ -9,6 +9,8 @@ export const XP = {
   lessonComplete: 5,
   lessonPerfect: 5,
   practiceComplete: 3,
+  /** Per correct answer in a tempo session (they come fast, so less than in practice). */
+  tempoCorrect: 1,
 } as const;
 
 export function xpForResult(r: Result): number {

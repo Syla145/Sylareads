@@ -2236,3 +2236,359 @@
 .course-card-facts {
   color: var(--text-tertiary);
 }
+
+/* ---------- Tempo: reading against the clock ---------- */
+.tempo-page {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.tempo-page .section-head {
+  margin-bottom: 0;
+}
+
+.tempo-contents {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+
+@media (max-width: 640px) {
+  .tempo-contents {
+    grid-template-columns: 1fr;
+  }
+  .tempo-contents .mode-tile {
+    min-height: 0;
+  }
+}
+
+.tempo-content.is-on {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.tempo-modes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+
+@media (max-width: 860px) {
+  .tempo-modes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tempo-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.tempo-mode .card-title {
+  margin-bottom: 0;
+}
+
+.tempo-mode > .btn {
+  margin-top: auto;
+}
+
+.tempo-range {
+  display: grid;
+  gap: var(--s-2);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.tempo-range-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tempo-range output {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tempo-range input[type='range'] {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--accent);
+}
+
+.tempo-best {
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.tempo-stats {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+
+.tempo-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-3);
+}
+
+.tempo-figure-value {
+  font-size: 40px;
+  line-height: 1.1;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.tempo-trend {
+  margin: 0;
+  width: 100%;
+  max-width: 420px;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.tempo-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 64px;
+}
+
+.tempo-bar {
+  flex: 1;
+  min-width: 6px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+.tempo-bar:last-child {
+  opacity: 1;
+}
+
+.tempo-bars-axis {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tempo-sub {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: var(--s-2);
+}
+
+.tempo-slow {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: grid;
+}
+
+.tempo-slow li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.tempo-slow li:last-child {
+  border-bottom: 0;
+}
+
+.tempo-slow .native {
+  font-size: 20px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.tempo-slow .muted {
+  overflow-wrap: anywhere;
+}
+
+.complete .tempo-slow li {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  text-align: left;
+}
+
+/* Countdown before the clock starts */
+.tempo-countdown {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  text-align: center;
+}
+
+.tempo-countdown-title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.tempo-countdown-n {
+  font-size: clamp(96px, 26vw, 160px);
+  line-height: 1;
+  font-weight: 650;
+  color: var(--accent);
+  animation: tempo-pop 650ms var(--ease);
+}
+
+@keyframes tempo-pop {
+  from {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Time per task: a bar that drains and turns red towards the end */
+.tempo-timer {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--track);
+  overflow: hidden;
+}
+
+.tempo-timer-fill {
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left center;
+  animation-name: tempo-drain;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.tempo-timer-fill.is-paused {
+  animation-play-state: paused;
+}
+
+@keyframes tempo-drain {
+  from {
+    transform: scaleX(1);
+    background: var(--accent);
+  }
+  70% {
+    background: var(--accent);
+  }
+  to {
+    transform: scaleX(0);
+    background: var(--error);
+  }
+}
+
+.tempo-clock {
+  font-size: 17px;
+  font-weight: 650;
+  min-width: 44px;
+  text-align: right;
+}
+
+.tempo-clock.is-low,
+.tempo-clock-bar .is-low {
+  color: var(--error);
+}
+
+.tempo-clock-bar .session-progress-fill {
+  transition: width 200ms linear;
+}
+
+.tempo-clock-bar .session-progress-fill.is-low {
+  background: var(--error);
+}
+
+.tempo-score {
+  min-width: 72px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tempo-plate {
+  position: relative;
+}
+
+.tempo-plate .glyph.is-hidden {
+  visibility: hidden;
+}
+
+.tempo-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--glyph-m);
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+.tempo-choices {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tempo-choices .choice {
+  min-height: 60px;
+}
+
+.tempo-choices-names .choice-text {
+  font-size: 18px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.choice.is-veiled {
+  opacity: 0.35;
+}
+
+.tempo-response {
+  min-height: 88px;
+}
+
+.tempo-feedback {
+  display: grid;
+  gap: var(--s-1);
+  text-align: center;
+}
+
+.tempo-feedback-title {
+  font-weight: 650;
+  font-size: 18px;
+}
+
+.tempo-feedback.is-correct .tempo-feedback-title {
+  color: var(--success);
+}
+
+.tempo-feedback.is-wrong .tempo-feedback-title {
+  color: var(--error);
+}
+
+.tempo-newbest {
+  font-weight: 650;
+  font-size: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tempo-countdown-n {
+    animation: none;
+  }
+}
+
+.tempo-page .section-label {
+  margin-top: 0;
+}
+
+.tempo-newbest {
+  color: var(--accent);
+}

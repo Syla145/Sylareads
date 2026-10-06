@@ -1,6 +1,7 @@
 import type { DayActivity, StreakState } from './gamification';
 import type { CourseProgress, LessonRecord, ProgressRoot } from './progress';
 import type { ItemProgress } from './srs';
+import { mergeTempo } from './tempo';
 
 /**
  * Combines two progress documents (this device and the cloud copy) so that
@@ -11,6 +12,7 @@ import type { ItemProgress } from './srs';
  *   due date belong together); ties go to the record seen more often.
  * - Lessons, achievements, daily activity: union, keeping the better values.
  * - XP and counters: the larger value (both copies share their history).
+ * - Tempo: newest reading time per item, fuller day, higher best score.
  * - Settings: this device's settings stay.
  */
 export function mergeRoots(local: ProgressRoot, remote: ProgressRoot): ProgressRoot {
@@ -48,6 +50,7 @@ function mergeCourse(a: CourseProgress, b: CourseProgress): CourseProgress {
     confusions: mergeRecords(a.confusions, b.confusions, Math.max),
     recent: newer.recent,
     lastPracticeConfig: newer.lastPracticeConfig ?? a.lastPracticeConfig ?? b.lastPracticeConfig,
+    ...(a.tempo || b.tempo ? { tempo: mergeTempo(a.tempo, b.tempo) } : {}),
   };
 }
 
