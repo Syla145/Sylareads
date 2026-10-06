@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { newlyUnlocked } from '../domain/achievements';
 import type { CourseIndex } from '../domain/courseIndex';
+import type { PlacementOutcome } from '../domain/placement';
 import {
+  applyPlacement,
   completeLesson,
   completePractice,
   emptyCourse,
@@ -35,6 +37,7 @@ interface ProgressState {
   ) => string[];
   finishPractice: (courseId: string, answered: number, index: CourseIndex) => string[];
   savePracticeConfig: (courseId: string, config: PracticeConfigStored) => void;
+  finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
   finishTempo: (courseId: string, s: TempoState, content: TempoContent, index: CourseIndex) => { unlocked: string[]; newBest: boolean; prevBest: number };
   replaceAll: (root: ProgressRoot) => void;
@@ -78,6 +81,10 @@ export const useProgress = create<ProgressState>((set, get) => {
       const root = get().root;
       const course = root.courses[courseId] ?? emptyCourse();
       commit({ ...root, courses: { ...root.courses, [courseId]: { ...course, lastPracticeConfig: config } } });
+    },
+    finishPlacement: (courseId, outcome, index) => {
+      commit(applyPlacement(get().root, courseId, outcome), true);
+      return unlock(courseId, index);
     },
     setTempoSettings: (patch) => {
       const root = get().root;

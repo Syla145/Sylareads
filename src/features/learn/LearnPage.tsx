@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { nativeOf } from '../../domain/courseIndex';
 import { knownLettersFor, knownUnits, isDecodable } from '../../domain/lessonBuilder';
-import type { Lesson } from '../../domain/types';
+import { placementScope } from '../../domain/placement';
+import type { Lesson, PhaseDef } from '../../domain/types';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { Button, ButtonLink } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
+import { PlacementOptions } from '../placement/PlacementOptions';
 
 export function LearnPage() {
   const { meta, index } = useCourse();
@@ -15,6 +17,7 @@ export function LearnPage() {
   const navigate = useNavigate();
   const cp = useProgress((s) => s.root.courses[meta.id]);
   const [ahead, setAhead] = useState<Lesson | null>(null);
+  const [placing, setPlacing] = useState<PhaseDef | null>(null);
   const lessons = index.content.lessons;
   const next = lessons.find((l) => !cp?.lessons[l.id]);
   const base = `/${meta.slug}`;
@@ -54,9 +57,17 @@ export function LearnPage() {
       {index.content.phases.map((phase) => {
         const list = lessons.filter((l) => l.phaseId === phase.id);
         if (!list.length) return null;
+        const canPlace = list.some((l) => !cp?.lessons[l.id]) && !!placementScope(index, phase.id);
         return (
           <section key={phase.id} className="phase">
-            <h2 className="phase-title">{phase.title[lang]}</h2>
+            <div className="phase-head">
+              <h2 className="phase-title">{phase.title[lang]}</h2>
+              {canPlace && (
+                <button type="button" className="phase-place" onClick={() => { setAhead(null); setPlacing(phase); }}>
+                  {t('placement.phaseButton')}
+                </button>
+              )}
+            </div>
             <ol className="lesson-list">
               {list.map((lesson) => {
                 const rec = cp?.lessons[lesson.id];
@@ -73,7 +84,7 @@ export function LearnPage() {
                       </span>
                       <span className="lesson-status">
                         {isNext && <span className="badge badge-accent">{t('learn.recommended')}</span>}
-                        {rec && <span className="muted small">{t('learn.done', { c: rec.bestCorrect, t: rec.bestTotal })}</span>}
+                        {rec && <span className="muted small">{rec.placed ? t('learn.placed') : t('learn.done', { c: rec.bestCorrect, t: rec.bestTotal })}</span>}
                       </span>
                     </button>
                   </li>
@@ -83,6 +94,19 @@ export function LearnPage() {
           </section>
         );
       })}
+
+      {placing && (
+        <div className="sheet placement-sheet" role="dialog" aria-label={t('placement.phaseTitle', { phase: placing.title[lang] })}>
+          <h2 className="card-title">{t('placement.phaseTitle', { phase: placing.title[lang] })}</h2>
+          <p className="muted">{t('placement.phaseBody')}</p>
+          <PlacementOptions scopeId={placing.id} />
+          <div className="actions">
+            <Button variant="ghost" onClick={() => setPlacing(null)}>
+              {t('common.cancel')}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {ahead && next && (
         <div className="sheet" role="dialog" aria-label={t('learn.aheadHint', { n: next.number })}>

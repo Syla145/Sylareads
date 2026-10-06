@@ -20,6 +20,8 @@ interface Props {
   /** Items whose long-term state is settled at the end (new lesson items). */
   deferredIds?: Set<string>;
   notice?: string;
+  /** Ask every item once only (placement). */
+  noRepeat?: boolean;
   onDone: (s: SessionState) => void;
   onQuit: (s: SessionState) => void;
 }
@@ -28,11 +30,11 @@ interface Props {
  * Runs a lesson or practice session. Keyboard: Enter checks, Enter continues,
  * digits 1–4 pick a choice, Esc asks to quit. The mouse is never required.
  */
-export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds, notice, onDone, onQuit }: Props) {
+export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds, notice, noRepeat, onDone, onQuit }: Props) {
   const t = useT();
   const recordAnswer = useProgress((s) => s.answer);
   const recordIntro = useProgress((s) => s.intro);
-  const [state, setState] = useState<SessionState>(() => createSession(tasks, mode));
+  const [state, setState] = useState<SessionState>(() => createSession(tasks, mode, { noRepeat }));
   const [input, setInput] = useState('');
   const [quitOpen, setQuitOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);

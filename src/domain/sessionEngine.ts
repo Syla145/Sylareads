@@ -51,7 +51,8 @@ export interface EngineDeps {
   finalRound?: (itemIds: string[]) => Task[];
 }
 
-export function createSession(tasks: Task[], mode: SessionMode): SessionState {
+/** `noRepeat`: wrong items are not asked again (placement: one answer per item is the result). */
+export function createSession(tasks: Task[], mode: SessionMode, opts: { noRepeat?: boolean } = {}): SessionState {
   return {
     mode,
     tasks,
@@ -64,7 +65,7 @@ export function createSession(tasks: Task[], mode: SessionMode): SessionState {
     eliminated: [],
     first: {},
     outcomes: [],
-    reinserts: {},
+    reinserts: opts.noRepeat ? Object.fromEntries(tasks.map((t) => [t.itemId, 2])) : {},
     unsure: [],
     introduced: [],
     finalRoundAdded: false,

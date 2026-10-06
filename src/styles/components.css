@@ -2592,3 +2592,75 @@
 .tempo-newbest {
   color: var(--accent);
 }
+
+/* ---------- Placement ("Kann ich schon") ---------- */
+.placement-card {
+  max-width: 760px;
+  margin: var(--s-4) 0;
+}
+
+.placement-options.is-single {
+  grid-template-columns: 1fr;
+}
+
+.placement-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+
+@media (max-width: 640px) {
+  .placement-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+.placement-option {
+  min-height: 0;
+}
+
+.phase-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-bottom: var(--s-3);
+}
+
+.phase-head .phase-title {
+  margin-bottom: 0;
+}
+
+.phase-place {
+  min-height: 44px;
+  padding: 0 var(--s-3);
+  margin: -12px 0;
+  border-radius: var(--r-pill);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  .phase-place:hover {
+    background: var(--accent-subtle);
+  }
+}
+
+.placement-sheet .card-title {
+  margin-bottom: var(--s-2);
+}
+
+.placement-sheet .actions {
+  margin-top: var(--s-3);
+}
+
+.placement-verdict {
+  font-weight: 600;
+  margin-top: var(--s-2);
+}
+
+.placement-verdict.accent {
+  color: var(--accent);
+}

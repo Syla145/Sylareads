@@ -1,6 +1,7 @@
 import { dayKey } from './dates';
 import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } from './gamification';
-import { applyAnswer, introduce, settleNewItem, type ItemProgress, type Result } from './srs';
+import type { PlacementOutcome } from './placement';
+import { applyAnswer, introduce, raiseTo, settleNewItem, type ItemProgress, type Result } from './srs';
 import { applyTempoSession, type TempoContent, type TempoProgress, type TempoState } from './tempo';
 import type { Lang } from './types';
 
@@ -15,6 +16,8 @@ export interface LessonRecord {
   times: number;
   bestCorrect: number;
   bestTotal: number;
+  /** Skipped through placement ("Kann ich schon"), not played. */
+  placed?: boolean;
 }
 
 export interface PracticeConfigStored {
@@ -210,6 +213,27 @@ export function recordTempo(
   const xp = correct * XP.tempoCorrect + (answered >= 10 ? XP.practiceComplete : 0);
   return { root: addXp(next, courseId, xp, today, { answers: answered }), newBest, prevBest };
 }
+
+/**
+ * End of a placement: raises items to the boxes of the outcome and marks the
+ * lessons whose items are all known as placed. Existing lesson records stay.
+ */
+export function applyPlacement(root: ProgressRoot, courseId: string, outcome: PlacementOutcome, now = Date.now()): ProgressRoot {
+  const today = dayKey(new Date(now));
+  const next = withCourse(root, courseId, now, (c) => {
+    const items = { ...c.items };
+    for (const [id, box] of Object.entries(outcome.boxes)) items[id] = raiseTo(items[id], box, today, now);
+    const lessons = { ...c.lessons };
+    for (const id of outcome.placedLessons) {
+      if (!lessons[id]) lessons[id] = { completedAt: now, times: 0, bestCorrect: 0, bestTotal: 0, placed: true };
+    }
+    return { ...c, items, lessons, lastSessionAt: now };
+  });
+  return outcome.total >= 10 ? addXp(next, courseId, XP.practiceComplete, today) : next;
+}
+
+/** Lessons actually played (placed ones do not count for achievements). */
+export const playedLessons = (c: CourseProgress | undefined) => Object.values(c?.lessons ?? {}).filter((l) => !l.placed).length;
 
 export function unlockAchievements(root: ProgressRoot, ids: string[], now = Date.now()): ProgressRoot {
   if (!ids.length) return root;

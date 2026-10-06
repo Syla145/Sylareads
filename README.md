@@ -50,6 +50,19 @@ Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungse
 - Zielkarte auf der Übersicht („Ziel: alle 64 Distrikte“ usw.) und „… üben“ startet eine Übung nur mit Kartengebieten (`?layer=map`).
 - Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand und Bangladesch eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets.
 
+### Einstufung („Kann ich schon“)
+
+Wer eine Schrift schon lesen kann, übernimmt sein Vorwissen, statt alle Lektionen durchzuklicken. Beim ersten Öffnen eines Kurses fragt die Übersicht „Kennst du diese Schrift schon?“, auf der Lernen-Seite hat jeder Abschnitt einen Knopf „Kann ich schon“.
+
+| Weg | Ablauf | Ergebnis |
+|-----|--------|----------|
+| Wiederholung | Jedes Element des Abschnitts einmal (getippt, Kartengebiete per Klick) | Gewusstes zählt als „Lernend“ (Box 2) |
+| Test | 20 Aufgaben, etwa drei Viertel schwierige (False Friends, Verwechslungspaare, Ligaturen, weniger bekannte Orte) | Ab 18 / 20 gilt alles als „Vertraut“ (Box 3), Fehler kommen bald zur Wiederholung; darunter zählt nur Gewusstes |
+
+- Abschnitte mit höchstens 20 Elementen haben nur einen Weg („Alles einmal prüfen“), weil der Test dort ohnehin alles abfragt.
+- Die Einstufung hebt Fortschritt nur an. Lektionen, deren Elemente danach alle gewusst sind, gelten als „eingestuft“; gespielte Lektionen behalten ihr Ergebnis, und eine später gespielte Lektion ersetzt den Vermerk (auch geräteübergreifend). Erfolge für Lektionen gibt es nur für gespielte.
+- Logik ohne React in `src/domain/placement.ts`, Seiten in `src/features/placement/`.
+
 ### Lesen auf Zeit (Tab „Tempo“)
 
 Trainiert, Namen so schnell zu lesen wie in einer GeoGuessr-Runde. Mitmachen nur Dinge, die man schon gelernt hat (mindestens 4).
@@ -145,7 +158,7 @@ src/
   store/       Zustand-Store, localStorage, Migrationen, Import/Export
   sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
-  features/    Seiten: home, dashboard, learn, practice, session, tempo, map, script, profile
+  features/    Seiten: home, dashboard, learn, practice, session, placement, tempo, map, script, profile
   ui/          Bausteine: Buttons, Balken, Top-Bar, Modal
   styles/      Design-Tokens und Styles
 ```

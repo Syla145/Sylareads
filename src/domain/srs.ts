@@ -122,6 +122,17 @@ export function settleNewItem(p: ItemProgress | undefined, solid: boolean, today
   return n;
 }
 
+/** Raises an item to at least `box` (placement). Never lowers; due follows the new box. */
+export function raiseTo(p: ItemProgress | undefined, box: number, today: string, now: number): ItemProgress {
+  const n = p ? { ...p } : emptyProgress();
+  if (n.intro === null) n.intro = now;
+  if (box > n.box) {
+    n.box = box;
+    n.due = addDays(today, INTERVALS[n.box]);
+  }
+  return n;
+}
+
 export function isDue(p: ItemProgress | undefined, today: string): boolean {
   if (!p || p.box === 0 || !p.due) return false;
   return diffDays(p.due, today) >= 0;

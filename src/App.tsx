@@ -14,6 +14,7 @@ import { useLang, useT } from './i18n';
 import { TopBar } from './ui/TopBar';
 import { TempoPage } from './features/tempo/TempoPage';
 import { TempoRoute } from './features/tempo/TempoRun';
+import { PlacementRoute } from './features/placement/PlacementRoute';
 
 function NotFound() {
   const t = useT();
@@ -53,6 +54,7 @@ export function App() {
           <Route path="lesson/:lessonId" element={<LessonRoute />} />
           <Route path="practice/run" element={<PracticeRoute />} />
           <Route path="tempo/run" element={<TempoRoute />} />
+          <Route path="placement" element={<PlacementRoute />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

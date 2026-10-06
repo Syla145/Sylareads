@@ -1,5 +1,5 @@
 import type { CourseIndex } from './courseIndex';
-import type { ProgressRoot } from './progress';
+import { playedLessons, type ProgressRoot } from './progress';
 import type { L10n } from './types';
 
 /** Quiet achievements (spec section 10). Conditions are pure functions over stored progress. */
@@ -33,7 +33,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'first-steps',
     title: { de: 'Erste Schritte', en: 'First Steps' },
     description: { de: 'Erste Lektion abgeschlossen', en: 'Completed your first lesson' },
-    check: (root) => anyCourse(root, (c) => Object.keys(c.lessons).length > 0),
+    check: (root) => anyCourse(root, (c) => playedLessons(c) > 0),
   },
   {
     id: 'first-word',
@@ -137,7 +137,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'four-scripts',
     title: { de: 'Vier Schriften', en: 'Four Scripts' },
     description: { de: 'In allen vier Kursen eine Lektion abgeschlossen', en: 'Completed a lesson in all four courses' },
-    check: (root) => ['ru', 'el', 'bn', 'th'].every((id) => Object.keys(root.courses[id]?.lessons ?? {}).length > 0),
+    check: (root) => ['ru', 'el', 'bn', 'th'].every((id) => playedLessons(root.courses[id]) > 0),
   },
   {
     id: 'thousand-answers',

@@ -63,12 +63,19 @@ export function mergeItem(a: ItemProgress, b: ItemProgress): ItemProgress {
 }
 
 function mergeLesson(a: LessonRecord, b: LessonRecord): LessonRecord {
+  if (!!a.placed !== !!b.placed) {
+    // A played lesson beats a placed one; it keeps its own result.
+    const played = a.placed ? b : a;
+    return { ...played, completedAt: Math.min(a.completedAt, b.completedAt) };
+  }
   const better = a.bestCorrect / Math.max(1, a.bestTotal) >= b.bestCorrect / Math.max(1, b.bestTotal) ? a : b;
   return {
     completedAt: Math.min(a.completedAt, b.completedAt),
     times: Math.max(a.times, b.times),
     bestCorrect: better.bestCorrect,
     bestTotal: better.bestTotal,
+    // "placed" only while no device has really played the lesson
+    ...(a.placed && b.placed ? { placed: true } : {}),
   };
 }
 
