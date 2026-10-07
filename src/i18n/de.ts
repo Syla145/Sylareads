@@ -68,9 +68,11 @@ export const de: Record<MessageKey, string> = {
   'cat.mixed': 'Gemischt',
 
   'state.new': 'Neu',
-  'state.learning': 'Learning',
-  'state.familiar': 'Familiar',
-  'state.mastered': 'Mastered',
+  'state.learning': 'Beginner',
+  'state.familiar': 'Moderate',
+  'state.expert': 'Expert',
+  'state.hint': 'Jede richtige Antwort bringt ein Zeichen eine Stufe weiter, ab Moderate höchstens eine Stufe pro Tag. Ein Fehler wirft es zwei Stufen zurück.',
+  'state.mastered': 'Pro',
 
   'learn.title': 'Lernpfad',
   'learn.subtitle': 'Folge der empfohlenen Reihenfolge oder spring, wohin du willst. Nichts ist gesperrt.',

@@ -12,6 +12,7 @@ export interface CategoryStat {
   learning: number;
   familiar: number;
   mastered: number;
+  expert: number;
 }
 
 export type Recommendation =
@@ -53,7 +54,7 @@ export function courseStats(index: CourseIndex, cp: CourseProgress | undefined, 
   const categories = {} as Record<Category, CategoryStat>;
   for (const cat of Object.keys(CATEGORY_KINDS) as Category[]) {
     const list = index.items.filter((it) => CATEGORY_KINDS[cat].includes(it.kind));
-    const stat: CategoryStat = { total: list.length, value: 0, learning: 0, familiar: 0, mastered: 0 };
+    const stat: CategoryStat = { total: list.length, value: 0, learning: 0, familiar: 0, mastered: 0, expert: 0 };
     for (const it of list) {
       const st = masteryState(items[it.id]);
       if (st !== 'new') stat[st] += 1;

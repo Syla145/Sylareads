@@ -33,6 +33,7 @@
   --state-learning: #8aa0bd;
   --state-familiar: #c9a15a;
   --state-mastered: #4fb286;
+  --state-expert: #9b87f5;
 
   --font-ui: 'Inter Variable', 'Inter', 'Noto Sans Bengali', 'Noto Sans Thai Looped', 'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-bengali: 'Noto Sans Bengali', 'Hind Siliguri', 'Vrinda', sans-serif;

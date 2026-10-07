@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ComponentProps, type ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router-dom';
 import type { MasteryState } from '../domain/srs';
+import { useT } from '../i18n';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -26,11 +27,12 @@ export function ProgressBar({ value, size = 'md', label }: { value: number; size
   );
 }
 
-/** Mastery bar split into Mastered / Familiar / Learning segments. */
-export function MasteryBar({ total, mastered, familiar, learning, label }: { total: number; mastered: number; familiar: number; learning: number; label?: string }) {
+/** Mastery bar split into Expert / Pro / Moderate / Beginner segments. */
+export function MasteryBar({ total, expert = 0, mastered, familiar, learning, label }: { total: number; expert?: number; mastered: number; familiar: number; learning: number; label?: string }) {
   const w = (n: number) => `${total ? (n / total) * 100 : 0}%`;
   return (
     <div className="bar bar-md bar-segmented" role="img" aria-label={label}>
+      <div className="seg seg-expert" style={{ width: w(expert) }} />
       <div className="seg seg-mastered" style={{ width: w(mastered) }} />
       <div className="seg seg-familiar" style={{ width: w(familiar) }} />
       <div className="seg seg-learning" style={{ width: w(learning) }} />
@@ -74,5 +76,24 @@ export function Glyph({ text, size = 'l', className = '', lang }: { text: string
     <span className={`glyph glyph-${size} ${className}`} lang={lang}>
       {text}
     </span>
+  );
+}
+
+const LEVELS: MasteryState[] = ['new', 'learning', 'familiar', 'mastered', 'expert'];
+
+/** What the coloured dots mean (levels by the review box of an item). */
+export function MasteryLegend({ withNew = true, hint = false }: { withNew?: boolean; hint?: boolean }) {
+  const t = useT();
+  return (
+    <div className="legend-block">
+      <div className="legend">
+        {LEVELS.filter((l) => withNew || l !== 'new').map((l) => (
+          <span key={l}>
+            <i className={`dot dot-${l}`} /> {t(`state.${l}`)}
+          </span>
+        ))}
+      </div>
+      {hint && <p className="muted small legend-hint">{t('state.hint')}</p>}
+    </div>
   );
 }

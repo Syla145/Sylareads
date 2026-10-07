@@ -434,6 +434,10 @@
   height: 100%;
 }
 
+.seg-expert {
+  background: var(--state-expert);
+}
+
 .seg-mastered {
   background: var(--state-mastered);
 }
@@ -468,6 +472,23 @@
 
 .dot-mastered {
   background: var(--state-mastered);
+}
+
+.dot-expert {
+  background: var(--state-expert);
+}
+
+.legend {
+  flex-wrap: wrap;
+  row-gap: var(--s-1);
+}
+
+.section-head .legend {
+  margin-top: var(--s-1);
+}
+
+.legend-hint {
+  margin-top: var(--s-1);
 }
 
 .badge {

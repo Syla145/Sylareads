@@ -5,7 +5,7 @@ import { nextScriptLesson, SCRIPT_BY_ID, SCRIPTS_COURSE_ID, scriptsKnown, script
 import { masteryState } from '../../domain/srs';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button, Card, Modal, ProgressBar, StateDot } from '../../ui/primitives';
+import { Button, Card, MasteryLegend, Modal, ProgressBar, StateDot } from '../../ui/primitives';
 import { TopBar } from '../../ui/TopBar';
 import { MistakesList } from './ScriptMistakes';
 import { ScriptCard, ScriptText } from './ScriptParts';
@@ -93,6 +93,7 @@ export default function ScriptsHome() {
         <section>
           <h2 className="section-label">{t('scripts.all')}</h2>
           <p className="muted small scripts-hint">{t('scripts.allHint')}</p>
+          <MasteryLegend />
           <div className="scripts-grid">
             {SCRIPT_ENTRIES.map((e) => (
               <button key={e.id} type="button" className="script-tile" onClick={() => setOpen(e)}>

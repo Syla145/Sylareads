@@ -4,7 +4,7 @@ import { masteryState } from '../../domain/srs';
 import type { LetterItem } from '../../domain/types';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Modal, StateDot } from '../../ui/primitives';
+import { MasteryLegend, Modal, StateDot } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 
 /** Stable fallback: a fresh `{}` inside the selector would re-render forever. */
@@ -36,6 +36,7 @@ export function ScriptPage() {
       <header className="section-head">
         <h1 className="page-title">{t('script.title')}</h1>
         <p className="muted">{t('script.subtitle')}</p>
+        <MasteryLegend hint />
       </header>
       <div className="letter-grid">
         {letters.map((l) => (

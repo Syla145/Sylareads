@@ -96,6 +96,8 @@ describe('srs', () => {
     p = applyAnswer(p, 'C', addDays(today, 1), 0);
     expect(p.box).toBe(5);
     expect(masteryState(p)).toBe('mastered');
+    expect(masteryState({ ...p, box: 7 })).toBe('expert');
+    expect(masteryState({ ...p, box: 2 })).toBe('learning');
     p = applyAnswer(p, 'W', addDays(today, 2), 0);
     expect(p.box).toBe(3);
     expect(p.due).toBe(addDays(today, 5));

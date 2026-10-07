@@ -30,7 +30,8 @@ export const INTERVALS = [0, 0, 1, 3, 7, 14, 30, 60] as const;
 export const MASTERY_VALUE = [0, 0.15, 0.3, 0.5, 0.65, 0.8, 0.9, 1] as const;
 export const MAX_BOX = 7;
 
-export type MasteryState = 'new' | 'learning' | 'familiar' | 'mastered';
+/** Shown as New · Beginner · Moderate · Pro · Expert. */
+export type MasteryState = 'new' | 'learning' | 'familiar' | 'mastered' | 'expert';
 
 export function emptyProgress(): ItemProgress {
   return {
@@ -56,7 +57,8 @@ export function masteryState(p?: ItemProgress): MasteryState {
   if (box <= 0) return 'new';
   if (box <= 2) return 'learning';
   if (box <= 4) return 'familiar';
-  return 'mastered';
+  if (box < MAX_BOX) return 'mastered';
+  return 'expert';
 }
 
 export function masteryValue(p?: ItemProgress): number {

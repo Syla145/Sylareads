@@ -66,9 +66,11 @@ export const en = {
   'cat.mixed': 'Mixed',
 
   'state.new': 'New',
-  'state.learning': 'Learning',
-  'state.familiar': 'Familiar',
-  'state.mastered': 'Mastered',
+  'state.learning': 'Beginner',
+  'state.familiar': 'Moderate',
+  'state.expert': 'Expert',
+  'state.hint': 'Every right answer moves an item up one level, from Moderate on at most one level per day. A mistake moves it back two levels.',
+  'state.mastered': 'Pro',
 
   'learn.title': 'Learning path',
   'learn.subtitle': 'Follow the recommended order or jump anywhere. Nothing is locked.',

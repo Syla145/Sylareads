@@ -4,7 +4,7 @@ import { courseStats } from '../../domain/stats';
 import type { Category } from '../../domain/types';
 import { formatPercent, useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button, ButtonLink, Card, MasteryBar } from '../../ui/primitives';
+import { Button, ButtonLink, Card, MasteryBar, MasteryLegend } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { MapGoal } from '../map/MapPage';
 import { PlacementCard } from '../placement/PlacementOptions';
@@ -141,19 +141,15 @@ export function DashboardPage() {
                   <div className="progress-row-head">
                     <span>{t(`cat.${cat}`)}</span>
                     <span className="muted tabular">
-                      {s.mastered + s.familiar + s.learning} / {s.total}
+                      {s.expert + s.mastered + s.familiar + s.learning} / {s.total}
                     </span>
                   </div>
-                  <MasteryBar total={s.total} mastered={s.mastered} familiar={s.familiar} learning={s.learning} label={t(`cat.${cat}`)} />
+                  <MasteryBar total={s.total} expert={s.expert} mastered={s.mastered} familiar={s.familiar} learning={s.learning} label={t(`cat.${cat}`)} />
                 </li>
               );
             })}
           </ul>
-          <div className="legend">
-            <span><i className="dot dot-learning" /> {t('state.learning')}</span>
-            <span><i className="dot dot-familiar" /> {t('state.familiar')}</span>
-            <span><i className="dot dot-mastered" /> {t('state.mastered')}</span>
-          </div>
+          <MasteryLegend withNew={false} />
         </Card>
       </div>
     </div>
