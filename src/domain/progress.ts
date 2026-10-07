@@ -1,3 +1,4 @@
+import type { ShareSetting } from './presence';
 import { dayKey } from './dates';
 import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } from './gamification';
 import { logAnswer, type MistakeLog } from './mistakes';
@@ -53,6 +54,8 @@ export interface Profile {
   daily: Record<string, DayActivity>;
   achievements: Record<string, number>;
   totalAnswers: number;
+  /** Opt-in public card for "Wer ist gerade da" (absent = never chosen). */
+  share?: ShareSetting;
 }
 
 /** How places are labelled on maps: native script, Latin script, or not at all. */

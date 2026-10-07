@@ -3,6 +3,9 @@ import type { CourseProgress, LessonRecord, ProgressRoot } from './progress';
 import type { ItemProgress } from './srs';
 import { mergeMistakes } from './mistakes';
 import { mergeTempo } from './tempo';
+import { mergeShare, type ShareSetting } from './presence';
+
+const shareField = (s: ShareSetting | undefined) => (s ? { share: s } : {});
 
 /**
  * Combines two progress documents (this device and the cloud copy) so that
@@ -36,6 +39,7 @@ export function mergeRoots(local: ProgressRoot, remote: ProgressRoot): ProgressR
       daily: mergeRecords(local.profile.daily, remote.profile.daily, mergeDay),
       achievements: mergeRecords(local.profile.achievements, remote.profile.achievements, Math.min),
       totalAnswers: Math.max(local.profile.totalAnswers, remote.profile.totalAnswers),
+      ...shareField(mergeShare(local.profile.share, remote.profile.share)),
     },
     courses,
   };

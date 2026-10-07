@@ -8,6 +8,7 @@ import { useProgress } from '../../store/progressStore';
 import { Button, Card, Modal, ProgressBar } from '../../ui/primitives';
 import { LangToggle, TopBar } from '../../ui/TopBar';
 import { SyncCard } from '../../sync/SyncCard';
+import { ShareCard } from '../players/PlayerParts';
 import { useSync } from '../../sync/syncStore';
 
 export function ProfilePage() {
@@ -88,6 +89,7 @@ export function ProfilePage() {
         </Card>
 
         <SyncCard />
+        <ShareCard withLink />
 
         <Card>
           <h2 className="card-label">{t('profile.data')}</h2>

@@ -13,6 +13,7 @@ import { recommendedPath } from '../dashboard/recommend';
 import { mapGoalCounts, mapLayer } from '../map/layer';
 import { useSync } from '../../sync/syncStore';
 import { SCRIPT_ENTRIES } from '../../content/scripts/data';
+import { PlayersStrip } from '../players/PlayersPage';
 import { SCRIPTS_COURSE_ID, scriptsKnown, scriptsStarted } from '../../domain/scriptCourse';
 
 /** The cross-script course: which script, which country. */
@@ -110,6 +111,8 @@ function CourseCard({ meta }: { meta: CourseMeta }) {
 
 export function HomePage() {
   const t = useT();
+  // Signed in: who is around comes first; otherwise a short hint below the courses.
+  const signedIn = useSync((s) => !!s.user);
   return (
     <div className="app-shell">
       <TopBar />
@@ -119,12 +122,14 @@ export function HomePage() {
           <p className="hero-claim">{t('claim')}</p>
           <p className="hero-sub">{t('subline')}</p>
         </section>
+        {signedIn && <PlayersStrip />}
         <section className="course-grid" aria-label="Courses">
           {COURSES.map((c) => (
             <CourseCard key={c.id} meta={c} />
           ))}
           <ScriptsCourseCard />
         </section>
+        {!signedIn && <PlayersStrip />}
         <StorageNote />
       </main>
     </div>

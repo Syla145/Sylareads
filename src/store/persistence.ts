@@ -2,6 +2,7 @@ import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRo
 import type { MistakeLog } from '../domain/mistakes';
 import { clampFlash, clampSeconds, type TempoProgress } from '../domain/tempo';
 import type { Lang } from '../domain/types';
+import { shareOf } from '../domain/presence';
 
 /**
  * Persistence: one versioned JSON document in localStorage (≈ 225 KB at full
@@ -102,6 +103,7 @@ export function migrate(raw: unknown): ProgressRoot {
       daily: isObj(profile.daily) ? (profile.daily as ProgressRoot['profile']['daily']) : {},
       achievements: isObj(profile.achievements) ? (profile.achievements as Record<string, number>) : {},
       totalAnswers: typeof profile.totalAnswers === 'number' ? profile.totalAnswers : 0,
+      ...(shareOf(profile.share) ? { share: shareOf(profile.share) } : {}),
     },
     courses,
   };

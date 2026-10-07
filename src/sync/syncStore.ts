@@ -51,6 +51,9 @@ const flag = {
 
 let cloud: Cloud | null = null;
 
+/** The loaded Firebase connection (null until someone signed in on this device). */
+export const currentCloud = () => cloud;
+
 /** Loads Firebase once and follows the signed-in user (also restores a stored session). */
 async function connectCloud(): Promise<Cloud | null> {
   const config = firebaseConfig();

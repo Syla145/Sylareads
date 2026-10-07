@@ -248,7 +248,7 @@
 }
 
 @media (max-width: 520px) {
-  .chip:not(.chip-streak) {
+  .topbar .chip:not(.chip-streak) {
     display: none;
   }
   .wordmark {

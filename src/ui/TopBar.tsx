@@ -20,7 +20,7 @@ export function LangToggle() {
   );
 }
 
-function FlameIcon() {
+export function FlameIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
       <path fill="currentColor" d="M12 2c1 3.5-1.5 5.5-1.5 8 0 1.4 1 2.5 2.3 2.5 1.6 0 2.4-1.4 2.2-3.3C17.6 11 19 13.2 19 15.5 19 19.6 15.9 22 12 22s-7-2.4-7-6.3C5 10.4 10.4 7.8 12 2z" />

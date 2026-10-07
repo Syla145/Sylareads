@@ -14,6 +14,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - XP, Level, Streak, Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
+- „Wer ist da“ (`#/players`): angemeldete Spieler, die ihre Karte zeigen, mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
 
 ### Greek
 
@@ -192,13 +193,30 @@ Einrichtung (einmalig, kostenloser Spark-Tarif reicht):
            && request.resource.data.data is string
            && request.resource.data.data.size() < 900000;
        }
+       match /players/{uid} {
+         allow read: if request.auth != null;
+         allow delete: if request.auth != null && request.auth.uid == uid;
+         allow create, update: if request.auth != null && request.auth.uid == uid
+           && request.resource.data.keys().hasOnly(['v', 'name', 'seen', 'course', 'courses', 'streak', 'level', 'xp', 'tempo'])
+           && request.resource.data.name is string
+           && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 48
+           && request.resource.data.seen == request.time
+           && request.resource.data.course is string && request.resource.data.course.size() <= 20
+           && request.resource.data.courses is map && request.resource.data.courses.size() <= 20
+           && request.resource.data.streak is int
+           && request.resource.data.level is int
+           && request.resource.data.xp is int
+           && (!('tempo' in request.resource.data) || (request.resource.data.tempo is map && request.resource.data.tempo.size() <= 20));
+       }
      }
    }
    ```
-   Jeder angemeldete Nutzer kann so nur sein eigenes Dokument lesen und schreiben.
+   Jeder angemeldete Nutzer kann so nur sein eigenes Fortschritts-Dokument lesen und schreiben. Die öffentlichen Karten für „Wer ist gerade da“ (`players/<uid>`) kann jeder Angemeldete lesen, aber nur der Besitzer schreiben oder löschen; die Zeit „zuletzt gesehen“ setzt der Server.
 5. **Projekteinstellungen (Zahnrad) → Allgemein → Meine Apps → Web-App hinzufügen (`</>`)**, Name `Sylareads`, kein Firebase Hosting. Die angezeigte `firebaseConfig` in `src/sync/firebaseConfig.ts` bei `FIREBASE_CONFIG` eintragen (statt `null`). Die Werte sind öffentlich und dürfen ins Repository; geschützt wird über die Regeln oben.
 
-Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung.
+**Wer ist da.** Freiwillig (Profil → „Deine Karte“): Die Karte wird beim Start, kurz nach jeder Änderung und alle zwei Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als fünf Minuten. Die Liste zeigt alle Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist (jede Minute neu). Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte ist für die Ranglisten reserviert.
+
+Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung. Wer im Profil „In ‚Wer ist da‘ zeigen“ einschaltet, bekommt zusätzlich eine öffentliche Karte `players/<uid>` mit Anzeigename, aktuellem Kurs, Fortschritt je Kurs (Mastery in %, Lektionen, lesbare Städte), Streak, Level und XP. Ausschalten löscht die Karte.
 
 ## Projektstruktur
 

@@ -15,6 +15,7 @@ import { TopBar } from './ui/TopBar';
 import { TempoPage } from './features/tempo/TempoPage';
 import { TempoRoute } from './features/tempo/TempoRun';
 import { PlacementRoute } from './features/placement/PlacementRoute';
+import PlayersPage from './features/players/PlayersPage';
 
 // The scripts course brings its own fonts; load it only when it is opened.
 const ScriptsHome = lazy(() => import('./features/scripts/ScriptsHome'));
@@ -58,6 +59,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/players" element={<PlayersPage />} />
         <Route path="/scripts" element={lazyPage(<ScriptsHome />)} />
         <Route path="/schilder" element={lazyPage(<SignsPreview />)} />
         <Route path="/scripts/lesson/:lessonId" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />

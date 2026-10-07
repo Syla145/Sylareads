@@ -1,3 +1,4 @@
+import { cleanName } from '../domain/presence';
 import { create } from 'zustand';
 import { newlyUnlocked, SECRET_ID } from '../domain/achievements';
 import type { CourseIndex } from '../domain/courseIndex';
@@ -41,6 +42,8 @@ interface ProgressState {
   finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
   setSignView: (view: SignView) => void;
+  /** Opt-in public card for "Wer ist gerade da". */
+  setShare: (on: boolean, name: string) => void;
   /** Easter egg; true when it was new. */
   unlockSecret: () => boolean;
   /** Fills in achievements already earned (silently, e.g. when a course is opened). */
@@ -100,6 +103,11 @@ export const useProgress = create<ProgressState>((set, get) => {
     syncAchievements: (courseId, index) => {
       const ids = newlyUnlocked(get().root, courseId, index);
       if (ids.length) commit(unlockAchievements(get().root, ids), true);
+    },
+    setShare: (on, name) => {
+      const root = get().root;
+      const share = { on, name: cleanName(name), at: Date.now() };
+      commit({ ...root, updatedAt: share.at, profile: { ...root.profile, share } }, true);
     },
     setSignView: (signView) => commit({ ...get().root, settings: { ...get().root.settings, signView } }, true),
     setTempoSettings: (patch) => {
