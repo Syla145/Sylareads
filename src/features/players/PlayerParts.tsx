@@ -155,12 +155,11 @@ export function ShareCard({ withLink = false }: { withLink?: boolean }) {
       <p className="muted small">{t('who.share.intro')}</p>
       {user ? (
         <>
-          <button type="button" role="switch" aria-checked={on} className={`switch-row${on ? ' is-on' : ''}`} onClick={toggle}>
-            <span className="switch" aria-hidden="true">
-              <span className="switch-knob" />
-            </span>
+          <label className="switch share-switch">
+            <input type="checkbox" role="switch" checked={on} onChange={toggle} />
+            <span className="switch-track" aria-hidden="true" />
             <span>{t('who.share.toggle')}</span>
-          </button>
+          </label>
           <label className="share-name">
             <span className="small">{t('who.share.name')}</span>
             <span className="share-name-row">
