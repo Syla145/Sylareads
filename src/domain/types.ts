@@ -39,18 +39,6 @@ export function categoryOf(kind: ItemKind): Category {
   }
 }
 
-export interface ScriptDef {
-  id: string; // ISO 15924, e.g. Cyrl
-  name: L10n;
-  type: 'alphabet' | 'abugida';
-}
-
-export interface LanguageDef {
-  id: string; // ISO 639-1
-  name: L10n;
-  scriptId: string;
-}
-
 export interface CountryDef {
   id: string; // ISO 3166-1 alpha-2
   name: L10n;

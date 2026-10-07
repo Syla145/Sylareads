@@ -1,18 +1,4 @@
-import type { CountryDef, CourseMeta, LanguageDef, ScriptDef } from '../domain/types';
-
-export const SCRIPTS: Record<string, ScriptDef> = {
-  Cyrl: { id: 'Cyrl', name: { de: 'Kyrillisch', en: 'Cyrillic' }, type: 'alphabet' },
-  Grek: { id: 'Grek', name: { de: 'Griechisch', en: 'Greek' }, type: 'alphabet' },
-  Beng: { id: 'Beng', name: { de: 'Bengalisch', en: 'Bengali' }, type: 'abugida' },
-  Thai: { id: 'Thai', name: { de: 'Thai', en: 'Thai' }, type: 'abugida' },
-};
-
-export const LANGUAGES: Record<string, LanguageDef> = {
-  ru: { id: 'ru', name: { de: 'Russisch', en: 'Russian' }, scriptId: 'Cyrl' },
-  el: { id: 'el', name: { de: 'Griechisch', en: 'Greek' }, scriptId: 'Grek' },
-  bn: { id: 'bn', name: { de: 'Bengalisch', en: 'Bengali' }, scriptId: 'Beng' },
-  th: { id: 'th', name: { de: 'Thai', en: 'Thai' }, scriptId: 'Thai' },
-};
+import type { CountryDef, CourseMeta } from '../domain/types';
 
 export const COUNTRIES: Record<string, CountryDef> = {
   RU: { id: 'RU', name: { de: 'Russland', en: 'Russia' } },
@@ -78,4 +64,3 @@ export const COURSES: CourseMeta[] = [
 ];
 
 export const courseBySlug = (slug: string | undefined) => COURSES.find((c) => c.slug === slug);
-export const courseById = (id: string) => COURSES.find((c) => c.id === id);

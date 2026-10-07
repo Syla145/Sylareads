@@ -44,7 +44,7 @@ const consonant = ({ slug, ch, reading, accepted, word, roman, de, en, final, co
   };
 };
 
-export const CONSONANTS: LetterItem[] = [
+const CONSONANTS: LetterItem[] = [
   consonant({ slug: 'ko', ch: 'ก', reading: 'k', accepted: ['k', 'g'], word: 'ไก่', roman: 'kai', de: 'Huhn', en: 'chicken' }),
   consonant({ slug: 'kho-khai', ch: 'ข', reading: 'kh', word: 'ไข่', roman: 'khai', de: 'Ei', en: 'egg', final: 'k' }),
   consonant({ slug: 'kho-khwai', ch: 'ค', reading: 'kh', word: 'ควาย', roman: 'khwai', de: 'Wasserbüffel', en: 'water buffalo', final: 'k' }),
@@ -108,7 +108,7 @@ const vowel = (slug: string, glyph: string, reading: string, accepted: string[],
 });
 
 /** Vowel signs, shown with ◌ as the consonant's place. */
-export const VOWELS: LetterItem[] = [
+const VOWELS: LetterItem[] = [
   vowel('v-aa', '◌า', 'a', ['aa'], 'Steht rechts vom Konsonanten: นา = na.', 'Sits right of the consonant: นา = na.'),
   vowel('v-a', '◌ะ', 'a', [], 'Kurzes a, steht rechts: ระยอง = Rayong.', 'Short a, sits on the right: ระยอง = Rayong.'),
   vowel('v-mai-han', '◌ั', 'a', [], 'Kurzes a über dem Konsonanten, danach folgt ein Endlaut: วัด = wat.', 'Short a above the consonant, followed by a final: วัด = wat.'),
@@ -143,7 +143,7 @@ const REPEAT: L10n = { de: 'Wiederholt das vorige Wort', en: 'Repeats the previo
 const ABBR: L10n = { de: 'Kürzt ein langes Wort ab', en: 'Abbreviates a long word' };
 const SHORT: L10n = { de: 'Kürzt den Vokal – ändert die Umschrift nicht', en: 'Shortens the vowel – no change in romanisation' };
 
-export const MARKS: LetterItem[] = [
+const MARKS: LetterItem[] = [
   mark('m-tone', '◌่◌้◌๊◌๋', 'Die vier Tonzeichen. RTGS schreibt keine Töne: einfach überlesen. น้ำ = nam.', 'The four tone marks. RTGS writes no tones: just read past them. น้ำ = nam.', IGNORE_TONE, [SILENT, REPEAT]),
   mark('m-karan', '◌์', 'Karan: der Buchstabe darunter wird nicht gelesen. สุรินทร์ = Surin.', 'Karan: the letter below is not read. สุรินทร์ = Surin.', SILENT, [IGNORE_TONE, ABBR]),
   mark('m-taikhu', '◌็', 'Mai taikhu: kürzt den Vokal. เป็ด = pet.', 'Mai taikhu: shortens the vowel. เป็ด = pet.', SHORT, [SILENT, REPEAT]),

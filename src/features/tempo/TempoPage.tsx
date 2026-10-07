@@ -13,7 +13,7 @@ import { SignViewToggle } from '../signs/SignViewToggle';
 const NO_ITEMS: Record<string, ItemProgress> = {};
 
 /** Content shown first: the saved choice, else the first one with enough learned items (map before names before letters). */
-export function defaultContent(index: CourseIndex, items: Record<string, ItemProgress | undefined>, saved?: TempoContent): TempoContent {
+function defaultContent(index: CourseIndex, items: Record<string, ItemProgress | undefined>, saved?: TempoContent): TempoContent {
   const contents = tempoContents(index);
   if (saved && contents.includes(saved)) return saved;
   const ready = (['map', 'places', 'letters'] as TempoContent[]).find((c) => contents.includes(c) && tempoPool(index, c, items).length >= TEMPO.minPool);

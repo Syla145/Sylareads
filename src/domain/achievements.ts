@@ -27,7 +27,7 @@ export interface AchievementDef {
   measure: (root: ProgressRoot, index: CourseIndex | null) => { value: number; target: number } | null;
 }
 
-export const TIER_NAMES: Record<Tier, L10n> = {
+const TIER_NAMES: Record<Tier, L10n> = {
   1: { de: 'Bronze', en: 'Bronze' },
   2: { de: 'Silber', en: 'Silver' },
   3: { de: 'Gold', en: 'Gold' },
@@ -140,7 +140,7 @@ const SPECIALS: Record<string, { title: L10n; description: L10n; ids: (index: Co
   },
 };
 
-export const CONTENT_COURSES = ['ru', 'el', 'th', 'bn'] as const;
+const CONTENT_COURSES = ['ru', 'el', 'th', 'bn'] as const;
 
 function courseAchievements(course: string): AchievementDef[] {
   const cp = (root: ProgressRoot) => root.courses[course];

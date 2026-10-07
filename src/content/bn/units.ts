@@ -31,7 +31,7 @@ const SAME_SOUND = (a: string, b: string): L10n => ({
   en: `Sounds like ${a} today; also written ${b} in place names.`,
 });
 
-export const CONSONANTS: LetterItem[] = [
+const CONSONANTS: LetterItem[] = [
   consonant('ka', 'ক', 'k', 'কুমিল্লা', 'Cumilla'),
   consonant('kha', 'খ', 'kh', 'খুলনা', 'Khulna'),
   consonant('ga', 'গ', 'g', 'গাজীপুর', 'Gazipur'),
@@ -89,7 +89,7 @@ const vowel = (slug: string, glyph: string, reading: string, accepted: string[],
 });
 
 /** Independent vowels: only at the start of a word or after another vowel. */
-export const INDEPENDENT: LetterItem[] = [
+const INDEPENDENT: LetterItem[] = [
   vowel('v-o', 'অ', 'o', ['a'], 'Der inhärente Vokal als eigener Buchstabe, am Wortanfang: অনেক = onek.', 'The inherent vowel as a letter of its own, at the start of a word: অনেক = onek.'),
   vowel('v-aa', 'আ', 'a', ['aa'], 'Am Wortanfang: আম = am (Mango).', 'At the start of a word: আম = am (mango).'),
   vowel('v-i', 'ই', 'i', [], 'Am Wortanfang: ইট = it.', 'At the start of a word: ইট = it.'),
@@ -104,7 +104,7 @@ export const INDEPENDENT: LetterItem[] = [
 ];
 
 /** Vowel signs (kar), shown with ◌ as the consonant’s place. */
-export const SIGNS: LetterItem[] = [
+const SIGNS: LetterItem[] = [
   vowel('k-aa', '◌া', 'a', ['aa'], 'Rechts vom Konsonanten: ঢাকা = Dhaka.', 'Right of the consonant: ঢাকা = Dhaka.'),
   vowel('k-i', '◌ি', 'i', [], 'Steht LINKS vom Konsonanten, wird aber danach gelesen: সিলেট = Sylhet.', 'Written LEFT of the consonant but read after it: সিলেট = Sylhet.'),
   vowel('k-ii', '◌ী', 'i', ['ee', 'ii'], 'Rechts, mit Haken nach oben: রাজশাহী = Rajshahi.', 'On the right, with a hook up: রাজশাহী = Rajshahi.'),
@@ -121,7 +121,7 @@ const NASAL: L10n = { de: 'Macht den Vokal nasal – in der Umschrift meist wegg
 const NO_VOWEL: L10n = { de: 'Nimmt dem Konsonanten den Vokal, verbindet Konsonanten', en: 'Removes the consonant’s vowel, joins consonants' };
 const LONG: L10n = { de: 'Verlängert den Vokal', en: 'Lengthens the vowel' };
 
-export const MARKS: LetterItem[] = [
+const MARKS: LetterItem[] = [
   { id: unitId('anusvar'), kind: 'letter', upper: '◌ং', lower: '◌ং', reading: 'ng', accepted: ['ng'],
     mnemonic: { de: 'Anusvar: ng am Silbenende. রংপুর = Rangpur, বাংলা = Bangla.', en: 'Anusvar: ng at the end of a syllable. রংপুর = Rangpur, বাংলা = Bangla.' } },
   { id: unitId('bisarga'), kind: 'letter', upper: '◌ঃ', lower: '◌ঃ', reading: 'h', accepted: ['h'],

@@ -168,11 +168,6 @@ export function advance(s: SessionState, deps: EngineDeps): SessionState {
   };
 }
 
-/** Answered graded tasks so far (for the counter). */
-export function answeredCount(s: SessionState): number {
-  return s.outcomes.length;
-}
-
 /** First-try correct / graded tasks (lesson complete "18 / 20"). */
 export function score(s: SessionState): { correct: number; total: number } {
   const graded = s.tasks.slice(0, s.index).filter(isGraded).length;

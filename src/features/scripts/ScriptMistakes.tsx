@@ -5,6 +5,7 @@ import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { ButtonLink, Card } from '../../ui/primitives';
 import { ScriptText } from './ScriptParts';
+import { MistakeMark } from '../mistakes/MistakesCard';
 
 /** Fehler-Review for the scripts course: today's (or yesterday's) confused scripts. */
 export function MistakesList() {
@@ -30,16 +31,7 @@ export function MistakesList() {
                 {e.samples[0].native}
               </ScriptText>
               <span className="muted">{e.where[lang]}</span>
-              <span className="mistakes-mark small">
-                {m.fixed ? (
-                  <span className="mistakes-fixed" title={t('mistakes.fixed')} aria-label={t('mistakes.fixed')}>
-                    <span aria-hidden="true">✓</span>
-                    <span className="mistakes-fixed-label"> {t('mistakes.fixed')}</span>
-                  </span>
-                ) : m.n > 1 ? (
-                  <span className="tabular">{m.n}×</span>
-                ) : null}
-              </span>
+              <MistakeMark fixed={m.fixed} n={m.n} />
             </li>
           );
         })}

@@ -31,7 +31,7 @@ const entry = (id: string) => SCRIPT_BY_ID.get(id)!;
  * lesson (the same family), known ones before unknown ones; unrelated known
  * scripts only when nothing else is left.
  */
-export function distractors(target: ScriptEntry, pool: Set<string>, rng: Rng, n: number): string[] {
+function distractors(target: ScriptEntry, pool: Set<string>, rng: Rng, n: number): string[] {
   const lesson = SCRIPT_LESSONS.find((l) => l.newIds.includes(target.id));
   const family = new Set([...(lesson?.newIds ?? []), ...(lesson?.reviewIds ?? [])]);
   const all = SCRIPT_ENTRIES.map((e) => e.id).filter((id) => id !== target.id);
@@ -42,12 +42,12 @@ export function distractors(target: ScriptEntry, pool: Set<string>, rng: Rng, n:
     .slice(0, n);
 }
 
-export function whereTask(id: string, pool: Set<string>, rng: Rng): GradedScriptTask {
+function whereTask(id: string, pool: Set<string>, rng: Rng): GradedScriptTask {
   const e = entry(id);
   return { key: taskKey('sw'), kind: 'where', itemId: id, sample: pick(e.samples, rng)!, options: shuffle([id, ...distractors(e, pool, rng, 3)], rng) };
 }
 
-export function pickTask(id: string, pool: Set<string>, rng: Rng): GradedScriptTask {
+function pickTask(id: string, pool: Set<string>, rng: Rng): GradedScriptTask {
   const e = entry(id);
   const ids = shuffle([id, ...distractors(e, pool, rng, 2)], rng);
   return { key: taskKey('sp'), kind: 'pick', itemId: id, options: ids.map((x) => ({ itemId: x, sample: pick(entry(x).samples, rng)! })) };

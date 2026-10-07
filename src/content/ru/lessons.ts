@@ -1,6 +1,7 @@
-import type { L10n, Lesson, PhaseDef, PlaceItem } from '../../domain/types';
+import type { L10n, Lesson, PhaseDef } from '../../domain/types';
 import { letterId } from './translit';
 import { CITIES } from './places';
+import { byTier, chunk } from '../lessonHelpers';
 
 export const PHASES: PhaseDef[] = [
   { id: 'easy', title: { de: 'Easy Wins', en: 'Easy Wins' } },
@@ -127,20 +128,6 @@ const letterLessons: Omit<Lesson, 'number'>[] = [
 ];
 
 /** Cities and regions follow tier order, in chunks of 8–9 per lesson. */
-function chunk<T>(list: T[], size: number): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < list.length; i += size) out.push(list.slice(i, i + size));
-  // merge a tiny tail into the previous chunk
-  if (out.length > 1 && out[out.length - 1].length < 4) {
-    const tail = out.pop()!;
-    out[out.length - 1].push(...tail);
-  }
-  return out;
-}
-
-const byTier = (list: PlaceItem[]) => [...list].sort((a, b) => a.tier - b.tier);
-
-
 const cityLessons: Omit<Lesson, 'number'>[] = chunk(byTier(CITIES), 9).map((group, i) => ({
   id: `ru-city-${i + 1}`,
   phaseId: 'cities',

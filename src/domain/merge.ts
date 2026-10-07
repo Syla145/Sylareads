@@ -61,7 +61,7 @@ function mergeCourse(a: CourseProgress, b: CourseProgress): CourseProgress {
   };
 }
 
-export function mergeItem(a: ItemProgress, b: ItemProgress): ItemProgress {
+function mergeItem(a: ItemProgress, b: ItemProgress): ItemProgress {
   const la = a.last ?? 0;
   const lb = b.last ?? 0;
   if (la !== lb) return la > lb ? a : b;

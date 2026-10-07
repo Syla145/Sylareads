@@ -9,7 +9,7 @@ import { itemAnswer, itemNative } from '../tempo/labels';
 const SHOWN = 8;
 
 /** Practice link for exactly these items: still-wrong ones first. */
-export const mistakesPracticePath = (slug: string, ids: string[]) => `/${slug}/practice/run?ids=${ids.join(',')}`;
+const mistakesPracticePath = (slug: string, ids: string[]) => `/${slug}/practice/run?ids=${ids.join(',')}`;
 
 /**
  * Fehler-Review: "Heute falsch" with a button to practise exactly these items.
@@ -43,16 +43,7 @@ export function MistakesCard({ className = '' }: { className?: string }) {
                 {itemNative(it)}
               </span>
               <span className="muted">{itemAnswer(it, lang)}</span>
-              <span className="mistakes-mark small">
-                {m.fixed ? (
-                  <span className="mistakes-fixed" title={t('mistakes.fixed')} aria-label={t('mistakes.fixed')}>
-                    <span aria-hidden="true">✓</span>
-                    <span className="mistakes-fixed-label"> {t('mistakes.fixed')}</span>
-                  </span>
-                ) : m.n > 1 ? (
-                  <span className="tabular">{m.n}×</span>
-                ) : null}
-              </span>
+              <MistakeMark fixed={m.fixed} n={m.n} />
             </li>
           );
         })}
@@ -65,5 +56,22 @@ export function MistakesCard({ className = '' }: { className?: string }) {
         {open > 0 && fixed > 0 && <ButtonLink to={mistakesPracticePath(meta.slug, items.filter((m) => !m.fixed).map((m) => m.id))}>{t('mistakes.practiseOpen', { n: open })}</ButtonLink>}
       </div>
     </Card>
+  );
+}
+
+/** "✓ wieder richtig" for a fixed mistake, "3×" for one made more than once. */
+export function MistakeMark({ fixed, n }: { fixed: boolean; n: number }) {
+  const t = useT();
+  return (
+    <span className="mistakes-mark small">
+      {fixed ? (
+        <span className="mistakes-fixed" title={t('mistakes.fixed')} aria-label={t('mistakes.fixed')}>
+          <span aria-hidden="true">✓</span>
+          <span className="mistakes-fixed-label"> {t('mistakes.fixed')}</span>
+        </span>
+      ) : n > 1 ? (
+        <span className="tabular">{n}×</span>
+      ) : null}
+    </span>
   );
 }

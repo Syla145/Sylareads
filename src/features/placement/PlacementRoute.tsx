@@ -8,10 +8,10 @@ import type { SessionState } from '../../domain/sessionEngine';
 import { retaskFor } from '../../domain/taskFactory';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { recommendedPath } from '../dashboard/recommend';
 import { SessionRunner } from '../session/SessionRunner';
+import { type ResultAction, ResultActions } from '../session/SessionParts';
 
 export const placementPath = (slug: string, scope: string, mode: PlacementMode) => `/${slug}/placement?scope=${encodeURIComponent(scope)}&m=${mode}`;
 
@@ -108,7 +108,7 @@ function PlacementSession() {
   );
 }
 
-export function useScopeName(index: CourseIndex, scope: PlacementScope | null): string {
+function useScopeName(index: CourseIndex, scope: PlacementScope | null): string {
   const t = useT();
   const lang = useLang();
   if (!scope) return '';
@@ -127,7 +127,7 @@ function PlacementResult({
   courseId: string;
   scopeName: string;
   done: Done;
-  actions: { label: string; onClick: () => void; variant?: 'primary' | 'secondary' | 'ghost' }[];
+  actions: ResultAction[];
 }) {
   const t = useT();
   const { outcome, before, after } = done;
@@ -174,13 +174,7 @@ function PlacementResult({
 
       <UnlockedList ids={done.unlocked} />
 
-      <div className="complete-actions">
-        {actions.map((a, i) => (
-          <Button key={a.label} variant={a.variant ?? (i === 0 ? 'primary' : 'secondary')} block onClick={a.onClick} autoFocus={i === 0}>
-            {a.label}
-          </Button>
-        ))}
-      </div>
+      <ResultActions actions={actions} />
     </div>
   );
 }

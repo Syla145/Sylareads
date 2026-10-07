@@ -84,7 +84,7 @@ export function pickTestItems(index: CourseIndex, scope: PlacementScope, rng: Rn
 }
 
 /** One typed task per item (map areas are found on the map). No learning cards: this is about what is already known. */
-export function placementTask(index: CourseIndex, item: Item, rng: Rng): Task {
+function placementTask(index: CourseIndex, item: Item, rng: Rng): Task {
   if (item.kind === 'city' || item.kind === 'region') {
     return index.mapShapes.has(item.id) ? locateTask(item as PlaceItem) : identifyTask(item as PlaceItem);
   }

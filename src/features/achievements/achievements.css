@@ -119,3 +119,35 @@
   font-weight: 600;
   animation: enter 200ms var(--ease);
 }
+
+/* Lists in the profile and on result screens */
+.achievement-list {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.achievement-list li {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: var(--s-3);
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-tertiary);
+}
+
+.achievement-list li:last-child {
+  border-bottom: 0;
+}
+
+.achievement-list li > span:nth-child(2) {
+  display: grid;
+}
+
+.achievement-list li.is-unlocked {
+  color: var(--text-primary);
+}
+
+.achievement-toast p + p {
+  margin-top: 4px;
+}

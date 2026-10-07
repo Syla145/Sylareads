@@ -277,8 +277,7 @@ export interface TempoProgress {
   best: Record<string, TempoBest>;
 }
 
-export const emptyTempo = (): TempoProgress => ({ items: {}, days: {}, best: {} });
-export const blitzKey = (content: TempoContent) => `blitz:${content}`;
+const blitzKey = (content: TempoContent) => `blitz:${content}`;
 
 /** Weight of a new measurement in the smoothed reading time. */
 const ALPHA = 0.35;

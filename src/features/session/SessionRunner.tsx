@@ -7,11 +7,12 @@ import { advance, createSession, currentTask, submit, type EngineDeps, type Sess
 import type { Task } from '../../domain/tasks';
 import { useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button, Modal } from '../../ui/primitives';
+import { Button } from '../../ui/primitives';
 import { FeedbackPanel } from './FeedbackPanel';
 import { IntroCard } from './IntroCard';
 import { TaskPrompt } from './TaskPrompt';
 import { isWideMap } from '../map/layer';
+import { QuitDialog } from './SessionParts';
 
 interface Props {
   courseId: string;
@@ -267,15 +268,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
         )}
       </main>
 
-      <Modal open={quitOpen} onClose={() => setQuitOpen(false)} title={t('session.quitTitle')}>
-        <p className="muted">{t('session.quitBody')}</p>
-        <div className="actions">
-          <Button variant="primary" onClick={() => setQuitOpen(false)}>
-            {t('session.quitCancel')}
-          </Button>
-          <Button onClick={() => { setQuitOpen(false); onQuit(stateRef.current); }}>{t('session.quitConfirm')}</Button>
-        </div>
-      </Modal>
+      <QuitDialog open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => onQuit(stateRef.current)} />
     </div>
   );
 }

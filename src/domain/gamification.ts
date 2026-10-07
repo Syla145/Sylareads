@@ -48,7 +48,7 @@ export interface StreakState {
 }
 
 /** A day counts once a lesson was completed or at least 10 practice answers were given. */
-export const dayQualifies = (d: DayActivity | undefined) => !!d && (d.lessons >= 1 || d.answers >= 10);
+const dayQualifies = (d: DayActivity | undefined) => !!d && (d.lessons >= 1 || d.answers >= 10);
 
 /** Updates the streak after activity on `today`. Never punishes; a broken streak restarts silently. */
 export function updateStreak(s: StreakState, today: string, todayActivity: DayActivity): StreakState {

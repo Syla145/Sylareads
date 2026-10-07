@@ -26,9 +26,9 @@ export interface ItemProgress {
 }
 
 /** Interval in days until due, per box. Box 1 is due in the same or next session. */
-export const INTERVALS = [0, 0, 1, 3, 7, 14, 30, 60] as const;
-export const MASTERY_VALUE = [0, 0.15, 0.3, 0.5, 0.65, 0.8, 0.9, 1] as const;
-export const MAX_BOX = 7;
+const INTERVALS = [0, 0, 1, 3, 7, 14, 30, 60] as const;
+const MASTERY_VALUE = [0, 0.15, 0.3, 0.5, 0.65, 0.8, 0.9, 1] as const;
+const MAX_BOX = 7;
 
 /** Shown as New · Beginner · Moderate · Pro · Expert. */
 export type MasteryState = 'new' | 'learning' | 'familiar' | 'mastered' | 'expert';
@@ -141,7 +141,7 @@ export function isDue(p: ItemProgress | undefined, today: string): boolean {
 }
 
 /** Overdue ratio: (today − due) / interval, never negative. */
-export function overdue(p: ItemProgress | undefined, today: string): number {
+function overdue(p: ItemProgress | undefined, today: string): number {
   if (!p || !p.due || p.box === 0) return 0;
   const late = diffDays(p.due, today);
   if (late < 0) return 0;

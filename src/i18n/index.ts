@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { L10n, Lang, PlaceItem } from '../domain/types';
+import type { Lang, PlaceItem } from '../domain/types';
 import { useProgress } from '../store/progressStore';
 import { de } from './de';
 import { en, type MessageKey } from './en';
@@ -34,8 +34,6 @@ export function useT() {
   const lang = useLang();
   return useCallback((key: TKey, vars?: Vars) => translate(lang, key, vars), [lang]);
 }
-
-export const pick = (text: L10n, lang: Lang) => text[lang];
 
 /** Place names: the UI language decides which known name comes first. */
 export function placeNames(place: PlaceItem, lang: Lang): [string, string] {

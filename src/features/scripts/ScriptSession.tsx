@@ -22,12 +22,13 @@ import {
 } from '../../domain/scriptCourse';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button, Modal } from '../../ui/primitives';
+import { Button } from '../../ui/primitives';
 import { ScriptCard, ScriptText } from './ScriptParts';
 import { sampleSignFor, showsSign } from '../../domain/signs';
 import { SignStage } from '../signs/Sign';
 import { useSignView } from '../signs/SignViewToggle';
 import './scripts.css';
+import { QuitDialog, type ResultAction, ResultActions } from '../session/SessionParts';
 
 /** Route for /scripts/lesson/:lessonId and /scripts/practice (?ids=… for exactly these scripts). */
 export default function ScriptSessionRoute() {
@@ -314,22 +315,7 @@ function ScriptRunner({
         )}
       </main>
 
-      <Modal open={quitOpen} onClose={() => setQuitOpen(false)} title={t('session.quitTitle')}>
-        <p className="muted">{t('session.quitBody')}</p>
-        <div className="actions">
-          <Button variant="primary" onClick={() => setQuitOpen(false)}>
-            {t('session.quitCancel')}
-          </Button>
-          <Button
-            onClick={() => {
-              setQuitOpen(false);
-              onQuit();
-            }}
-          >
-            {t('session.quitConfirm')}
-          </Button>
-        </div>
-      </Modal>
+      <QuitDialog open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => onQuit()} />
     </div>
   );
 }
@@ -376,7 +362,7 @@ function ScriptResult({
   lesson?: ScriptLesson;
   done: Done;
   wrong: string[];
-  actions: { label: string; onClick: () => void; variant?: 'primary' | 'secondary' | 'ghost' }[];
+  actions: ResultAction[];
 }) {
   const t = useT();
   const lang = useLang();
@@ -414,13 +400,7 @@ function ScriptResult({
         </section>
       )}
       <UnlockedList ids={done.unlocked} />
-      <div className="complete-actions">
-        {actions.map((a, i) => (
-          <Button key={a.label} variant={a.variant ?? (i === 0 ? 'primary' : 'secondary')} block onClick={a.onClick} autoFocus={i === 0}>
-            {a.label}
-          </Button>
-        ))}
-      </div>
+      <ResultActions actions={actions} />
     </div>
   );
 }

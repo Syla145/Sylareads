@@ -21,7 +21,7 @@ export interface MistakeEntry {
 /** day (YYYY-MM-DD) → item id → entry */
 export type MistakeLog = Record<string, Record<string, MistakeEntry>>;
 
-export const KEEP_MISTAKE_DAYS = 7;
+const KEEP_MISTAKE_DAYS = 7;
 
 /** Records one graded answer. Right answers only count for items already wrong that day. */
 export function logAnswer(log: MistakeLog | undefined, itemId: string, wrong: boolean, today: string, now: number): MistakeLog | undefined {

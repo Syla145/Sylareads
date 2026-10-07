@@ -27,7 +27,7 @@ import {
 import type { Item } from '../../domain/types';
 import { formatSeconds, useLang, useT } from '../../i18n';
 import { DEFAULT_TEMPO, useProgress } from '../../store/progressStore';
-import { Button, ButtonLink, Modal } from '../../ui/primitives';
+import { Button, ButtonLink } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { MapLabelToggle, useMapLabels } from '../map/MapLabelToggle';
 import { isWideMap } from '../map/layer';
@@ -38,6 +38,7 @@ import { tempoRunQuery } from './TempoPage';
 import { showsSign, signFor } from '../../domain/signs';
 import { SignStage } from '../signs/Sign';
 import { useSignView } from '../signs/SignViewToggle';
+import { QuitDialog, type ResultAction, ResultActions } from '../session/SessionParts';
 
 interface TempoRequest {
   mode: TempoMode;
@@ -427,23 +428,14 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
         )}
       </main>
 
-      <Modal open={quitOpen} onClose={() => setQuitOpen(false)} title={t('session.quitTitle')}>
-        <p className="muted">{t('session.quitBody')}</p>
-        <div className="actions">
-          <Button variant="primary" onClick={() => setQuitOpen(false)}>
-            {t('session.quitCancel')}
-          </Button>
-          <Button
-            onClick={() => {
-              setQuitOpen(false);
-              finished.current = true;
-              onQuit(stateRef.current);
-            }}
-          >
-            {t('session.quitConfirm')}
-          </Button>
-        </div>
-      </Modal>
+      <QuitDialog
+        open={quitOpen}
+        onStay={() => setQuitOpen(false)}
+        onQuit={() => {
+          finished.current = true;
+          onQuit(stateRef.current);
+        }}
+      />
     </div>
   );
 }
@@ -478,7 +470,7 @@ function TempoResult({
   index: CourseIndex;
   req: TempoRequest;
   done: Finished;
-  actions: { label: string; onClick: () => void; variant?: 'primary' | 'secondary' | 'ghost' }[];
+  actions: ResultAction[];
 }) {
   const t = useT();
   const lang = useLang();
@@ -532,13 +524,7 @@ function TempoResult({
 
       <UnlockedList ids={done.unlocked} />
 
-      <div className="complete-actions">
-        {actions.map((a, i) => (
-          <Button key={a.label} variant={a.variant ?? (i === 0 ? 'primary' : 'secondary')} block onClick={a.onClick} autoFocus={i === 0}>
-            {a.label}
-          </Button>
-        ))}
-      </div>
+      <ResultActions actions={actions} />
     </div>
   );
 }

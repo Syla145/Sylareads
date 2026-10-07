@@ -92,7 +92,7 @@ const LETTER_SLUGS: Record<string, string> = {
 
 export const letterId = (slug: string) => `ru:letter:${slug}`;
 
-export function letterIdOfChar(ch: string): string | undefined {
+function letterIdOfChar(ch: string): string | undefined {
   const slug = LETTER_SLUGS[ch.toLowerCase()];
   return slug ? letterId(slug) : undefined;
 }

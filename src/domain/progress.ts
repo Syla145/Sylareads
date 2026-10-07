@@ -247,9 +247,6 @@ export function applyPlacement(root: ProgressRoot, courseId: string, outcome: Pl
   return outcome.total >= 10 ? addXp(next, courseId, XP.practiceComplete, today) : next;
 }
 
-/** Lessons actually played (placed ones do not count for achievements). */
-export const playedLessons = (c: CourseProgress | undefined) => Object.values(c?.lessons ?? {}).filter((l) => !l.placed).length;
-
 export function unlockAchievements(root: ProgressRoot, ids: string[], now = Date.now()): ProgressRoot {
   if (!ids.length) return root;
   const achievements = { ...root.profile.achievements };

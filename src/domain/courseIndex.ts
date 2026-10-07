@@ -143,12 +143,3 @@ export function letterGlyphs(l: LetterItem, sep = ''): string {
   return l.lower && l.lower !== l.upper ? `${l.upper}${sep}${l.lower}` : l.upper;
 }
 
-export function isLetter(item: Item): item is LetterItem {
-  return item.kind === 'letter';
-}
-export function isPlace(item: Item): item is PlaceItem {
-  return item.kind === 'city' || item.kind === 'region';
-}
-export function isWord(item: Item): item is WordItem {
-  return item.kind === 'word' || item.kind === 'element' || item.kind === 'term';
-}

@@ -51,7 +51,7 @@ export interface PlayerCard extends PublicPlayer {
 
 export const NAME_MAX = 24;
 /** "Gerade aktiv" means seen within this time; the device reports in at least twice as often. */
-export const ACTIVE_MS = 5 * 60_000;
+const ACTIVE_MS = 5 * 60_000;
 export const HEARTBEAT_MS = 2 * 60_000;
 /** Cards older than this are not listed. */
 export const LIST_DAYS = 7;

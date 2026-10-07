@@ -132,7 +132,7 @@ function interleave(groups: Item[][], rng: Rng): Item[] {
   return out;
 }
 
-export function selectItems(index: CourseIndex, config: PracticeConfig, ctx: PracticeContext, rng: Rng): Item[] {
+function selectItems(index: CourseIndex, config: PracticeConfig, ctx: PracticeContext, rng: Rng): Item[] {
   let pool = poolFor(index, config, ctx);
   if (config.weakOnly && pool.length < 5) {
     // Fewer than 5 weak items: top up with the lowest boxes and say so in the UI.

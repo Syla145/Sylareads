@@ -40,7 +40,7 @@ export function signCaps(text: string): string {
 }
 
 /** Text shown for reading tasks. Words appear in lower case like on most signs, sometimes in capitals. */
-export function displayFor(item: Item, rng: Rng, opts: { lower?: boolean; caseMix?: boolean } = {}): string {
+function displayFor(item: Item, rng: Rng, opts: { lower?: boolean; caseMix?: boolean } = {}): string {
   if (item.kind === 'letter') {
     if (opts.lower !== undefined) return opts.lower ? item.lower : item.upper;
     return rng() < 0.5 ? item.upper : item.lower;

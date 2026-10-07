@@ -29,7 +29,7 @@ export function Avatar({ uid, name, size = 'm' }: { uid: string; name: string; s
 }
 
 /** "gerade aktiv", "vor 12 Min.", "vor 3 Std.", "gestern", "vor 4 Tagen". */
-export function useSeenText() {
+function useSeenText() {
   const t = useT();
   return (seen: number, now: number) => {
     const ago = Math.max(0, now - seen);
@@ -48,7 +48,7 @@ const startOfDay = (ts: number) => {
   return d.getTime();
 };
 
-export function useCourseName() {
+function useCourseName() {
   const t = useT();
   const lang = useLang();
   return (id: string) => (id === SCRIPTS_COURSE_ID ? t('scripts.title') : (COURSES.find((c) => c.id === id)?.name[lang] ?? id));

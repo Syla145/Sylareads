@@ -8,7 +8,7 @@ import { isWeak } from '../../domain/srs';
 import { knownLetters, readableCities } from '../../domain/stats';
 import type { Item, Lesson } from '../../domain/types';
 import { useLang, useT, type TKey } from '../../i18n';
-import { Button } from '../../ui/primitives';
+import { type ResultAction, ResultActions } from './SessionParts';
 
 export interface CompleteData {
   before: ProgressRoot;
@@ -56,7 +56,7 @@ export function CompleteScreen({
   index: CourseIndex;
   data: CompleteData;
   lesson?: Lesson;
-  actions: { label: string; onClick: () => void; variant?: 'primary' | 'secondary' | 'ghost' }[];
+  actions: ResultAction[];
 }) {
   const t = useT();
   const lang = useLang();
@@ -132,13 +132,7 @@ export function CompleteScreen({
 
       <UnlockedList ids={data.unlocked} />
 
-      <div className="complete-actions">
-        {actions.map((a, i) => (
-          <Button key={a.label} variant={a.variant ?? (i === 0 ? 'primary' : 'secondary')} block onClick={a.onClick} autoFocus={i === 0}>
-            {a.label}
-          </Button>
-        ))}
-      </div>
+      <ResultActions actions={actions} />
     </div>
   );
 }

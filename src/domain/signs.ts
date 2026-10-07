@@ -71,7 +71,7 @@ const int = (rng: Rng, lo: number, hi: number) => lo + Math.floor(rng() * (hi - 
 const arrow = (rng: Rng) => pick(['left', 'right', 'up'] as const, rng)!;
 
 /** Shop address ending with the place: "<street>, <upazila>, <district>" (districts) or "<street>, <town>". */
-export function shopFor(place: PlaceItem, rng: Rng): ShopText {
+function shopFor(place: PlaceItem, rng: Rng): ShopText {
   const shop = pick(SHOPS, rng)!;
   const upazilas = UPAZILAS[place.id];
   const address = upazilas?.length ? `${pick(STREETS, rng)}, ${pick(upazilas, rng)}, ${place.native}` : `${pick(STREETS, rng)}, ${place.native}`;

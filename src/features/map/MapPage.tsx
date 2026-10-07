@@ -119,7 +119,7 @@ function legendOrder(index: CourseIndex) {
 }
 
 /** Practice only the map areas (districts, provinces, regions), smart selection over all of them. */
-export function mapPracticeQuery(count = 20): string {
+function mapPracticeQuery(count = 20): string {
   return `c=regions&scope=all&weak=1&n=${count}&layer=map`;
 }
 

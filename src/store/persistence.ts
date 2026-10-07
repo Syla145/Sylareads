@@ -10,7 +10,7 @@ import { shareOf } from '../domain/presence';
  * app keeps working in memory where storage is blocked (private windows,
  * sandboxed previews).
  */
-export const STORAGE_KEY = 'sylareads.progress';
+const STORAGE_KEY = 'sylareads.progress';
 const BACKUP_KEY = 'sylareads.backup';
 
 const memory = new Map<string, string>();
@@ -41,7 +41,7 @@ function removeItem(key: string) {
   }
 }
 
-export function defaultLang(): Lang {
+function defaultLang(): Lang {
   try {
     return navigator.language?.toLowerCase().startsWith('de') ? 'de' : 'en';
   } catch {
@@ -144,7 +144,7 @@ export function saveRoot(root: ProgressRoot, immediate = false) {
   timer = setTimeout(flush, 500);
 }
 
-export function flush() {
+function flush() {
   if (timer) clearTimeout(timer);
   timer = null;
   if (pending) setItem(STORAGE_KEY, JSON.stringify(pending));

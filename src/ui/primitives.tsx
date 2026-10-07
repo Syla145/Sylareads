@@ -71,14 +71,6 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
   );
 }
 
-export function Glyph({ text, size = 'l', className = '', lang }: { text: string; size?: 'xl' | 'l' | 'm' | 's'; className?: string; lang?: string }) {
-  return (
-    <span className={`glyph glyph-${size} ${className}`} lang={lang}>
-      {text}
-    </span>
-  );
-}
-
 const LEVELS: MasteryState[] = ['new', 'learning', 'familiar', 'mastered', 'expert'];
 
 /** What the coloured dots mean (levels by the review box of an item). */
