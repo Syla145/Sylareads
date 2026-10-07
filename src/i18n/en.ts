@@ -377,6 +377,13 @@ export const en = {
   'scripts.practiceEmpty': 'Learn a few scripts in the lessons first.',
   'scripts.mistakes': 'Answered wrong',
   'scripts.backToCourse': 'Back to the course',
+  'signs.view': 'Sign view',
+  'signs.view.off': 'Off',
+  'signs.view.mixed': 'Mixed',
+  'signs.view.always': 'Always',
+  'signs.shopDistrict': 'Which district is this shop in?',
+  'signs.shopCity': 'Which town is this shop in?',
+  'signs.shopLocate': 'Which district is this shop in? Tap it on the map.',
 } as const;
 
 export type MessageKey = keyof typeof en;

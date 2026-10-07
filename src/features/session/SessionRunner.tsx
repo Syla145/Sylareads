@@ -216,6 +216,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
               onChoose={choose}
               onSubmit={submitTyped}
               onLocate={locate}
+              signs={!noRepeat && (mode === 'practice' || !deferredIds?.has(task.itemId))}
             />
             <div className="session-response" aria-live="polite">
               {showRetry && <RetryHint index={index} task={task} evaluation={state.evaluation} input={state.lastInput} />}

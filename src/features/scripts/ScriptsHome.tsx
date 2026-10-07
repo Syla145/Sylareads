@@ -10,6 +10,7 @@ import { TopBar } from '../../ui/TopBar';
 import { MistakesList } from './ScriptMistakes';
 import { ScriptCard, ScriptText } from './ScriptParts';
 import './scripts.css';
+import { SignViewToggle } from '../signs/SignViewToggle';
 
 const NO_ITEMS = {};
 
@@ -33,6 +34,7 @@ export default function ScriptsHome() {
         <header className="section-head">
           <h1 className="page-title">{t('scripts.title')}</h1>
           <p className="muted">{t('scripts.subtitle')}</p>
+          <SignViewToggle />
         </header>
 
         <Card className="scripts-summary">

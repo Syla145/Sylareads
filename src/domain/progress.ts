@@ -3,6 +3,7 @@ import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } fro
 import { logAnswer, type MistakeLog } from './mistakes';
 import type { PlacementOutcome } from './placement';
 import { applyAnswer, introduce, raiseTo, settleNewItem, type ItemProgress, type Result } from './srs';
+import type { SignView } from './signs';
 import { applyTempoSession, type TempoContent, type TempoProgress, type TempoState } from './tempo';
 import type { Lang } from './types';
 
@@ -65,6 +66,8 @@ export interface Settings {
   taskMapLabels?: MapLabels;
   /** Tempo settings of this device. */
   tempo?: TempoSettings;
+  /** Schildansicht: names on drawn signs (default "mixed"). */
+  signView?: SignView;
 }
 
 export interface TempoSettings {

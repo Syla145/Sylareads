@@ -70,6 +70,21 @@ Ein Blick aufs Schild verrät oft schon das Land. Der Kurs zeigt Ortsnamen in 28
 - Schriftarten: Noto (SIL OFL 1.1). `tools/script-fonts.mjs` kopiert nur die nötigen Teilmengen nach `src/features/scripts/fonts/` (≈ 1,5 MB, der Browser lädt nur, was er anzeigt); nach Änderungen an `src/content/scripts/data.ts` neu ausführen – ein Test meldet fehlende Zeichen. Der Kurs wird erst beim Öffnen geladen.
 - Nächste Ausbaustufe: lateinische Sonderzeichen (ő ű → Ungarn, ł → Polen, ș ț → Rumänien, ğ ş → Türkei, å ø æ → Skandinavien).
 
+### Schildansicht
+
+Ortsnamen erscheinen in Übungen, Tempo-Runden, im Fehler-Review und im Kurs „Schriften erkennen“ auf nachgezeichneten Schildern im Stil des Landes (CSS, keine Fotos oder Originalgrafiken). Umschalter **Aus / Gemischt / Immer** unter „Üben“, „Tempo“ und im Schriften-Kurs (pro Gerät, Standard „Gemischt“ = etwa jede zweite Aufgabe). In Lektionen kommen Schilder erst bei der Wiederholung, nicht beim ersten Kennenlernen; die Einstufung bleibt schlicht.
+
+| Land | Schilder |
+|------|----------|
+| Russland | blauer Wegweiser (Landstraße), grüner Wegweiser (Autobahn), weißes Ortsschild mit schwarzem Rand, Ortsende mit roter Schräglinie |
+| Griechenland | blaues Pfeilschild, Griechisch gelb, Latein weiß; Ortsschild weiß mit blauen Streifen |
+| Thailand | grüner Highway-Wegweiser (Thai oben, Latein darunter); weißer Kilometerstein mit Pyramidendach, Provinzname auf der Seite |
+| Bangladesch | Ladenschild: Ladenname, Angebot, „প্রোঃ …“, Adresse „Straße, Upazila, **Distrikt**“, Handynummer (Platzhalter). Aufgabe „In welchem Distrikt ist dieser Laden?“, auch auf der Karte |
+
+- Die Lateinzeile zweisprachiger Schilder bleibt bis zur Antwort verdeckt.
+- Nur belegte Schildtypen; Wegweiser und Kilometerpfosten in Bangladesch fehlen bewusst (keine sichere Quelle), ebenso eine Farbcodierung der Thai-Kilometersteine. Das thailändische Staatswappen auf den Steinen wird nicht gezeichnet.
+- Upazilas je Distrikt aus [nuhil/bangladesh-geocode](https://github.com/nuhil/bangladesh-geocode) (MIT) in `src/content/bn/upazilas.ts`. Logik in `src/domain/signs.ts`, Zeichnung in `src/features/signs/` (Galerie aller Schilder unter `#/schilder`).
+
 ### Fehler-Review („Heute falsch“)
 
 Auf der Übersicht und unter „Üben“ steht eine Liste aller Elemente, die heute falsch beantwortet wurden (am Morgen die von gestern, bis heute etwas falsch läuft). Pro Element: Originalschrift, Name, wie oft falsch und ob es inzwischen wieder richtig war. „Genau diese üben“ startet eine Übung mit genau diesen Elementen, „Nur die … offenen“ lässt die schon wieder richtigen weg.
@@ -185,7 +200,7 @@ src/
   store/       Zustand-Store, localStorage, Migrationen, Import/Export
   sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
-  features/    Seiten: home, dashboard, learn, practice, session, mistakes, placement, tempo, map, script, scripts, profile
+  features/    Seiten: home, dashboard, learn, practice, session, mistakes, placement, signs, tempo, map, script, scripts, profile
   ui/          Bausteine: Buttons, Balken, Top-Bar, Modal
   styles/      Design-Tokens und Styles
 ```

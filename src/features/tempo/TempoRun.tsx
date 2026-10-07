@@ -35,6 +35,9 @@ import { MapView, type Mark } from '../map/MapView';
 import { sizeFor } from '../session/TaskPrompt';
 import { itemAnswer, itemNative } from './labels';
 import { tempoRunQuery } from './TempoPage';
+import { showsSign, signFor } from '../../domain/signs';
+import { SignStage } from '../signs/Sign';
+import { useSignView } from '../signs/SignViewToggle';
 
 interface TempoRequest {
   mode: TempoMode;
@@ -207,6 +210,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
   quitRef.current = quitOpen;
   const finished = useRef(false);
   const taskLabels = useMapLabels('taskMapLabels');
+  const signView = useSignView();
 
   const finish = useCallback(
     (s: TempoState) => {
@@ -299,6 +303,9 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
   const item = index.byId.get(task.itemId)!;
   const feedback = state.phase === 'feedback';
   const isMap = task.content === 'map';
+  // Signs for place names (not in flash mode: there the name disappears).
+  const sign = task.content !== 'letters' && mode !== 'flash' && showsSign(signView, task.key) ? signFor(index.content.id, item, task.key) : null;
+  const shopPrompt = sign?.kind === 'bd-shop' ? (isMap ? t('signs.shopLocate') : item.kind === 'city' ? t('signs.shopCity') : t('signs.shopDistrict')) : null;
   const wide = isMap && isWideMap(index);
   const done = state.answers.length;
   const right = state.answers.filter((a) => a.correct).length;
@@ -340,8 +347,9 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
             <div className={`tempo-timer-fill${feedback ? ' is-paused' : ''}`} style={{ animationDuration: `${state.limitMs}ms` }} />
           </div>
         )}
-        <p className="task-prompt">{hidden ? t('tempo.hidden') : t(`tempo.prompt.${task.content}`)}</p>
-        <div className={`plate tempo-plate${isMap ? ' plate-compact' : ''}`}>
+        <p className="task-prompt">{hidden ? t('tempo.hidden') : shopPrompt ?? t(`tempo.prompt.${task.content}`)}</p>
+        {sign && <SignStage spec={sign} revealed={feedback} lang={index.content.id} compact={isMap} />}
+        <div className={`plate tempo-plate${isMap ? ' plate-compact' : ''}`} hidden={!!sign}>
           {/* The name stays in the layout while hidden, so nothing jumps when it disappears. */}
           <span className={`glyph glyph-${isMap && sizeFor(task.display) !== 's' ? 'm' : sizeFor(task.display)}${hidden ? ' is-hidden' : ''}`} lang={index.content.id} aria-hidden={hidden}>
             {task.display}

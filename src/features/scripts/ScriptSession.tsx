@@ -24,6 +24,9 @@ import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { Button, Modal } from '../../ui/primitives';
 import { ScriptCard, ScriptText } from './ScriptParts';
+import { sampleSignFor, showsSign } from '../../domain/signs';
+import { SignStage } from '../signs/Sign';
+import { useSignView } from '../signs/SignViewToggle';
 import './scripts.css';
 
 /** Route for /scripts/lesson/:lessonId and /scripts/practice (?ids=… for exactly these scripts). */
@@ -135,6 +138,7 @@ function ScriptRunner({
   quitRef.current = quitOpen;
   const task = state.tasks[state.index];
   const newIds = useMemo(() => new Set(lesson?.newIds ?? []), [lesson]);
+  const signView = useSignView();
 
   const choose = useCallback(
     (picked: string) => {
@@ -202,6 +206,7 @@ function ScriptRunner({
   const total = state.plannedGraded + state.reasked.length;
   const feedback = state.phase === 'feedback';
   const target = SCRIPT_BY_ID.get(task.itemId)!;
+  const sign = task.kind === 'where' && !newIds.has(task.itemId) && showsSign(signView, task.key) ? sampleSignFor(task.itemId, task.sample.native, task.sample.latin, task.key) : null;
 
   return (
     <div className="session">
@@ -236,11 +241,17 @@ function ScriptRunner({
             {task.kind === 'where' ? (
               <>
                 <p className="task-prompt">{t('scripts.where')}</p>
-                <div className="script-sign">
-                  <ScriptText entry={target} className={`script-sign-text${Array.from(task.sample.native).length > 10 ? ' is-long' : ''}`}>
-                    {task.sample.native}
-                  </ScriptText>
-                </div>
+                {sign ? (
+                  <div className={`sf-${target.font}`}>
+                    <SignStage spec={sign} revealed={feedback} />
+                  </div>
+                ) : (
+                  <div className="script-sign">
+                    <ScriptText entry={target} className={`script-sign-text${Array.from(task.sample.native).length > 10 ? ' is-long' : ''}`}>
+                      {task.sample.native}
+                    </ScriptText>
+                  </div>
+                )}
                 <div className="choices script-options" role="group" aria-label={t('scripts.where')}>
                   {task.options.map((id, i) => {
                     const e = SCRIPT_BY_ID.get(id)!;

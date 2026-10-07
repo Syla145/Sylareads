@@ -86,9 +86,10 @@ export function migrate(raw: unknown): ProgressRoot {
   }
   const labels = (v: unknown): MapLabels | undefined => (v === 'native' || v === 'latin' || v === 'none' ? v : undefined);
   const tempo = isObj(settings.tempo) ? tempoSettingsOf(settings.tempo) : undefined;
+  const signView = settings.signView === 'off' || settings.signView === 'mixed' || settings.signView === 'always' ? settings.signView : undefined;
   return {
     ...base,
-    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}) },
+    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}), ...(signView ? { signView } : {}) },
     updatedAt: typeof raw.updatedAt === 'number' ? raw.updatedAt : Date.now(),
     lastExportAt: typeof raw.lastExportAt === 'number' ? raw.lastExportAt : null,
     profile: {

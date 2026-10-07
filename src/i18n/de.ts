@@ -379,4 +379,11 @@ export const de: Record<MessageKey, string> = {
   'scripts.practiceEmpty': 'Lerne zuerst ein paar Schriften in den Lektionen.',
   'scripts.mistakes': 'Falsch beantwortet',
   'scripts.backToCourse': 'Zurück zum Kurs',
+  'signs.view': 'Schildansicht',
+  'signs.view.off': 'Aus',
+  'signs.view.mixed': 'Gemischt',
+  'signs.view.always': 'Immer',
+  'signs.shopDistrict': 'In welchem Distrikt ist dieser Laden?',
+  'signs.shopCity': 'In welchem Ort ist dieser Laden?',
+  'signs.shopLocate': 'In welchem Distrikt ist dieser Laden? Tippe ihn auf der Karte an.',
 };

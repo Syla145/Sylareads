@@ -8,6 +8,7 @@ import { DEFAULT_TEMPO, useProgress } from '../../store/progressStore';
 import { Button, Card } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { itemAnswer } from './labels';
+import { SignViewToggle } from '../signs/SignViewToggle';
 
 const NO_ITEMS: Record<string, ItemProgress> = {};
 
@@ -53,6 +54,7 @@ export function TempoPage() {
       <header className="section-head">
         <h1 className="page-title">{t('tempo.title')}</h1>
         <p className="muted">{t('tempo.subtitle')}</p>
+        <SignViewToggle />
       </header>
 
       <section aria-labelledby="tempo-content">

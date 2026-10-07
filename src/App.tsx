@@ -19,6 +19,7 @@ import { PlacementRoute } from './features/placement/PlacementRoute';
 // The scripts course brings its own fonts; load it only when it is opened.
 const ScriptsHome = lazy(() => import('./features/scripts/ScriptsHome'));
 const ScriptSession = lazy(() => import('./features/scripts/ScriptSession'));
+const SignsPreview = lazy(() => import('./features/signs/SignsPreview'));
 
 function Loading() {
   const t = useT();
@@ -58,6 +59,7 @@ export function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/scripts" element={lazyPage(<ScriptsHome />)} />
+        <Route path="/schilder" element={lazyPage(<SignsPreview />)} />
         <Route path="/scripts/lesson/:lessonId" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />
         <Route path="/scripts/practice" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />
         <Route path="/:slug" element={<CourseGate />}>

@@ -18,6 +18,7 @@ import {
   type ProgressRoot,
   type TempoSettings,
 } from '../domain/progress';
+import type { SignView } from '../domain/signs';
 import type { TempoContent, TempoState } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 import { backupCurrent, clearAll, loadRoot, saveRoot } from './persistence';
@@ -39,6 +40,7 @@ interface ProgressState {
   savePracticeConfig: (courseId: string, config: PracticeConfigStored) => void;
   finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
+  setSignView: (view: SignView) => void;
   finishTempo: (courseId: string, s: TempoState, content: TempoContent, index: CourseIndex) => { unlocked: string[]; newBest: boolean; prevBest: number };
   replaceAll: (root: ProgressRoot) => void;
   /** Progress merged with the cloud copy (no backup: nothing is lost by a merge). */
@@ -86,6 +88,7 @@ export const useProgress = create<ProgressState>((set, get) => {
       commit(applyPlacement(get().root, courseId, outcome), true);
       return unlock(courseId, index);
     },
+    setSignView: (signView) => commit({ ...get().root, settings: { ...get().root.settings, signView } }, true),
     setTempoSettings: (patch) => {
       const root = get().root;
       const tempo = { ...DEFAULT_TEMPO, ...root.settings.tempo, ...patch };

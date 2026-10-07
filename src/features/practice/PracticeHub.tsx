@@ -9,6 +9,7 @@ import { Button, Card } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { practiceQuery } from './config';
 import { MistakesCard } from '../mistakes/MistakesCard';
+import { SignViewToggle } from '../signs/SignViewToggle';
 
 const COUNTS = [10, 20, 30, 50];
 
@@ -65,6 +66,7 @@ export function PracticeHub() {
     <div className="practice-hub">
       <header className="section-head">
         <h1 className="page-title">{t('practice.title')}</h1>
+        <SignViewToggle />
       </header>
 
       <Card className="smart-card">

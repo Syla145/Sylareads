@@ -7,6 +7,9 @@ import { placeNames, useLang, useT } from '../../i18n';
 import { MapLabelToggle, useMapLabels } from '../map/MapLabelToggle';
 import { layerOfItem } from '../map/layer';
 import { MapView, type Mark } from '../map/MapView';
+import { showsSign, signFor } from '../../domain/signs';
+import { SignStage } from '../signs/Sign';
+import { useSignView } from '../signs/SignViewToggle';
 
 /** Glyph size by length so long names never overflow and nothing jumps. */
 export function sizeFor(text: string): 'xl' | 'l' | 'm' | 's' {
@@ -27,9 +30,11 @@ interface Props {
   onChoose: (i: number) => void;
   onSubmit: () => void;
   onLocate: (id: string) => void;
+  /** Names may appear on a drawn sign (not for new items in a lesson, not in placement). */
+  signs?: boolean;
 }
 
-export function TaskPrompt({ index, task, state, input, setInput, inputRef, onChoose, onLocate }: Props) {
+export function TaskPrompt({ index, task, state, input, setInput, inputRef, onChoose, onLocate, signs = false }: Props) {
   const t = useT();
   const lang = useLang();
   const item = index.byId.get(task.itemId);
@@ -37,6 +42,9 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
   const taskLabels = useMapLabels('taskMapLabels');
   const layer = layerOfItem(item);
   const onMap = index.mapShapes.has(task.itemId);
+  const signView = useSignView();
+  const sign = signs && (task.kind === 'identify' || task.kind === 'locate') && showsSign(signView, task.key) ? signFor(index.content.id, item, task.key) : null;
+  const shop = sign?.kind === 'bd-shop';
 
   let prompt: string;
   if (task.kind === 'identify')
@@ -51,6 +59,8 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
   else if (task.question === 'map')
     prompt = layer === 'district' ? t('session.choiceMapDistrict') : layer === 'province' ? t('session.choiceMapProvince') : t('session.choiceMapRegion');
   else prompt = t('session.scan', { name: placeNames(item as PlaceItem, lang)[0] });
+  // A shop sign shows a whole address; the question is where the shop is.
+  if (shop) prompt = task.kind === 'locate' ? t('signs.shopLocate') : item?.kind === 'city' ? t('signs.shopCity') : t('signs.shopDistrict');
 
   const isScan = task.kind === 'choice' && task.question === 'scan';
   const isGlyphChoice = task.kind === 'choice' && task.question === 'glyph';
@@ -75,7 +85,8 @@ export function TaskPrompt({ index, task, state, input, setInput, inputRef, onCh
   return (
     <div className="task">
       <p className="task-prompt">{prompt}</p>
-      {display !== null && (
+      {sign && <SignStage spec={sign} revealed={feedback} lang={index.content.id} compact={task.kind === 'locate'} />}
+      {display !== null && !sign && (
         <div className={`plate${task.kind === 'locate' ? ' plate-compact' : ''}`}>
           <span className={`glyph glyph-${task.kind === 'locate' && sizeFor(display) !== 's' ? 'm' : sizeFor(display)}`} lang={index.content.id}>
             {display}
