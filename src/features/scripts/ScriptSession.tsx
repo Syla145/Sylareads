@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { SCRIPT_LESSONS, type ScriptLesson } from '../../content/scripts/data';
-import { ACHIEVEMENTS } from '../../domain/achievements';
+import { UnlockedList } from '../achievements/AchievementParts';
 import { levelFromXp } from '../../domain/gamification';
 import type { ProgressRoot } from '../../domain/progress';
 import {
@@ -413,19 +413,7 @@ function ScriptResult({
           </ul>
         </section>
       )}
-      {done.unlocked.length > 0 && (
-        <section className="complete-block achievement-toast" role="status">
-          <h2 className="card-label">{t('complete.achievement')}</h2>
-          {done.unlocked.map((id) => {
-            const a = ACHIEVEMENTS.find((x) => x.id === id);
-            return a ? (
-              <p key={id}>
-                <strong>{a.title[lang]}</strong> <span className="muted">{a.description[lang]}</span>
-              </p>
-            ) : null;
-          })}
-        </section>
-      )}
+      <UnlockedList ids={done.unlocked} />
       <div className="complete-actions">
         {actions.map((a, i) => (
           <Button key={a.label} variant={a.variant ?? (i === 0 ? 'primary' : 'secondary')} block onClick={a.onClick} autoFocus={i === 0}>

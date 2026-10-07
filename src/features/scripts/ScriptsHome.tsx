@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SCRIPT_ENTRIES, SCRIPT_LESSONS, type ScriptEntry } from '../../content/scripts/data';
 import { nextScriptLesson, SCRIPT_BY_ID, SCRIPTS_COURSE_ID, scriptsKnown, scriptsStarted } from '../../domain/scriptCourse';
@@ -8,6 +8,7 @@ import { useProgress } from '../../store/progressStore';
 import { Button, Card, MasteryLegend, Modal, ProgressBar, StateDot } from '../../ui/primitives';
 import { TopBar } from '../../ui/TopBar';
 import { MistakesList } from './ScriptMistakes';
+import { NextGoals } from '../achievements/AchievementParts';
 import { ScriptCard, ScriptText } from './ScriptParts';
 import './scripts.css';
 import { SignViewToggle } from '../signs/SignViewToggle';
@@ -22,6 +23,8 @@ export default function ScriptsHome() {
   const cp = useProgress((s) => s.root.courses[SCRIPTS_COURSE_ID]);
   const items = cp?.items ?? NO_ITEMS;
   const [open, setOpen] = useState<ScriptEntry | null>(null);
+  const syncAchievements = useProgress((s) => s.syncAchievements);
+  useEffect(() => syncAchievements(SCRIPTS_COURSE_ID, null), [syncAchievements]);
   const next = nextScriptLesson(cp?.lessons);
   const known = scriptsKnown(items);
   const started = scriptsStarted(items);
@@ -55,6 +58,7 @@ export default function ScriptsHome() {
         </Card>
 
         <MistakesList />
+        <NextGoals courseId={SCRIPTS_COURSE_ID} index={null} />
 
         <section className="scripts-lessons">
           <h2 className="section-label">{t('scripts.lessons')}</h2>

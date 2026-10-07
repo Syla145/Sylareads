@@ -1,0 +1,121 @@
+.ach-medal {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  flex: none;
+}
+
+.ach-medal-0.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.ach-medal-1.is-on {
+  border-color: #c58a5a;
+  background: #c58a5a;
+}
+
+.ach-medal-2.is-on {
+  border-color: #c4cad3;
+  background: #c4cad3;
+}
+
+.ach-medal-3.is-on {
+  border-color: #e7b93e;
+  background: #e7b93e;
+}
+
+.ach-medals {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.ach-card .achievement-list li {
+  grid-template-columns: 58px 1fr auto;
+}
+
+.ach-group + .ach-group {
+  border-top: 1px solid var(--border);
+}
+
+.ach-group-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  list-style: none;
+}
+
+.ach-group-title::-webkit-details-marker {
+  display: none;
+}
+
+.ach-group-title::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.ach-group[open] > .ach-group-title::before {
+  transform: rotate(45deg);
+}
+
+.ach-group-title > .tabular {
+  margin-left: auto;
+}
+
+.ach-group-title:hover {
+  color: var(--text-primary);
+}
+
+.ach-toast-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.ach-next-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-2) 0 0;
+  display: grid;
+  gap: var(--s-4);
+}
+
+.ach-next-list li {
+  display: grid;
+  gap: 6px;
+}
+
+.ach-next-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.ach-next-head .tabular {
+  margin-left: auto;
+}
+
+.session-toast {
+  max-width: 640px;
+  margin: 0 auto var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent);
+  text-align: center;
+  font-weight: 600;
+  animation: enter 200ms var(--ease);
+}

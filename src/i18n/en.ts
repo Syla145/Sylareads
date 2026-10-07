@@ -386,6 +386,12 @@ export const en = {
   'signs.shopDistrict': 'Which district is this shop in?',
   'signs.shopCity': 'Which town is this shop in?',
   'signs.shopLocate': 'Which district is this shop in? Tap it on the map.',
+  'ach.general': 'General',
+  'ach.secret': 'Secret',
+  'ach.secretFound': 'You know what you did.',
+  'ach.secretToast': 'Achievement unlocked: ?',
+  'ach.next': 'Next',
+  'ach.nextTitle': 'Next achievements',
 } as const;
 
 export type MessageKey = keyof typeof en;

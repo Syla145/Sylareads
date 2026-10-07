@@ -183,11 +183,13 @@ describe('scripts lessons and practice', () => {
     expect(new Set(buildScriptPractice({}, 8, seededRng(3), undefined, ['scripts:tamil']).map((t) => t.itemId))).toEqual(new Set(['scripts:tamil']));
   });
 
-  it('all scripts recognised reliably unlocks "Script Spotter"', () => {
+  it('Script Spotter tiers and the family specials', () => {
     const root = emptyRoot('de', 1);
-    root.courses.scripts = { ...emptyCourse(1), items: Object.fromEntries(SCRIPT_ENTRIES.map((e) => [e.id, box(3)])) };
-    expect(newlyUnlocked(root, 'scripts', null)).toContain('script-spotter');
-    root.courses.scripts.items['scripts:lao'] = box(2);
-    expect(newlyUnlocked(root, 'scripts', null)).not.toContain('script-spotter');
+    root.courses.scripts = { ...emptyCourse(1), items: Object.fromEntries(SCRIPT_ENTRIES.map((e) => [e.id, box(5)])) };
+    expect(newlyUnlocked(root, 'scripts', null)).toEqual(expect.arrayContaining(['scripts:spotter:1', 'scripts:spotter:2', 'scripts:spotter:3', 'scripts:cyrillic', 'scripts:india']));
+    root.courses.scripts.items['scripts:lao'] = box(4);
+    const ids = newlyUnlocked(root, 'scripts', null);
+    expect(ids).not.toContain('scripts:spotter:3');
+    expect(ids).toContain('scripts:cyrillic');
   });
 });

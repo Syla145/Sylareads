@@ -388,4 +388,10 @@ export const de: Record<MessageKey, string> = {
   'signs.shopDistrict': 'In welchem Distrikt ist dieser Laden?',
   'signs.shopCity': 'In welchem Ort ist dieser Laden?',
   'signs.shopLocate': 'In welchem Distrikt ist dieser Laden? Tippe ihn auf der Karte an.',
+  'ach.general': 'Allgemein',
+  'ach.secret': 'Geheim',
+  'ach.secretFound': 'Du weißt, was du getan hast.',
+  'ach.secretToast': 'Erfolg freigeschaltet: ?',
+  'ach.next': 'Nächste Stufe',
+  'ach.nextTitle': 'Nächste Erfolge',
 };

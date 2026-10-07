@@ -9,6 +9,7 @@ import { useCourse } from '../course/useCourse';
 import { MapGoal } from '../map/MapPage';
 import { PlacementCard } from '../placement/PlacementOptions';
 import { MistakesCard } from '../mistakes/MistakesCard';
+import { NextGoals } from '../achievements/AchievementParts';
 import { recommendedPath } from './recommend';
 
 const BAR_ORDER: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
@@ -84,6 +85,7 @@ export function DashboardPage() {
       <div className="dash-grid">
         <MistakesCard />
         <MapGoal />
+        <NextGoals courseId={meta.id} index={index} />
         <Card className="card-recommended">
           <h2 className="card-label">{t('dash.recommended')}</h2>
           {recLesson ? (

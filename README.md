@@ -11,7 +11,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
-- XP, Level, Streak, 19 Achievements (u. a. „Halbe Karte“, „Ganze Karte“, „Blitzleser“ und „Schriftkenner“), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
+- XP, Level, Streak, Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 
@@ -66,7 +66,7 @@ Ein Blick aufs Schild verrät oft schon das Land. Der Kurs zeigt Ortsnamen in 28
 
 - Jede Schrift hat zwei, drei Erkennungszeichen mit Beispielzeichen und echte Ortsnamen von Schildern. Bei den Kyrillisch-Varianten enthält jedes Beispiel sein Erkennungszeichen (ы/э, ї/є/ґ, ъ, ђ/ћ/џ, ѓ/ќ/ѕ, қ/ғ/ә/ұ/һ, doppelte Vokale); ein Test prüft das. Kirgisistan fehlt bewusst: seine Schrift ist von Kasachisch und Mongolisch an einzelnen Buchstaben kaum sicher zu trennen.
 - Aufgaben: **Wo bist du?** (ein Ortsname, vier Orte zur Wahl) und **Welcher Name steht in …?** (drei Namen, einer ist gesucht). Falsche Optionen kommen bevorzugt aus der Verwechslungsgruppe derselben Familie. Nach einem Fehler zeigt das Feedback das Erkennungszeichen; die Schrift kommt einmal wieder.
-- Fortschritt im normalen Speicher unter dem Kurs `scripts` (SRS, XP, Streak, Fehler-Review, Online-Speicherung). Seite mit allen Schriften zum Nachschlagen, Erfolg „Schriftkenner“ für alle 28.
+- Fortschritt im normalen Speicher unter dem Kurs `scripts` (SRS, XP, Streak, Fehler-Review, Online-Speicherung). Seite mit allen Schriften zum Nachschlagen, Erfolge „Schriftkenner“ (10/20/28 Schriften), „Kyrillisch-Detektiv“ und „Indien-Kenner“.
 - Schriftarten: Noto (SIL OFL 1.1). `tools/script-fonts.mjs` kopiert nur die nötigen Teilmengen nach `src/features/scripts/fonts/` (≈ 1,5 MB, der Browser lädt nur, was er anzeigt); nach Änderungen an `src/content/scripts/data.ts` neu ausführen – ein Test meldet fehlende Zeichen. Der Kurs wird erst beim Öffnen geladen.
 - Nächste Ausbaustufe: lateinische Sonderzeichen (ő ű → Ungarn, ł → Polen, ș ț → Rumänien, ğ ş → Türkei, å ø æ → Skandinavien).
 
@@ -160,6 +160,17 @@ Weitere Hinweise:
 ## Fortschritt und Datenschutz
 
 Ohne Anmeldung bleibt alles im Browser des Nutzers (localStorage, ca. 200 KB im Vollausbau). Es gibt keine Tracker. Safari kann Website-Daten nach 7 Tagen ohne Besuch löschen; deshalb im Profil regelmäßig **Fortschritt exportieren** oder online speichern. Der Import zeigt vorher an, was ersetzt wird, und behält den alten Stand als Sicherung.
+
+## Erfolge
+
+Erfolge sind nach Kursen gruppiert; die meisten haben drei Stufen (Bronze, Silber, Gold). Alle Messungen stehen ohne Oberfläche in `src/domain/achievements.ts` (jeder Erfolg hat eine Funktion `measure`, die Wert und Ziel liefert).
+
+- **Allgemein:** Erste Schritte, Dranbleiben (Streak 7/30/100 Tage), Vielleser (1.000/5.000/10.000 Antworten).
+- **Pro Sprachkurs:** Alphabet (alle Buchstaben kennengelernt / Moderate / Pro), Stadtleser (10/50/100 Städte auf Pro), Lernpfad (10 Lektionen / Hälfte / alle; nur gespielte, nicht eingestufte), Blitz (15/25/35 richtige in einer Blitzrunde), Fehlerfrei (1/5/15 Lektionen ohne Fehler), Kartenkenner (Hälfte auf Pro / alle auf Pro / alle auf Expert; nur Kurse mit Karte) und ein Sonder-Erfolg je Sprache (False Friends, Buchstabenpaare, Vokalzeichen, Ligaturen).
+- **Schriften erkennen:** Schriftkenner, Kyrillisch-Detektiv, Indien-Kenner.
+- **Geheim:** ein Erfolg, der nur als „?“ erscheint.
+
+Die Übersicht im Profil zeigt je Erfolg die drei Medaillen und die nächste Stufe; Kurse ohne erreichten Erfolg sind eingeklappt. Die Kursübersicht zeigt unter „Nächste Erfolge“ die zwei nächstliegenden Ziele mit Fortschrittsbalken. Erfolge werden beim Öffnen eines Kurses und nach jeder Sitzung nachgeprüft, also auch rückwirkend vergeben. Erfolge aus der alten Liste (vor der Umstellung) werden nicht mehr angezeigt.
 
 ## Online-Speicherung (optional, Firebase)
 

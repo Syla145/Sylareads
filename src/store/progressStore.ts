@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { newlyUnlocked } from '../domain/achievements';
+import { newlyUnlocked, SECRET_ID } from '../domain/achievements';
 import type { CourseIndex } from '../domain/courseIndex';
 import type { PlacementOutcome } from '../domain/placement';
 import {
@@ -41,6 +41,10 @@ interface ProgressState {
   finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
   setSignView: (view: SignView) => void;
+  /** Easter egg; true when it was new. */
+  unlockSecret: () => boolean;
+  /** Fills in achievements already earned (silently, e.g. when a course is opened). */
+  syncAchievements: (courseId: string, index: CourseIndex | null) => void;
   finishTempo: (courseId: string, s: TempoState, content: TempoContent, index: CourseIndex) => { unlocked: string[]; newBest: boolean; prevBest: number };
   replaceAll: (root: ProgressRoot) => void;
   /** Progress merged with the cloud copy (no backup: nothing is lost by a merge). */
@@ -87,6 +91,15 @@ export const useProgress = create<ProgressState>((set, get) => {
     finishPlacement: (courseId, outcome, index) => {
       commit(applyPlacement(get().root, courseId, outcome), true);
       return unlock(courseId, index);
+    },
+    unlockSecret: () => {
+      if (get().root.profile.achievements[SECRET_ID]) return false;
+      commit(unlockAchievements(get().root, [SECRET_ID]), true);
+      return true;
+    },
+    syncAchievements: (courseId, index) => {
+      const ids = newlyUnlocked(get().root, courseId, index);
+      if (ids.length) commit(unlockAchievements(get().root, ids), true);
     },
     setSignView: (signView) => commit({ ...get().root, settings: { ...get().root.settings, signView } }, true),
     setTempoSettings: (patch) => {

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { ACHIEVEMENTS } from '../../domain/achievements';
+import { UnlockedList } from '../achievements/AchievementParts';
 import { letterGlyphs, nativeOf, type CourseIndex } from '../../domain/courseIndex';
 import { LETTERS_SCOPE, passMark, PLACEMENT, placementOutcome, placementScope, placementTasks, type PlacementMode, type PlacementOutcome, type PlacementScope } from '../../domain/placement';
 import type { ProgressRoot } from '../../domain/progress';
@@ -130,7 +130,6 @@ function PlacementResult({
   actions: { label: string; onClick: () => void; variant?: 'primary' | 'secondary' | 'ghost' }[];
 }) {
   const t = useT();
-  const lang = useLang();
   const { outcome, before, after } = done;
   const boxBefore = (id: string) => before.courses[courseId]?.items[id]?.box ?? 0;
   const taken = Object.entries(outcome.boxes).filter(([id, box]) => box > boxBefore(id)).length;
@@ -173,19 +172,7 @@ function PlacementResult({
         </section>
       )}
 
-      {done.unlocked.length > 0 && (
-        <section className="complete-block achievement-toast" role="status">
-          <h2 className="card-label">{t('complete.achievement')}</h2>
-          {done.unlocked.map((id) => {
-            const a = ACHIEVEMENTS.find((x) => x.id === id);
-            return a ? (
-              <p key={id}>
-                <strong>{a.title[lang]}</strong> <span className="muted">{a.description[lang]}</span>
-              </p>
-            ) : null;
-          })}
-        </section>
-      )}
+      <UnlockedList ids={done.unlocked} />
 
       <div className="complete-actions">
         {actions.map((a, i) => (

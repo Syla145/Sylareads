@@ -208,24 +208,24 @@ describe('content updates', () => {
 });
 
 describe('map achievements', () => {
-  it('unlock for half and for all areas of a map', async () => {
-    const { ACHIEVEMENTS } = await import('./achievements');
+  it('Kartenkenner: half on Pro, all on Pro, all on Expert', async () => {
+    const { achievementById } = await import('./achievements');
     const { attachMap } = await import('./courseIndex');
     const bn = (await import('../content/bn')).default;
     const map = (await import('../content/bn/map.json')).default as unknown as import('./types').CourseMap;
     const index = attachMap(buildIndex(bn), map);
     const ids = [...index.mapShapes.keys()];
-    const root = { courses: { bn: { items: {} as Record<string, { box: number }> } } } as never as import('./progress').ProgressRoot;
-    const half = ACHIEVEMENTS.find((a) => a.id === 'map-half')!;
-    const all = ACHIEVEMENTS.find((a) => a.id === 'map-all')!;
-    const set = (n: number) => { for (const id of ids.slice(0, n)) (root.courses.bn.items as Record<string, unknown>)[id] = { box: 3 }; };
-    set(31);
-    expect(half.check(root, 'bn', index)).toBe(false);
-    set(32);
-    expect(half.check(root, 'bn', index)).toBe(true);
-    expect(all.check(root, 'bn', index)).toBe(false);
-    set(64);
-    expect(all.check(root, 'bn', index)).toBe(true);
-    expect(all.check(root, 'ru', index)).toBe(false);
+    const root = { courses: { bn: { items: {} as Record<string, { box: number }> } }, profile: { achievements: {} } } as never as import('./progress').ProgressRoot;
+    const [half, all, expert] = [1, 2, 3].map((t) => achievementById(`bn:map:${t}`)!);
+    const set = (n: number, box: number) => { for (const id of ids.slice(0, n)) (root.courses.bn.items as Record<string, unknown>)[id] = { box }; };
+    set(31, 5);
+    expect(half.measure(root, index)).toEqual({ value: 31, target: 32 });
+    set(32, 5);
+    expect(half.measure(root, index)).toEqual({ value: 32, target: 32 });
+    expect(all.measure(root, index)!.value).toBe(32);
+    set(64, 6);
+    expect(all.measure(root, index)).toEqual({ value: 64, target: 64 });
+    expect(expert.measure(root, index)!.value).toBe(0);
+    expect(half.measure(root, null)).toBeNull();
   });
 });

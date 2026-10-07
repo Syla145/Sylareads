@@ -117,8 +117,9 @@ describe('placement in the progress document', () => {
   it('placing lessons unlocks no lesson achievements', () => {
     const after = applyPlacement(emptyRoot('de', 1000), 'ru', outcome);
     const ids = newlyUnlocked(after, 'ru', ru_);
-    expect(ids).not.toContain('first-steps');
-    expect(ids).toContain('full-alphabet');
+    expect(ids).not.toContain('general:first-steps');
+    expect(ids).not.toContain('ru:path:1'.replace('1', '3'));
+    expect(ids).toContain('ru:alphabet:1');
   });
 
   it('a played lesson replaces a placed one, also across devices', () => {

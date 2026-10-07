@@ -239,9 +239,12 @@ describe('tempo in the progress document', () => {
     expect(mergeRoots(emptyRoot('de', 1), emptyRoot('de', 1)).courses).toEqual({});
   });
 
-  it('30 correct answers in a Blitz round unlock "Lightning Reader"', () => {
+  it('30 correct answers in a Blitz round unlock Blitz Bronze and Silver of that course', () => {
     const root = emptyRoot('de', 1000);
     root.courses.ru = { ...emptyCourse(1000), tempo: { items: {}, days: {}, best: { 'blitz:letters': { score: 30, at: 1 } } } };
-    expect(newlyUnlocked(root, 'ru', ru_)).toContain('blitz-30');
+    const ids = newlyUnlocked(root, 'ru', ru_);
+    expect(ids).toEqual(expect.arrayContaining(['ru:blitz:1', 'ru:blitz:2']));
+    expect(ids).not.toContain('ru:blitz:3');
+    expect(ids.some((id) => id.startsWith('el:'))).toBe(false);
   });
 });

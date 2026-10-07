@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { courseBySlug } from '../../content/registry';
 import { useT } from '../../i18n';
+import { useProgress } from '../../store/progressStore';
 import { CourseTabs, TopBar } from '../../ui/TopBar';
 import { CourseContext, useCourseIndex } from './useCourse';
 
@@ -16,6 +17,12 @@ export function CourseGate({ focus = false }: { focus?: boolean }) {
   useEffect(() => {
     if (!focus) window.scrollTo(0, 0);
   }, [location.pathname, focus]);
+
+  // Achievements already earned (e.g. before they existed) are filled in quietly.
+  const syncAchievements = useProgress((s) => s.syncAchievements);
+  useEffect(() => {
+    if (index && meta) syncAchievements(meta.id, index);
+  }, [index, meta, syncAchievements]);
 
   if (!meta || meta.status !== 'available') return <Navigate to="/" replace />;
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ACHIEVEMENTS } from '../../domain/achievements';
+import { UnlockedList } from '../achievements/AchievementParts';
 import type { CourseIndex } from '../../domain/courseIndex';
 import { levelFromXp } from '../../domain/gamification';
 import { confusedTwiceSet, type ProgressRoot } from '../../domain/progress';
@@ -130,19 +130,7 @@ export function CompleteScreen({
         </section>
       )}
 
-      {data.unlocked.length > 0 && (
-        <section className="complete-block achievement-toast" role="status">
-          <h2 className="card-label">{t('complete.achievement')}</h2>
-          {data.unlocked.map((id) => {
-            const a = ACHIEVEMENTS.find((x) => x.id === id);
-            return a ? (
-              <p key={id}>
-                <strong>{a.title[lang]}</strong> <span className="muted">{a.description[lang]}</span>
-              </p>
-            ) : null;
-          })}
-        </section>
-      )}
+      <UnlockedList ids={data.unlocked} />
 
       <div className="complete-actions">
         {actions.map((a, i) => (

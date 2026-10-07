@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ACHIEVEMENTS } from '../../domain/achievements';
+import { AchievementsOverview } from '../achievements/AchievementParts';
 import { dayKey } from '../../domain/dates';
 import { displayedStreak, levelProgress } from '../../domain/gamification';
 import { formatDate, useLang, useT, type TKey } from '../../i18n';
@@ -79,26 +79,7 @@ export function ProfilePage() {
           </Card>
         </div>
 
-        <Card>
-          <h2 className="card-label">{t('profile.achievements')}</h2>
-          <ul className="achievement-list">
-            {ACHIEVEMENTS.map((a) => {
-              const at = root.profile.achievements[a.id];
-              return (
-                <li key={a.id} className={at ? 'is-unlocked' : ''}>
-                  <span className="ach-mark" aria-hidden="true">
-                    {at ? '✓' : ''}
-                  </span>
-                  <span>
-                    <strong>{a.title[lang]}</strong>
-                    <span className="muted small">{a.description[lang]}</span>
-                  </span>
-                  {at && <span className="muted small">{formatDate(at, lang)}</span>}
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
+        <AchievementsOverview />
 
         <Card>
           <h2 className="card-label">{t('profile.language')}</h2>

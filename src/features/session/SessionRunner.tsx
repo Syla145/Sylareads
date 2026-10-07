@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CourseIndex } from '../../domain/courseIndex';
 import { evaluateTyped, type Evaluation } from '../../domain/evaluate';
+import { isSecretPhrase } from '../../domain/achievements';
+import '../achievements/achievements.css';
 import { advance, createSession, currentTask, submit, type EngineDeps, type SessionMode, type SessionState } from '../../domain/sessionEngine';
 import type { Task } from '../../domain/tasks';
 import { useT } from '../../i18n';
@@ -37,6 +39,13 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
   const [state, setState] = useState<SessionState>(() => createSession(tasks, mode, { noRepeat }));
   const [input, setInput] = useState('');
   const [quitOpen, setQuitOpen] = useState(false);
+  const [secret, setSecret] = useState(false);
+  const unlockSecret = useProgress((s) => s.unlockSecret);
+  useEffect(() => {
+    if (!secret) return;
+    const id = setTimeout(() => setSecret(false), 4000);
+    return () => clearTimeout(id);
+  }, [secret]);
   const inputRef = useRef<HTMLInputElement>(null);
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -81,8 +90,13 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     if (!tk || tk.kind === 'intro' || tk.kind === 'choice' || tk.kind === 'locate' || s.phase !== 'answer') return;
     const value = inputValueRef.current;
     if (!value.trim()) return;
+    if (mode === 'learn' && isSecretPhrase(value)) {
+      setInput('');
+      if (unlockSecret()) setSecret(true);
+      return;
+    }
     doSubmit(value, evaluateTyped(index, tk, value));
-  }, [doSubmit, index]);
+  }, [doSubmit, index, mode, unlockSecret]);
 
   const choose = useCallback(
     (i: number) => {
@@ -200,6 +214,11 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
       </header>
 
       {notice && state.index === 0 && <p className="session-notice">{notice}</p>}
+      {secret && (
+        <p className="session-toast" role="status">
+          {t('ach.secretToast')}
+        </p>
+      )}
 
       <main className={`session-main${isMapTask(task) && isWideMap(index) ? ' is-wide' : ''}`} key={task.key}>
         {task.kind === 'intro' ? (
