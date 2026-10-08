@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { buildConfuserRound } from '../../domain/confusers';
 import { buildPractice, poolFor, practiceTasksFor, ALL_CATEGORIES } from '../../domain/practiceBuilder';
 import { confusedTwiceSet } from '../../domain/progress';
 import type { SessionState } from '../../domain/sessionEngine';
@@ -36,7 +37,9 @@ function PracticeSession() {
     const ctx = { items, confusedTwice: confusedTwiceSet(cp) };
     let tasks: Task[] = [];
     let notice: string | undefined;
-    if (req.kind === 'config') {
+    if (req.kind === 'confusers') {
+      tasks = buildConfuserRound(index, cp, rng);
+    } else if (req.kind === 'config') {
       tasks = buildPractice(index, req.config, ctx, rng);
       if (req.config.weakOnly && poolFor(index, { ...req.config, categories: ALL_CATEGORIES }, ctx).length < 5 && tasks.length) {
         notice = t('session.weakFilled');
@@ -63,6 +66,22 @@ function PracticeSession() {
     if (window.history.length > 1) navigate(-1);
     else navigate(base);
   };
+
+  if (!setup.tasks.length && setup.req.kind === 'confusers') {
+    return (
+      <main className="session-done empty-state">
+        <p>{t('practice.confusersEmpty')}</p>
+        <div className="actions">
+          <ButtonLink variant="primary" to={`${base}/learn`}>
+            {t('nav.learn')}
+          </ButtonLink>
+          <Link className="btn btn-ghost" to={base}>
+            {t('common.back')}
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   if (!setup.tasks.length) {
     const allContent = new URLSearchParams(params);

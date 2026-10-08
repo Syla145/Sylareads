@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { confuserPairs } from '../../domain/confusers';
 import { ALL_CATEGORIES, poolFor, poolReadability, type PracticeConfig } from '../../domain/practiceBuilder';
 import { confusedTwiceSet } from '../../domain/progress';
 import { CATEGORY_KINDS, type Category } from '../../domain/types';
@@ -56,9 +57,11 @@ export function PracticeHub() {
     navigate(`${base}/practice/run?${practiceQuery(config)}`);
   };
 
-  const modes: { key: Category | 'weak' | 'mixed'; to: string; count: number }[] = [
+  const confusers = confuserPairs(index, cp).length;
+  const modes: { key: Category | 'weak' | 'mixed' | 'confusers'; to: string; count: number }[] = [
     ...ALL_CATEGORIES.map((c) => ({ key: c, to: `?c=${c}&scope=learned`, count: learned(c) })),
     { key: 'weak', to: '?mode=weak', count: weakCount },
+    { key: 'confusers', to: '?mode=confusers', count: confusers },
     { key: 'mixed', to: '?mode=mixed', count: ALL_CATEGORIES.reduce((s, c) => s + learned(c), 0) },
   ];
 
@@ -91,7 +94,7 @@ export function PracticeHub() {
                 <span className="mode-title">{t(`cat.${m.key}`)}</span>
                 <span className="muted small">{t(`practice.desc.${m.key}`)}</span>
               </span>
-              <span className="mode-row-count tabular">{t('practice.learnedCount', { n: m.count })}</span>
+              <span className="mode-row-count tabular">{m.key === 'confusers' ? t('practice.pairCount', { n: m.count }) : t('practice.learnedCount', { n: m.count })}</span>
             </button>
           </li>
         ))}

@@ -471,6 +471,12 @@ export const en = {
   'ch.todayResult': 'Today:',
   'ch.dailyTeaser': '10 place names, the same for everybody, one attempt. Still open today.',
   'ch.seeBoard': 'See results',
+  'cat.confusers': 'Look-alikes',
+  'practice.desc.confusers': 'Similar characters against each other, e.g. the ones you mixed up',
+  'practice.pairCount.one': '1 pair',
+  'practice.pairCount.other': '{n} pairs',
+  'practice.confusersEmpty': 'No look-alikes yet. As soon as you mix up two similar characters or have learned pairs like ব/র, you can practise them against each other here.',
+  'dash.trainConfusers': 'Practise look-alikes',
 } as const;
 
 export type MessageKey = keyof typeof en;

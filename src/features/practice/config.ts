@@ -4,7 +4,7 @@ import type { Category } from '../../domain/types';
 /**
  * Practice sessions are described entirely by the URL, so every session can be
  * restarted ("Practice again") and linked:
- *   ?mode=smart | weak | mixed
+ *   ?mode=smart | weak | mixed | confusers
  *   ?c=letters,cities&scope=all&weak=1&n=30   (free practice)
  *   ?lesson=<lessonId>                         (practice this lesson)
  *   ?ids=<id>,<id>                              (practice mistakes)
@@ -12,7 +12,8 @@ import type { Category } from '../../domain/types';
 export type PracticeRequest =
   | { kind: 'config'; config: PracticeConfig; mode: 'smart' | 'weak' | 'mixed' | 'custom' }
   | { kind: 'lesson'; lessonId: string; count: number }
-  | { kind: 'ids'; ids: string[] };
+  | { kind: 'ids'; ids: string[] }
+  | { kind: 'confusers' };
 
 const isCategory = (c: string): c is Category => (ALL_CATEGORIES as string[]).includes(c);
 
@@ -22,6 +23,7 @@ export function parsePracticeParams(params: URLSearchParams): PracticeRequest {
   const ids = params.get('ids');
   if (ids) return { kind: 'ids', ids: ids.split(',').filter(Boolean) };
   const mode = params.get('mode');
+  if (mode === 'confusers') return { kind: 'confusers' };
   const count = Math.min(50, Math.max(5, Number(params.get('n')) || 20));
   if (mode === 'smart') return { kind: 'config', mode, config: { ...SMART_PRACTICE, count } };
   if (mode === 'weak') return { kind: 'config', mode, config: { ...SMART_PRACTICE, weakOnly: true, count } };

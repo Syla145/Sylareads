@@ -473,4 +473,10 @@ export const de: Record<MessageKey, string> = {
   'ch.todayResult': 'Heute:',
   'ch.dailyTeaser': '10 Ortsnamen, für alle dieselben, ein Versuch. Heute noch offen.',
   'ch.seeBoard': 'Ergebnisse ansehen',
+  'cat.confusers': 'Verwechsler',
+  'practice.desc.confusers': 'Ähnliche Zeichen gegeneinander, vor allem die, die du schon verwechselt hast',
+  'practice.pairCount.one': '1 Paar',
+  'practice.pairCount.other': '{n} Paare',
+  'practice.confusersEmpty': 'Noch keine Verwechsler. Sobald du zwei ähnliche Zeichen verwechselst oder Paare wie ব/র gelernt hast, kannst du sie hier gegeneinander üben.',
+  'dash.trainConfusers': 'Verwechsler üben',
 };

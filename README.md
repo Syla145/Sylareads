@@ -8,7 +8,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 
 - 41 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen, 11 Städte- und 13 Regionslektionen (auf der Karte)
 - 100 Städte (die größten nach Einwohnerzahl) und alle 83 international anerkannten Föderationssubjekte (ohne Krim und Sewastopol), 51 GeoGuessr-Begriffe mit Abkürzungen, 35 Übungswörter, 56 Kombinationen
-- Lernen, Üben, Freies Üben, alle acht Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed), Smart Practice, Scan-Aufgabe
+- Lernen, Üben, Freies Üben, alle neun Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed, Verwechsler), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
 - XP, Level, Streak, Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
@@ -158,6 +158,10 @@ Weitere Hinweise:
 - Der Build verwendet relative Pfade und Hash-Routing (`#/russian/learn`). Der Repository-Name ist deshalb egal, und direkte Links funktionieren ohne Server-Konfiguration.
 - Schlägt ein Test fehl, wird nicht veröffentlicht. Die Inhaltstests prüfen u. a., dass jeder Ort mit allen Namen erkannt wird und keine Antwort zwei Orte gleichzeitig trifft.
 - Eigene Domain: unter **Settings → Pages → Custom domain** eintragen.
+
+## Verwechsler-Runde
+
+Übt ähnliche Zeichen gegeneinander (`src/domain/confusers.ts`, Üben → „Verwechsler“, `?mode=confusers`). Die Paare kommen aus zwei Quellen: Zeichen, die du tatsächlich verwechselt hast (jede Antwort, die für ein anderes Zeichen richtig gewesen wäre, wird gezählt), und die festen Ähnlichkeits-Paare des Kurses (z. B. ব/র, ড/ড়), sobald beide Zeichen eingeführt sind. Paare mit gleicher Lesung (শ/ষ) fallen weg. Pro Runde bis zu 6 Paare, jedes dreimal: beide Zeichen nach Lesung, eins umgekehrt (Lesung → Zeichen); dasselbe Paar kommt nie zweimal hintereinander.
 
 ## Daily Challenge und Duell
 

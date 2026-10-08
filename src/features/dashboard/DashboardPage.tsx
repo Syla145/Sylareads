@@ -11,6 +11,7 @@ import { PlacementCard } from '../placement/PlacementOptions';
 import { MistakesCard } from '../mistakes/MistakesCard';
 import { NextGoals } from '../achievements/AchievementParts';
 import { recommendedPath } from './recommend';
+import { confuserPairs } from '../../domain/confusers';
 import { DailyCard } from '../challenge/ChallengePages';
 
 const BAR_ORDER: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
@@ -58,6 +59,7 @@ export function DashboardPage() {
   const rec = stats.recommendation;
   const recLesson = rec.kind === 'lesson' ? index.content.lessons.find((l) => l.id === rec.lessonId) : undefined;
   const nextLesson = index.content.lessons.find((l) => !cp?.lessons[l.id]);
+  const confusers = confuserPairs(index, cp).length;
   const weakItems = stats.weakIds.slice(0, 8).map((id) => index.byId.get(id)!);
   const recPath = recommendedPath(meta, index, cp);
   const recTitle = recLesson
@@ -124,7 +126,10 @@ export function DashboardPage() {
                     </span>
                   ))}
                 </div>
-                <ButtonLink to={`${base}/practice/run?mode=weak`}>{t('dash.trainWeak')}</ButtonLink>
+                <div className="actions">
+                  <ButtonLink to={`${base}/practice/run?mode=weak`}>{t('dash.trainWeak')}</ButtonLink>
+                  {confusers >= 2 && <ButtonLink to={`${base}/practice/run?mode=confusers`}>{t('dash.trainConfusers')}</ButtonLink>}
+                </div>
               </>
             ) : (
               <p className="muted">{t('dash.weakEmpty')}</p>
