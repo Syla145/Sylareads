@@ -180,6 +180,7 @@ function Countdown({ mode, onDone, onQuit }: { mode: TempoMode; onDone: () => vo
   }, [onQuit]);
   return (
     <main className="tempo-countdown" aria-live="assertive">
+      <h1 className="sr-only">{t('tempo.title')}</h1>
       <p className="muted">{t(`tempo.mode.${mode}`)}</p>
       <p className="tempo-countdown-title">{t('tempo.ready')}</p>
       <p className="tempo-countdown-n tabular" key={n}>
@@ -319,8 +320,8 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
 
   return (
     <div className="session tempo-session">
-      <h1 className="sr-only">{t('tempo.title')}</h1>
       <header className="session-bar">
+        <h1 className="sr-only">{t('tempo.title')}</h1>
         <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />

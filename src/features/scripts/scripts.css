@@ -95,6 +95,25 @@
   color: var(--text-secondary);
 }
 
+@media (max-width: 520px) {
+  .scripts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-2);
+  }
+  .script-tile {
+    padding: var(--s-2) var(--s-3);
+  }
+  .script-tile-sample {
+    font-size: 19px;
+  }
+  .script-tile-name {
+    font-size: 14px;
+  }
+  .script-tile-where {
+    font-size: 12px;
+  }
+}
+
 /* ---------- Script card (intro and reference) ---------- */
 .script-card {
   display: grid;

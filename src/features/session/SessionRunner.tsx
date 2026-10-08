@@ -199,8 +199,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
 
   return (
     <div className="session">
-      <h1 className="sr-only">{t('session.heading')}</h1>
       <header className="session-bar">
+        <h1 className="sr-only">{t('session.heading')}</h1>
         <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -215,7 +215,11 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
         </span>
       </header>
 
-      {notice && state.index === 0 && <p className="session-notice">{notice}</p>}
+      {notice && state.index === 0 && (
+        <aside className="session-notice" aria-label={t('session.heading')}>
+          {notice}
+        </aside>
+      )}
       {secret && (
         <p className="session-toast" role="status">
           {t('ach.secretToast')}

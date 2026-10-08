@@ -83,18 +83,23 @@ export function PracticeHub() {
       <MistakesCard className="practice-mistakes" />
 
       <h2 className="section-label">{t('practice.modes')}</h2>
-      <div className="mode-grid">
+      <ul className="mode-list">
         {modes.map((m) => (
-          <button key={m.key} type="button" className="mode-tile" onClick={() => navigate(`${base}/practice/run${m.to}`)}>
-            <span className="mode-title">{t(`cat.${m.key}`)}</span>
-            <span className="muted small">{t(`practice.desc.${m.key}`)}</span>
-            <span className="mode-count tabular">{t('practice.learnedCount', { n: m.count })}</span>
-          </button>
+          <li key={m.key}>
+            <button type="button" className={`mode-row${m.count === 0 ? ' is-empty' : ''}`} onClick={() => navigate(`${base}/practice/run${m.to}`)}>
+              <span className="mode-row-text">
+                <span className="mode-title">{t(`cat.${m.key}`)}</span>
+                <span className="muted small">{t(`practice.desc.${m.key}`)}</span>
+              </span>
+              <span className="mode-row-count tabular">{t('practice.learnedCount', { n: m.count })}</span>
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <h2 className="section-label">{t('practice.free')}</h2>
-      <Card className="free-config">
+      <details className="free-details">
+        <summary className="section-label free-summary">{t('practice.free')}</summary>
+        <Card className="free-config">
         <fieldset>
           <legend>{t('practice.categories')}</legend>
           <div className="toggle-row">
@@ -148,7 +153,8 @@ export function PracticeHub() {
             </Button>
           )}
         </div>
-      </Card>
+        </Card>
+      </details>
     </div>
   );
 }

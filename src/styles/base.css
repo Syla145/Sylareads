@@ -75,6 +75,10 @@ kbd {
   opacity: 0.55;
 }
 
+.btn-primary kbd {
+  opacity: 0.8; /* readable on the accent colour */
+}
+
 .muted {
   color: var(--text-secondary);
 }

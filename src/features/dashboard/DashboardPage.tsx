@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { letterGlyphs, nativeOf } from '../../domain/courseIndex';
 import { courseStats } from '../../domain/stats';
 import type { Category } from '../../domain/types';
@@ -56,7 +56,23 @@ export function DashboardPage() {
 
   const rec = stats.recommendation;
   const recLesson = rec.kind === 'lesson' ? index.content.lessons.find((l) => l.id === rec.lessonId) : undefined;
+  const nextLesson = index.content.lessons.find((l) => !cp?.lessons[l.id]);
   const weakItems = stats.weakIds.slice(0, 8).map((id) => index.byId.get(id)!);
+  const recPath = recommendedPath(meta, index, cp);
+  const recTitle = recLesson
+    ? `${t('learn.lesson', { n: recLesson.number })} · ${recLesson.title[lang]}`
+    : rec.kind === 'review'
+      ? t('dash.rec.review', { n: rec.due })
+      : rec.kind === 'weak'
+        ? t('dash.rec.weak', { n: rec.count })
+        : t('dash.rec.mixed');
+  const recWhy = recLesson ? recLesson.goal[lang] : rec.kind === 'review' ? t('dash.rec.reviewWhy') : rec.kind === 'weak' ? t('dash.rec.weakWhy') : t('dash.rec.mixedWhy');
+  const recButton = recLesson ? t('dash.btn.lesson') : rec.kind === 'review' ? t('dash.btn.review') : rec.kind === 'weak' ? t('dash.trainWeak') : t('dash.btn.mixed');
+  // Second choice: the next lesson when a review comes first, otherwise free practice.
+  const second =
+    rec.kind !== 'lesson' && nextLesson
+      ? { label: t('dash.btn.nextLesson', { n: nextLesson.number }), to: `${base}/lesson/${nextLesson.id}` }
+      : { label: t('dash.practice'), to: `${base}/practice` };
 
   return (
     <div className="dashboard">
@@ -71,67 +87,48 @@ export function DashboardPage() {
         </div>
         <ul className="dash-facts">
           <li>{t('dash.lettersLearned', { n: stats.lettersLearned, total: stats.lettersTotal })}</li>
-          <li>{stats.accuracy === null ? t('dash.accuracyNone') : t('dash.accuracy', { n: formatPercent(stats.accuracy) })}</li>
+          <li>{t('dash.lessons', { n: stats.completedLessons, total: index.content.lessons.length })}</li>
+          <li>{t('dash.readable', { n: stats.citiesReadable, total: stats.citiesTotal })}</li>
           <li>{t('dash.citiesRecognized', { n: stats.citiesRecognized })}</li>
         </ul>
-        <div className="actions">
-          <Button variant="primary" onClick={() => navigate(recommendedPath(meta, index, cp))}>
-            {t('dash.continueLearning')}
-          </Button>
-          <ButtonLink to={`${base}/practice/run?mode=smart`}>{t('dash.practice')}</ButtonLink>
-        </div>
       </header>
 
-      <div className="dash-grid">
-        <MistakesCard />
-        <MapGoal />
-        <NextGoals courseId={meta.id} index={index} />
-        <Card className="card-recommended">
-          <h2 className="card-label">{t('dash.recommended')}</h2>
-          {recLesson ? (
-            <Link className="rec-link" to={`${base}/lesson/${recLesson.id}`}>
-              <span className="rec-title">
-                {t('learn.lesson', { n: recLesson.number })} · {recLesson.title[lang]}
-              </span>
-              <span className="muted">{recLesson.goal[lang]}</span>
-            </Link>
-          ) : (
-            <Link className="rec-link" to={recommendedPath(meta, index, cp)}>
-              <span className="rec-title">
-                {rec.kind === 'review'
-                  ? t('dash.rec.review', { n: rec.due })
-                  : rec.kind === 'weak'
-                    ? t('dash.rec.weak', { n: rec.count })
-                    : t('dash.rec.mixed')}
-              </span>
-              <span className="muted">
-                {rec.kind === 'review' ? t('dash.rec.reviewWhy') : rec.kind === 'weak' ? t('dash.rec.weakWhy') : t('dash.rec.mixedWhy')}
-              </span>
-            </Link>
-          )}
-          <p className="muted small">
-            {t('dash.lessons', { n: stats.completedLessons, total: index.content.lessons.length })} ·{' '}
-            {t('dash.readable', { n: stats.citiesReadable, total: stats.citiesTotal })}
-          </p>
-        </Card>
-
-        <Card>
-          <h2 className="card-label">{t('dash.weak')}</h2>
-          {weakItems.length ? (
-            <>
-              <div className="chip-row">
-                {weakItems.map((it) => (
-                  <span key={it.id} className="glyph-chip">
-                    {it.kind === 'letter' ? letterGlyphs(it) : nativeOf(it)}
-                  </span>
-                ))}
-              </div>
-              <ButtonLink to={`${base}/practice/run?mode=weak`}>{t('dash.trainWeak')}</ButtonLink>
-            </>
-          ) : (
-            <p className="muted">{t('dash.weakEmpty')}</p>
-          )}
-        </Card>
+      <div className="dash-layout">
+        <div className="dash-col">
+          <Card className="card-recommended">
+            <h2 className="card-label">{t('dash.recommended')}</h2>
+            <p className="rec-title">{recTitle}</p>
+            <p className="muted">{recWhy}</p>
+            <div className="actions">
+              <Button variant="primary" onClick={() => navigate(recPath)}>
+                {recButton}
+              </Button>
+              <ButtonLink to={second.to}>{second.label}</ButtonLink>
+            </div>
+          </Card>
+          <MistakesCard />
+          <MapGoal />
+        </div>
+        <div className="dash-col">
+          <NextGoals courseId={meta.id} index={index} />
+          <Card>
+            <h2 className="card-label">{t('dash.weak')}</h2>
+            {weakItems.length ? (
+              <>
+                <div className="chip-row">
+                  {weakItems.map((it) => (
+                    <span key={it.id} className="glyph-chip">
+                      {it.kind === 'letter' ? letterGlyphs(it) : nativeOf(it)}
+                    </span>
+                  ))}
+                </div>
+                <ButtonLink to={`${base}/practice/run?mode=weak`}>{t('dash.trainWeak')}</ButtonLink>
+              </>
+            ) : (
+              <p className="muted">{t('dash.weakEmpty')}</p>
+            )}
+          </Card>
+        </div>
 
         <Card className="card-progress">
           <h2 className="card-label">{t('dash.progress')}</h2>

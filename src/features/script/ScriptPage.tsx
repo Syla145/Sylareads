@@ -47,13 +47,14 @@ export function ScriptPage() {
             </span>
             <span className="letter-tile-reading">{l.reading || '–'}</span>
             <StateDot state={masteryState(items[l.id])} />
+            <span className="sr-only">{t(`state.${masteryState(items[l.id])}`)}</span>
           </button>
         ))}
       </div>
 
       {pairs.length > 0 && (
-        <>
-          <h2 className="section-label">{t('script.pairs')}</h2>
+        <details className="script-section">
+          <summary className="section-label">{t('script.pairs')}</summary>
           <div className="ending-list">
             {pairs.map((c) => (
               <div key={c.id} className="ending-row">
@@ -63,12 +64,12 @@ export function ScriptPage() {
               </div>
             ))}
           </div>
-        </>
+        </details>
       )}
 
       {endings.length > 0 && (
-        <>
-          <h2 className="section-label">{t('script.endings')}</h2>
+        <details className="script-section">
+          <summary className="section-label">{t('script.endings')}</summary>
           <div className="ending-list">
             {endings.map((c) => (
               <div key={c.id} className="ending-row">
@@ -78,7 +79,7 @@ export function ScriptPage() {
               </div>
             ))}
           </div>
-        </>
+        </details>
       )}
 
       <Modal open={!!open} onClose={() => setOpen(null)} title={open ? letterGlyphs(open, ' ') : ''}>
