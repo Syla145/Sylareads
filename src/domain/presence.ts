@@ -7,7 +7,8 @@ import { courseStats } from './stats';
 /**
  * "Wer ist gerade da": an opt-in public card per signed-in player.
  * Only what is listed in PublicPlayer leaves the device; the progress
- * document itself stays private.
+ * document itself stays private. Nobody is shown without saying yes
+ * (privacy by default, Art. 25 DSGVO), and never under the Google name.
  */
 
 /** The player's choice, stored in the progress document (so it follows the account). */
@@ -16,7 +17,12 @@ export interface ShareSetting {
   name: string;
   /** When the choice was last changed (the newer choice wins when devices merge). */
   at: number;
+  /** Version of the consent text the player agreed to; older choices count as "off". */
+  c?: number;
 }
+
+/** Bump when the consent text changes in a way that needs a new yes. */
+export const CONSENT_VERSION = 2;
 
 /** Progress in one course as shown on the card. */
 export interface PublicCourse {
@@ -33,7 +39,8 @@ export interface PublicCourse {
 
 /** What other players see (Firestore document players/<uid>, without the server time). */
 export interface PublicPlayer {
-  v: 1;
+  /** 2 = written after the consent change (the Firestore rules only accept 2). */
+  v: 2;
   name: string;
   /** Course of the latest session ('' before the first one). */
   course: string;
@@ -60,6 +67,7 @@ export interface PlayerCard extends PublicPlayer {
 }
 
 export const NAME_MAX = 24;
+export const NAME_MIN = 2;
 /** "Gerade aktiv" means seen within this time; the device reports in at least twice as often. */
 const ACTIVE_MS = 10 * 60_000;
 export const HEARTBEAT_MS = 5 * 60_000;
@@ -72,20 +80,44 @@ export function cleanName(raw: string): string {
   return s.slice(0, NAME_MAX).join('').trim();
 }
 
-/** A first name from the Google account as the suggested display name. */
-export function suggestName(displayName: string | null | undefined): string {
-  return cleanName((displayName ?? '').split(' ')[0] ?? '');
+/** A neutral suggestion such as "Reader 4821", the same for one account on every device. */
+export function pseudonym(uid: string): string {
+  let h = 0x811c9dc5;
+  for (const ch of uid) {
+    h ^= ch.codePointAt(0)!;
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return `Reader ${1000 + (h % 9000)}`;
 }
 
-/**
- * The choice in effect. Signed-in players who never chose are shown by
- * default, under the first name of their Google account.
- */
-export function effectiveShare(share: ShareSetting | undefined, displayName: string | null | undefined): ShareSetting {
-  return share ?? { on: true, name: suggestName(displayName) || DEFAULT_NAME, at: 0 };
+/** The choice in effect: off unless the player said yes to the current consent text. */
+export function effectiveShare(share: ShareSetting | undefined): ShareSetting {
+  if (share && share.c === CONSENT_VERSION) return share;
+  return { on: false, name: share?.c === CONSENT_VERSION ? share.name : '', at: share?.at ?? 0 };
 }
 
-export const DEFAULT_NAME = 'Spieler';
+export type NameProblem = 'short' | 'chars' | 'blocked';
+
+/** Letters (any script, with their marks), digits, spaces and . _ - ; starts with a letter or digit. The Firestore rules check the same. */
+const NAME_PATTERN = /^[\p{L}\p{N}][\p{L}\p{M}\p{N} ._-]*$/u;
+
+/** Words that make a name unusable: as part of any name (first list) or as a whole word (second list, they hide in harmless words). */
+const BLOCKED_ANYWHERE = ['fuck', 'cunt', 'nigg', 'fotze', 'hurensohn', 'wichser', 'schwuchtel', 'faggot', 'hitler', 'missgeburt', 'kanake'];
+const BLOCKED_WORDS = ['arsch', 'hure', 'nazi', 'slut', 'whore', 'bitch', 'shit', 'spast', 'neger', 'retard', 'rape', 'porn', 'sex', 'admin', 'moderator', 'sylareads', 'geoguessr'];
+
+const unleet = (s: string) => s.toLowerCase().replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't');
+
+/** Why a display name can't be used, or null when it is fine. */
+export function nameProblem(raw: string): NameProblem | null {
+  const name = cleanName(raw);
+  if ([...name].length < NAME_MIN) return 'short';
+  if (!NAME_PATTERN.test(name)) return 'chars';
+  const plain = unleet(name);
+  const squashed = plain.replace(/[ ._-]/g, '');
+  if (BLOCKED_ANYWHERE.some((w) => squashed.includes(w))) return 'blocked';
+  if (plain.split(/[ ._-]+/).some((w) => BLOCKED_WORDS.includes(w))) return 'blocked';
+  return null;
+}
 
 /** The newer choice wins; equal times keep the local one. */
 export function mergeShare(a: ShareSetting | undefined, b: ShareSetting | undefined): ShareSetting | undefined {
@@ -97,7 +129,7 @@ export function shareOf(raw: unknown): ShareSetting | undefined {
   if (typeof raw !== 'object' || raw === null) return undefined;
   const r = raw as Record<string, unknown>;
   if (typeof r.on !== 'boolean' || typeof r.name !== 'string' || typeof r.at !== 'number') return undefined;
-  return { on: r.on, name: cleanName(r.name), at: r.at };
+  return { on: r.on, name: cleanName(r.name), at: r.at, ...(typeof r.c === 'number' ? { c: r.c } : {}) };
 }
 
 /** Course of the latest session. */
@@ -148,7 +180,7 @@ export function publicSnapshot(root: ProgressRoot, name: string, courses: Record
   }
   return {
     ...(Object.keys(tempo).length ? { tempo } : {}),
-    v: 1,
+    v: 2,
     name: cleanName(name),
     course: currentCourse(root),
     courses,
@@ -218,7 +250,7 @@ export function cardOf(uid: string, raw: Record<string, unknown>, seen: number):
   }
   return {
     ...(Object.keys(tempo).length ? { tempo } : {}),
-    v: 1,
+    v: 2,
     uid,
     seen,
     name: cleanName(raw.name),

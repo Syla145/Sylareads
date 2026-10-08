@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { COURSES } from '../../content/registry';
-import { activityOf, cleanName, effectiveShare, NAME_MAX, type Activity, type PlayerCard as Card } from '../../domain/presence';
+import { activityOf, cleanName, effectiveShare, NAME_MAX, nameProblem, pseudonym, type Activity, type NameProblem, type PlayerCard as Card } from '../../domain/presence';
 import { SCRIPTS_COURSE_ID } from '../../domain/scriptCourse';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
@@ -120,30 +120,33 @@ export function usePlayers(limit = STRIP_LIMIT) {
 
 export const groupOf = (card: Card, now: number): Activity => activityOf(card.seen, now) ?? 'week';
 
-/** Opt-in for the own card: switch and display name. Shown in the profile and on the list page. */
+/** Opt-in for the own card: consent, display name, switch. Shown in the profile and on the list page. */
 export function ShareCard({ withLink = false }: { withLink?: boolean }) {
   const t = useT();
   const user = useSync((s) => s.user);
   const status = useSync((s) => s.status);
   const stored = useProgress((s) => s.root.profile.share);
-  const share = effectiveShare(stored, user?.name);
+  const share = effectiveShare(stored);
   const setShare = useProgress((s) => s.setShare);
-  const [name, setName] = useState(share.name);
-  const [error, setError] = useState(false);
-  useEffect(() => setName(share.name), [share.name]);
+  const suggestion = user ? pseudonym(user.uid) : '';
+  const [name, setName] = useState(share.name || suggestion);
+  const [problem, setProblem] = useState<NameProblem | null>(null);
+  useEffect(() => setName(share.name || suggestion), [share.name, suggestion]);
   if (status === 'unconfigured') return null;
 
   const on = share.on;
   const clean = cleanName(name);
+  const check = () => {
+    const p = nameProblem(clean);
+    setProblem(p);
+    return !p;
+  };
   const toggle = () => {
-    if (!on && !clean) return setError(true);
-    setError(false);
-    setShare(!on, clean || share.name);
+    if (!on && !check()) return;
+    setShare(!on, on ? share.name || clean : clean);
   };
   const save = () => {
-    if (!clean) return setError(true);
-    setError(false);
-    setShare(on, clean);
+    if (check()) setShare(on, clean);
   };
 
   return (
@@ -152,11 +155,6 @@ export function ShareCard({ withLink = false }: { withLink?: boolean }) {
       <p className="muted small">{t('who.share.intro')}</p>
       {user ? (
         <>
-          <label className="switch share-switch">
-            <input type="checkbox" role="switch" checked={on} onChange={toggle} />
-            <span className="switch-track" aria-hidden="true" />
-            <span>{t('who.share.toggle')}</span>
-          </label>
           <label className="share-name">
             <span className="small">{t('who.share.name')}</span>
             <span className="share-name-row">
@@ -164,21 +162,28 @@ export function ShareCard({ withLink = false }: { withLink?: boolean }) {
                 className="text-input"
                 value={name}
                 maxLength={NAME_MAX + 8}
-                autoComplete="nickname"
+                autoComplete="off"
+                aria-invalid={!!problem}
                 onChange={(e) => {
                   setName(e.target.value);
-                  setError(false);
+                  setProblem(null);
                 }}
-                onKeyDown={(e) => e.key === 'Enter' && save()}
+                onKeyDown={(e) => e.key === 'Enter' && on && save()}
               />
-              {clean !== share.name && clean && <Button onClick={save}>{t('who.share.save')}</Button>}
+              {on && clean !== share.name && clean && <Button onClick={save}>{t('who.share.save')}</Button>}
             </span>
+            <span className="muted small">{t('who.share.nameHint')}</span>
           </label>
-          {error && (
+          {problem && (
             <p className="notice notice-error" role="alert">
-              {t('who.share.needName')}
+              {t(`who.share.problem.${problem}`)}
             </p>
           )}
+          <label className="switch share-switch">
+            <input type="checkbox" role="switch" checked={on} onChange={toggle} />
+            <span className="switch-track" aria-hidden="true" />
+            <span>{t('who.share.toggle')}</span>
+          </label>
           <p className={`small share-state${on ? ' is-on' : ''}`} role="status">
             {on ? t('who.share.on') : t('who.share.off')}
             {withLink && (

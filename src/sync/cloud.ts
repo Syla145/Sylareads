@@ -22,6 +22,8 @@ export interface Cloud {
   removeCard: (uid: string) => Promise<void>;
   /** Public cards seen since `sinceMs`, newest first. */
   listCards: (sinceMs: number, limit: number) => Promise<StoredCard[]>;
+  /** Deletes the online progress, the public card and the account itself (asks Google again if the sign-in is old). */
+  deleteAccount: (uid: string) => Promise<void>;
 }
 
 export interface StoredCard {
@@ -53,6 +55,20 @@ export function loadCloud(config: FirebaseWebConfig): Promise<Cloud> {
         const provider = new auth.GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
         await auth.signInWithPopup(a, provider);
+      },
+      deleteAccount: async (uid) => {
+        const user = a.currentUser;
+        if (!user || user.uid !== uid) throw Object.assign(new Error('not-signed-in'), { code: 'not-signed-in' });
+        await fs.deleteDoc(fs.doc(db, PLAYERS, uid));
+        await fs.deleteDoc(fs.doc(db, COLLECTION, uid));
+        try {
+          await auth.deleteUser(user);
+        } catch (e) {
+          // Firebase only deletes accounts with a recent sign-in: confirm with Google once more.
+          if ((e as { code?: string }).code !== 'auth/requires-recent-login') throw e;
+          await auth.reauthenticateWithPopup(user, new auth.GoogleAuthProvider());
+          await auth.deleteUser(user);
+        }
       },
       signOut: () => auth.signOut(a),
       pull: async (uid) => {

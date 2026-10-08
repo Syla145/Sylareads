@@ -25,6 +25,8 @@ interface SyncState {
   /** Loads Firebase ahead of a sign-in, so the Google window opens directly on the tap (Safari blocks it otherwise). */
   prepare: () => void;
   signOut: () => Promise<void>;
+  /** Deletes the online progress, the public card and the account; this browser keeps its progress. */
+  deleteAccount: () => Promise<boolean>;
   syncNow: () => Promise<void>;
   /** After reset or import: the local copy replaces the cloud copy instead of being merged. */
   overwriteCloud: () => Promise<void>;
@@ -80,6 +82,19 @@ let applying = false;
 let running: Promise<void> | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
 
+/** The Firestore rules accept one progress upload per 10 seconds per account (tests set 0). */
+export const PACING = { pushGapMs: 11_000 };
+let lastPushAt = 0;
+let retried = false;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function pushPaced(c: Cloud, uid: string, data: string) {
+  const wait = lastPushAt + PACING.pushGapMs - Date.now();
+  if (wait > 0) await sleep(wait);
+  await c.push(uid, data);
+  lastPushAt = Date.now();
+}
+
 const errorCode = (e: unknown) => (e as { code?: string })?.code ?? (e as Error)?.message ?? 'unknown';
 const isOffline = (e: unknown) => /unavailable|offline|network/i.test(errorCode(e)) || (typeof navigator !== 'undefined' && !navigator.onLine);
 
@@ -93,7 +108,7 @@ export const useSync = create<SyncState>((set, get) => {
     try {
       const local = useProgress.getState().root;
       if (overwrite) {
-        await cloud.push(user.uid, JSON.stringify(local));
+        await pushPaced(cloud, user.uid, JSON.stringify(local));
       } else {
         const raw = await cloud.pull(user.uid);
         const remote = raw ? migrate(JSON.parse(raw)) : null;
@@ -103,11 +118,20 @@ export const useSync = create<SyncState>((set, get) => {
           useProgress.getState().applyMerged(merged);
           applying = false;
         }
-        if (!remote || !sameProgress(merged, remote)) await cloud.push(user.uid, JSON.stringify(merged));
+        if (!remote || !sameProgress(merged, remote)) await pushPaced(cloud, user.uid, JSON.stringify(merged));
       }
+      retried = false;
       set({ status: 'synced', lastSyncAt: Date.now() });
     } catch (e) {
       applying = false;
+      // Another device of this account uploaded a moment ago (the rules allow one upload per 10 s): try once more shortly.
+      if (errorCode(e) === 'permission-denied' && !retried) {
+        retried = true;
+        lastPushAt = Date.now();
+        set({ status: 'syncing' });
+        setTimeout(() => void get().syncNow(), PACING.pushGapMs);
+        return;
+      }
       if (isOffline(e)) set({ status: 'offline' });
       else set({ status: 'error', error: errorCode(e) });
     }
@@ -145,6 +169,26 @@ export const useSync = create<SyncState>((set, get) => {
       await cloud?.signOut();
       flag.set(false);
       set({ user: null, status: 'signed-out', lastSyncAt: null });
+    },
+    deleteAccount: async () => {
+      const { user } = get();
+      if (!cloud || !user) return false;
+      if (timer) clearTimeout(timer);
+      timer = null;
+      set({ error: null });
+      try {
+        await running;
+        await cloud.deleteAccount(user.uid);
+        // The yes to "Wer ist da" belonged to this account.
+        const share = useProgress.getState().root.profile.share;
+        if (share?.on) useProgress.getState().setShare(false, share.name);
+        flag.set(false);
+        set({ user: null, status: 'signed-out', lastSyncAt: null });
+        return true;
+      } catch (e) {
+        set({ status: 'error', error: errorCode(e) });
+        return false;
+      }
     },
     syncNow: () => {
       // A sync now carries every pending change: drop a planned one.

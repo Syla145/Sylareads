@@ -296,7 +296,7 @@ function ShareDuel({ meta, seed, score, reply }: { meta: CourseMeta; seed: strin
   const lang = useLang();
   const user = useSync((s) => s.user);
   const stored = useProgress((s) => s.root.profile.share);
-  const [name, setName] = useState(() => (user ? effectiveShare(stored, user.name).name : localName()));
+  const [name, setName] = useState(() => (user && effectiveShare(stored).name) || localName());
   const [copied, setCopied] = useState(false);
   const link = `${location.origin}${location.pathname}#/${meta.slug}/duel?${duelQuery(seed, { name: name.trim() || t('ch.someone'), score })}`;
   const share = async () => {

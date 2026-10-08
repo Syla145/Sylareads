@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDateTime, useLang, useT, type TKey } from '../i18n';
 import { Button, Card } from '../ui/primitives';
 import { useSync } from './syncStore';
@@ -7,7 +7,9 @@ import { useSync } from './syncStore';
 export function SyncCard() {
   const t = useT();
   const lang = useLang();
-  const { status, user, lastSyncAt, error, signIn, signOut, syncNow, prepare } = useSync();
+  const { status, user, lastSyncAt, error, signIn, signOut, syncNow, prepare, deleteAccount } = useSync();
+  const [confirm, setConfirm] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   useEffect(() => {
     if (status === 'signed-out') prepare();
   }, [status, prepare]);
@@ -47,6 +49,32 @@ export function SyncCard() {
               {t('sync.signOut')}
             </Button>
           </div>
+          <div className="danger-zone">
+            {!confirm ? (
+              <button type="button" className="link-danger" onClick={() => setConfirm(true)}>
+                {t('sync.delete')}
+              </button>
+            ) : (
+              <div className="notice notice-error">
+                <p>{t('sync.deleteConfirm')}</p>
+                <div className="actions">
+                  <Button
+                    variant="danger"
+                    disabled={status === 'syncing'}
+                    onClick={async () => {
+                      if (await deleteAccount()) setDeleted(true);
+                      setConfirm(false);
+                    }}
+                  >
+                    {t('sync.deleteFinal')}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setConfirm(false)}>
+                    {t('common.cancel')}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <>
@@ -57,6 +85,11 @@ export function SyncCard() {
             </Button>
           </div>
         </>
+      )}
+      {deleted && !user && (
+        <p className="notice" role="status">
+          {t('sync.deleted')}
+        </p>
       )}
       {error && (
         <p className="notice notice-error" role="alert">

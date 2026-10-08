@@ -56,9 +56,13 @@ let lastWrite = 0;
 let writing: Promise<void> | null = null;
 let changeTimer: ReturnType<typeof setTimeout> | null = null;
 
+/** The Firestore rules accept one card update per minute. */
+const WRITE_GAP_MS = 65_000;
+let gapTimer: ReturnType<typeof setTimeout> | null = null;
+
 const sharing = () => {
   const { user, lastSyncAt } = useSync.getState();
-  const share = effectiveShare(useProgress.getState().root.profile.share, user?.name);
+  const share = effectiveShare(useProgress.getState().root.profile.share);
   // Only after the first merge with the cloud copy, so a choice made on another device is known.
   return share.on && share.name && user && lastSyncAt ? { uid: user.uid, name: share.name } : null;
 };
@@ -89,6 +93,15 @@ async function publish(force = false): Promise<void> {
   const cloud = currentCloud();
   if (!who || !cloud || document.visibilityState !== 'visible') return;
   if (writing) return writing;
+  const wait = lastWrite + WRITE_GAP_MS - Date.now();
+  if (lastCard && wait > 0) {
+    // Too soon after the last write: try again when the rules allow it.
+    gapTimer ??= setTimeout(() => {
+      gapTimer = null;
+      void publish(force);
+    }, wait);
+    return;
+  }
   writing = (async () => {
     try {
       const root = useProgress.getState().root;
@@ -117,9 +130,34 @@ async function unpublish(uid: string) {
   lastWrite = 0;
   try {
     await currentCloud()?.removeCard(uid);
+    markCleared(uid);
   } catch {
     /* already gone or offline */
   }
+}
+
+// Cards from before the consent change (shown by default) are deleted once per account and device.
+const CLEARED_KEY = 'sylareads.cardCleared';
+const wasCleared = (uid: string) => {
+  try {
+    return localStorage.getItem(CLEARED_KEY) === uid;
+  } catch {
+    return false;
+  }
+};
+function markCleared(uid: string) {
+  try {
+    localStorage.setItem(CLEARED_KEY, uid);
+  } catch {
+    /* storage blocked: the delete is repeated next time, which is harmless */
+  }
+}
+
+/** Not sharing: make sure no card is left over from the time cards were shown by default. */
+function clearOldCard() {
+  const uid = useSync.getState().user?.uid;
+  if (!uid || sharing() || wasCleared(uid)) return;
+  void unpublish(uid);
 }
 
 export const usePresence = create<PresenceState>((set, get) => ({
@@ -161,7 +199,7 @@ export function watchPlayers(limit = STRIP_LIMIT): () => void {
 
 /** Call once at app start (after startSync). */
 export function startPresence() {
-  const shareOf = (root: ProgressRoot) => effectiveShare(root.profile.share, useSync.getState().user?.name);
+  const shareOf = (root: ProgressRoot) => effectiveShare(root.profile.share);
   let wasOn = shareOf(useProgress.getState().root).on;
 
   // Sharing switched off on this device: delete the card right away.
@@ -170,6 +208,13 @@ export function startPresence() {
     const on = shareOf(s.root).on;
     const uid = useSync.getState().user?.uid;
     if (wasOn && !on && uid) void unpublish(uid);
+    if (on && uid) {
+      try {
+        localStorage.removeItem(CLEARED_KEY);
+      } catch {
+        /* ignore */
+      }
+    }
     const nameChanged = shareOf(s.root).name !== shareOf(prev.root).name;
     wasOn = on;
     if (!on) return;
@@ -179,7 +224,10 @@ export function startPresence() {
 
   // First merge done or signed in: report in.
   useSync.subscribe((s, prev) => {
-    if (s.user && s.lastSyncAt && s.lastSyncAt !== prev.lastSyncAt) void publish();
+    if (s.user && s.lastSyncAt && s.lastSyncAt !== prev.lastSyncAt) {
+      void publish();
+      if (!prev.lastSyncAt) clearOldCard();
+    }
   });
 
   setInterval(() => void publish(), HEARTBEAT_MS);

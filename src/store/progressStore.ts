@@ -1,5 +1,5 @@
 import type { ChallengeScore } from '../domain/challenge';
-import { cleanName } from '../domain/presence';
+import { cleanName, CONSENT_VERSION } from '../domain/presence';
 import { create } from 'zustand';
 import { newlyUnlocked, SECRET_ID } from '../domain/achievements';
 import type { CourseIndex } from '../domain/courseIndex';
@@ -114,7 +114,7 @@ export const useProgress = create<ProgressState>((set, get) => {
     saveDaily: (courseId, day, score, done) => commit(recordDailyResult(get().root, courseId, day, score, done), true, done),
     setShare: (on, name) => {
       const root = get().root;
-      const share = { on, name: cleanName(name), at: Date.now() };
+      const share = { on, name: cleanName(name), at: Date.now(), c: CONSENT_VERSION };
       commit({ ...root, updatedAt: share.at, profile: { ...root.profile, share } }, true);
     },
     setSignView: (signView) => commit({ ...get().root, settings: { ...get().root.settings, signView } }, true),

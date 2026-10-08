@@ -20,10 +20,15 @@ vi.mock('./cloud', () => ({
       pushes.push(data);
       db.set(uid, data);
     },
+    deleteAccount: async (uid: string) => {
+      db.delete(uid);
+      listener?.(null);
+    },
   }),
 }));
 
-const { useSync } = await import('./syncStore');
+const { useSync, PACING } = await import('./syncStore');
+PACING.pushGapMs = 0;
 const settle = () => new Promise((r) => setTimeout(r, 20));
 
 describe('online progress', () => {
@@ -68,5 +73,17 @@ describe('online progress', () => {
     expect(Object.keys(JSON.parse(db.get('u1')!).courses)).toEqual([]);
     await useSync.getState().syncNow();
     expect(Object.keys(useProgress.getState().root.courses)).toEqual([]);
+  });
+
+  it('deleting the account removes the online copy, keeps this browser and withdraws the card', async () => {
+    await useSync.getState().signIn();
+    await settle();
+    useProgress.getState().setShare(true, 'Syla');
+    await useSync.getState().syncNow();
+    expect(db.has('u1')).toBe(true);
+    expect(await useSync.getState().deleteAccount()).toBe(true);
+    expect(db.has('u1')).toBe(false);
+    expect(useSync.getState().user).toBeNull();
+    expect(useProgress.getState().root.profile.share?.on).toBe(false);
   });
 });

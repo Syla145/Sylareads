@@ -6,7 +6,7 @@ import {
   activityOf,
   cardOf,
   cleanName,
-  DEFAULT_NAME,
+  CONSENT_VERSION,
   effectiveShare,
   currentCourse,
   mergeShare,
@@ -16,7 +16,8 @@ import {
   sameCard,
   simpleCourse,
   sortPlayers,
-  suggestName,
+  nameProblem,
+  pseudonym,
   type PlayerCard,
 } from './presence';
 import { emptyCourse, emptyRoot } from './progress';
@@ -30,14 +31,32 @@ describe('Wer ist gerade da', () => {
     expect(cleanName('  Syla   der  Große \u0007 ')).toBe('Syla der Große');
     expect([...cleanName('x'.repeat(40))].length).toBe(NAME_MAX);
     expect(cleanName('\n\t')).toBe('');
-    expect(suggestName('Josef Heininger')).toBe('Josef');
-    expect(suggestName(null)).toBe('');
   });
 
-  it('signed-in players are shown by default until they choose otherwise', () => {
-    expect(effectiveShare(undefined, 'Josef Heininger')).toEqual({ on: true, name: 'Josef', at: 0 });
-    expect(effectiveShare(undefined, null).name).toBe(DEFAULT_NAME);
-    expect(effectiveShare({ on: false, name: 'Syla', at: 5 }, 'Josef').on).toBe(false);
+  it('nobody is shown without saying yes to the current consent; old choices count as off', () => {
+    expect(effectiveShare(undefined)).toEqual({ on: false, name: '', at: 0 });
+    expect(effectiveShare({ on: true, name: 'Josef', at: 5 }).on).toBe(false);
+    expect(effectiveShare({ on: true, name: 'Syla', at: 5, c: CONSENT_VERSION })).toEqual({ on: true, name: 'Syla', at: 5, c: CONSENT_VERSION });
+  });
+
+  it('suggests a neutral name that is the same for one account everywhere', () => {
+    expect(pseudonym('abc')).toMatch(/^Reader \d{4}$/);
+    expect(pseudonym('abc')).toBe(pseudonym('abc'));
+    expect(nameProblem(pseudonym('xyz'))).toBeNull();
+  });
+
+  it('display names: length, characters, blocked words without false alarms', () => {
+    expect(nameProblem('Syla')).toBeNull();
+    expect(nameProblem('Ана-Мария')).toBeNull();
+    expect(nameProblem('ทวีศักดิ์')).toBeNull();
+    expect(nameProblem('Marschall')).toBeNull();
+    expect(nameProblem('Sussex')).toBeNull();
+    expect(nameProblem('x')).toBe('short');
+    expect(nameProblem('<b>hi</b>')).toBe('chars');
+    expect(nameProblem('-dash')).toBe('chars');
+    expect(nameProblem('F u c k')).toBe('blocked');
+    expect(nameProblem('sh1t happens')).toBe('blocked');
+    expect(nameProblem('GeoGuessr')).toBe('blocked');
   });
 
   it('the newer sharing choice wins on both devices and survives a reload', () => {
@@ -65,7 +84,7 @@ describe('Wer ist gerade da', () => {
     expect(ruCard.m).toBeGreaterThanOrEqual(0);
     expect(ruCard.ct).toBeGreaterThan(0);
     const snap = publicSnapshot(root, '  Syla ', { ru: ruCard, scripts: simpleCourse(14, 28, 3, 7) }, '2026-10-07');
-    expect(snap).toMatchObject({ v: 1, name: 'Syla', course: 'ru', streak: 0, xp: 130 });
+    expect(snap).toMatchObject({ v: 2, name: 'Syla', course: 'ru', streak: 0, xp: 130 });
     expect(snap.courses.scripts).toEqual({ m: 50, l: 3, lt: 7 });
     expect(snap.level).toBeGreaterThanOrEqual(2);
     expect(sameCard(snap, { ...snap, courses: { scripts: snap.courses.scripts, ru: snap.courses.ru } })).toBe(true);
