@@ -6,6 +6,7 @@
 .sf-bengali { font-family: var(--font-bengali); }
 .sf-arabic { font-family: 'Noto Sans Arabic', var(--font-ui); }
 .sf-hebrew { font-family: 'Noto Sans Hebrew', var(--font-ui); }
+.sf-georgian { font-family: 'Noto Sans Georgian', var(--font-ui); }
 .sf-lao { font-family: 'Noto Sans Lao', var(--font-ui); }
 .sf-khmer { font-family: 'Noto Sans Khmer', var(--font-ui); }
 .sf-devanagari { font-family: 'Noto Sans Devanagari', var(--font-ui); }

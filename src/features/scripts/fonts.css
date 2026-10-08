@@ -16,6 +16,14 @@
   unicode-range: U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F;
 }
 @font-face {
+  font-family: 'Noto Sans Georgian';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(./fonts/noto-sans-georgian-georgian-400-normal.woff2) format('woff2');
+  unicode-range: U+0589,U+10A0-10FF,U+1C90-1CBA,U+1CBD-1CBF,U+205A,U+2D00-2D2F,U+2E31;
+}
+@font-face {
   font-family: 'Noto Sans Lao';
   font-style: normal;
   font-display: swap;

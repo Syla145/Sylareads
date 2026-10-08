@@ -34,7 +34,9 @@ const entry = (id: string) => SCRIPT_BY_ID.get(id)!;
 function distractors(target: ScriptEntry, pool: Set<string>, rng: Rng, n: number): string[] {
   const lesson = SCRIPT_LESSONS.find((l) => l.newIds.includes(target.id));
   const family = new Set([...(lesson?.newIds ?? []), ...(lesson?.reviewIds ?? [])]);
-  const all = SCRIPT_ENTRIES.map((e) => e.id).filter((id) => id !== target.id);
+  // Never two answers for the same place (e.g. Serbian Cyrillic next to Croatian Latin).
+  const clash = (id: string) => id === target.id || !!target.overlaps?.includes(id) || !!entry(id).overlaps?.includes(target.id);
+  const all = SCRIPT_ENTRIES.map((e) => e.id).filter((id) => !clash(id));
   const rank = (id: string) =>
     (target.confusable.includes(id) ? 0 : family.has(id) ? 2 : 4) + (pool.has(id) ? 0 : 1) + (!target.confusable.includes(id) && !family.has(id) && !pool.has(id) ? 2 : 0);
   return shuffle(all, rng)

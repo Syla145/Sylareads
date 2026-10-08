@@ -6,7 +6,8 @@ import type { L10n } from '../../domain/types';
  * Schrift steht als Info dabei. Nur Länder mit Street View in GeoGuessr.
  *
  * Beispiele sind echte Ortsnamen, so wie sie auf Schildern stehen.
- * Kyrillisch-Varianten haben nur Beispiele, die ihr Erkennungszeichen enthalten.
+ * Kyrillisch-Varianten und lateinische Sonderzeichen haben nur Beispiele, die
+ * ihr Erkennungszeichen enthalten (ein Test prüft das).
  */
 
 export interface ScriptSample {
@@ -36,6 +37,8 @@ export interface ScriptEntry {
   samples: ScriptSample[];
   /** Schriften, mit denen diese leicht verwechselt wird (bevorzugte Ablenker). */
   confusable: string[];
+  /** Einträge, deren Orte sich überschneiden: nie zusammen als Antworten zeigen. */
+  overlaps?: string[];
 }
 
 export type ScriptFont =
@@ -51,6 +54,7 @@ export type ScriptFont =
   | 'gujarati'
   | 'oriya'
   | 'tibetan'
+  | 'georgian'
   | 'tamil'
   | 'telugu'
   | 'kannada'
@@ -509,6 +513,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'Ћићевац', latin: 'Ćićevac' },
     ],
     confusable: [id('macedonian'), id('bulgarian'), id('russian')],
+    overlaps: [id('croatian')],
   },
   {
     id: id('macedonian'),
@@ -558,6 +563,346 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'Өндөрхаан', latin: 'Öndörkhaan' },
     ],
     confusable: [id('kazakh'), id('russian')],
+  },
+  // ---------------------------------------------------------------- 8 Georgien
+  {
+    id: id('georgian'),
+    name: { de: 'Georgisch', en: 'Georgian' },
+    where: { de: 'Georgien', en: 'Georgia' },
+    font: 'georgian',
+    features: [
+      { text: { de: 'Runde Buchstaben mit Bögen und Schlaufen, ohne Linie oben und ohne Großbuchstaben', en: 'Round letters with arches and loops, no top line and no capitals' }, mark: 'ა ბ გ' },
+      { text: { de: 'Viele Ortsnamen enden auf ი (-i): Tbilisi, Kutaisi', en: 'Many place names end in ი (-i): Tbilisi, Kutaisi' }, mark: 'ი' },
+    ],
+    samples: [
+      { native: 'თბილისი', latin: 'Tbilisi' },
+      { native: 'ბათუმი', latin: 'Batumi' },
+      { native: 'ქუთაისი', latin: 'Kutaisi' },
+      { native: 'რუსთავი', latin: 'Rustavi' },
+      { native: 'ზუგდიდი', latin: 'Zugdidi' },
+    ],
+    confusable: [id('sinhala'), id('malayalam'), id('lao')],
+  },
+
+  // ---------------------------------------------------------------- 9 Lateinisch I: Mitteleuropa
+  {
+    id: id('hungarian'),
+    name: { de: 'Ungarisch', en: 'Hungarian' },
+    where: { de: 'Ungarn', en: 'Hungary' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ő und ű mit zwei Strichen gibt es nur im Ungarischen', en: 'ő and ű with two strokes exist only in Hungarian' }, mark: 'ő ű' },
+      { text: { de: 'Viele Buchstabenpaare: sz, gy, cs, zs, ny', en: 'Many letter pairs: sz, gy, cs, zs, ny' }, mark: 'gy sz' },
+    ],
+    samples: [
+      { native: 'Győr', latin: 'Gyor' },
+      { native: 'Kőszeg', latin: 'Koszeg' },
+      { native: 'Balatonfűzfő', latin: 'Balatonfuzfo' },
+      { native: 'Hódmezővásárhely', latin: 'Hodmezovasarhely' },
+      { native: 'Mezőkövesd', latin: 'Mezokovesd' },
+    ],
+    confusable: [id('czech'), id('slovak'), id('turkish'), id('finnish')],
+  },
+  {
+    id: id('polish'),
+    name: { de: 'Polnisch', en: 'Polish' },
+    where: { de: 'Polen', en: 'Poland' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ł mit Querstrich und ż mit Punkt gibt es nur im Polnischen', en: 'ł with a bar and ż with a dot exist only in Polish' }, mark: 'ł ż' },
+      { text: { de: 'Striche nach oben: ś, ź, ń (statt Häkchen wie š, ž, ň in Tschechien)', en: 'Acute strokes: ś, ź, ń (instead of carons like š, ž, ň in Czechia)' }, mark: 'ś ź ń' },
+      { text: { de: 'Dazu ą und ę mit Schwänzchen, und viele cz, sz, rz', en: 'Plus ą and ę with a tail, and many cz, sz, rz' }, mark: 'ą ę' },
+    ],
+    samples: [
+      { native: 'Łódź', latin: 'Lodz' },
+      { native: 'Wrocław', latin: 'Wroclaw (Breslau)' },
+      { native: 'Białystok', latin: 'Bialystok' },
+      { native: 'Gdańsk', latin: 'Gdansk (Danzig)' },
+      { native: 'Świnoujście', latin: 'Swinoujscie (Swinemünde)' },
+    ],
+    confusable: [id('czech'), id('slovak'), id('lithuanian'), id('croatian')],
+  },
+  {
+    id: id('czech'),
+    name: { de: 'Tschechisch', en: 'Czech' },
+    where: { de: 'Tschechien', en: 'Czechia' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ř, ě und ů mit Ring gibt es nur im Tschechischen', en: 'ř, ě and ů with a ring exist only in Czech' }, mark: 'ř ě ů' },
+      { text: { de: 'Häkchen wie in der Slowakei (č, š, ž), aber nie ľ oder ô', en: 'Carons as in Slovakia (č, š, ž), but never ľ or ô' }, mark: 'č š ž' },
+    ],
+    samples: [
+      { native: 'Příbram', latin: 'Pribram' },
+      { native: 'Děčín', latin: 'Decin' },
+      { native: 'Přerov', latin: 'Prerov' },
+      { native: 'České Budějovice', latin: 'Ceske Budejovice (Budweis)' },
+      { native: 'Jindřichův Hradec', latin: 'Jindrichuv Hradec' },
+    ],
+    confusable: [id('slovak'), id('polish'), id('croatian'), id('hungarian')],
+  },
+  {
+    id: id('slovak'),
+    name: { de: 'Slowakisch', en: 'Slovak' },
+    where: { de: 'Slowakei', en: 'Slovakia' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ľ und ĺ, ŕ und ô gibt es nur im Slowakischen', en: 'ľ and ĺ, ŕ and ô exist only in Slovak' }, mark: 'ľ ô' },
+      { text: { de: 'Sonst fast wie Tschechisch, aber ohne ř, ě, ů', en: 'Otherwise much like Czech, but without ř, ě, ů' }, mark: 'ä' },
+    ],
+    samples: [
+      { native: 'Šaľa', latin: 'Sala' },
+      { native: 'Stará Ľubovňa', latin: 'Stara Lubovna' },
+      { native: 'Veľký Krtíš', latin: 'Velky Krtis' },
+      { native: 'Veľké Kapušany', latin: 'Velke Kapusany' },
+    ],
+    confusable: [id('czech'), id('polish'), id('hungarian'), id('croatian')],
+  },
+
+  // ---------------------------------------------------------------- 10 Lateinisch II: Südosteuropa
+  {
+    id: id('romanian'),
+    name: { de: 'Rumänisch', en: 'Romanian' },
+    where: { de: 'Rumänien', en: 'Romania' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ă mit Bogen und ț gibt es im Türkischen nicht', en: 'Turkish has neither ă with a breve nor ț' }, mark: 'ă ț' },
+      { text: { de: 'ș und ț mit Komma darunter (auf alten Schildern auch ş, ţ), dazu â und î', en: 'ș and ț with a comma below (older signs also ş, ţ), plus â and î' }, mark: 'ș â î' },
+      { text: { de: 'Viele Namen enden auf -ești oder -eni', en: 'Many names end in -ești or -eni' }, mark: 'ești' },
+    ],
+    samples: [
+      { native: 'Brașov', latin: 'Brasov (Kronstadt)' },
+      { native: 'Timișoara', latin: 'Timisoara' },
+      { native: 'Constanța', latin: 'Constanta' },
+      { native: 'Pitești', latin: 'Pitesti' },
+      { native: 'Bacău', latin: 'Bacau' },
+    ],
+    confusable: [id('turkish'), id('albanian'), id('portuguese')],
+  },
+  {
+    id: id('turkish'),
+    name: { de: 'Türkisch', en: 'Turkish' },
+    where: { de: 'Türkei', en: 'Türkiye' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ı ohne Punkt und İ mit Punkt gibt es nur im Türkischen', en: 'Dotless ı and dotted İ exist only in Turkish' }, mark: 'ı İ' },
+      { text: { de: 'ğ mit Bogen und ş mit Häkchen', en: 'ğ with a breve and ş with a cedilla' }, mark: 'ğ ş' },
+      { text: { de: 'Dazu ç, ö, ü – aber nie ä, ă oder ț', en: 'Plus ç, ö, ü – but never ä, ă or ț' }, mark: 'ç ö ü' },
+    ],
+    samples: [
+      { native: 'Ağrı', latin: 'Agri' },
+      { native: 'Muğla', latin: 'Mugla' },
+      { native: 'Eskişehir', latin: 'Eskisehir' },
+      { native: 'İzmir', latin: 'Izmir' },
+      { native: 'Şanlıurfa', latin: 'Sanliurfa' },
+      { native: 'Kırıkkale', latin: 'Kirikkale' },
+    ],
+    confusable: [id('romanian'), id('albanian'), id('hungarian')],
+  },
+  {
+    id: id('croatian'),
+    name: { de: 'Kroatisch, Bosnisch (lateinisch)', en: 'Croatian, Bosnian (Latin)' },
+    where: { de: 'Kroatien, Bosnien', en: 'Croatia, Bosnia' },
+    font: 'latin',
+    features: [
+      { text: { de: 'đ mit Querstrich gibt es nur hier (Serbien und Montenegro schreiben lateinisch genauso)', en: 'đ with a bar exists only here (Serbia and Montenegro write Latin the same way)' }, mark: 'đ' },
+      { text: { de: 'ć mit Strich neben č mit Häkchen, dazu š und ž', en: 'ć with an acute next to č with a caron, plus š and ž' }, mark: 'ć č' },
+    ],
+    samples: [
+      { native: 'Đakovo', latin: 'Djakovo' },
+      { native: 'Đurđevac', latin: 'Djurdjevac' },
+      { native: 'Ivanić-Grad', latin: 'Ivanic-Grad' },
+      { native: 'Bihać', latin: 'Bihac' },
+    ],
+    confusable: [id('czech'), id('slovak'), id('polish'), id('albanian')],
+    overlaps: [id('serbian')],
+  },
+  {
+    id: id('albanian'),
+    name: { de: 'Albanisch', en: 'Albanian' },
+    where: { de: 'Albanien, Kosovo', en: 'Albania, Kosovo' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ë mit zwei Punkten, oft am Wortende', en: 'ë with two dots, often at the end of a word' }, mark: 'ë' },
+      { text: { de: 'Dazu ç, aber keine anderen Häkchen oder Striche', en: 'Plus ç, but no other carons or accents' }, mark: 'ç' },
+      { text: { de: 'Viele Buchstabenpaare: sh, gj, xh, dh', en: 'Many letter pairs: sh, gj, xh, dh' }, mark: 'gj sh' },
+    ],
+    samples: [
+      { native: 'Korçë', latin: 'Korca' },
+      { native: 'Durrës', latin: 'Durres' },
+      { native: 'Vlorë', latin: 'Vlora' },
+      { native: 'Shkodër', latin: 'Shkoder' },
+      { native: 'Gjirokastër', latin: 'Gjirokaster' },
+      { native: 'Gjakovë', latin: 'Gjakova (Kosovo)' },
+    ],
+    confusable: [id('turkish'), id('romanian'), id('croatian')],
+  },
+
+  // ---------------------------------------------------------------- 11 Lateinisch III: Baltikum
+  {
+    id: id('lithuanian'),
+    name: { de: 'Litauisch', en: 'Lithuanian' },
+    where: { de: 'Litauen', en: 'Lithuania' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ė mit Punkt, dazu ą, ę, į, ų mit Schwänzchen', en: 'ė with a dot, plus ą, ę, į, ų with a tail' }, mark: 'ė ų į' },
+      { text: { de: 'Keine Striche über a, e, i wie in Lettland (ā, ē, ī)', en: 'No bars over a, e, i as in Latvia (ā, ē, ī)' }, mark: 'ū' },
+      { text: { de: 'Viele Namen enden auf -ai, -ys, -ė', en: 'Many names end in -ai, -ys, -ė' }, mark: '-ai' },
+    ],
+    samples: [
+      { native: 'Panevėžys', latin: 'Panevezys' },
+      { native: 'Kėdainiai', latin: 'Kedainiai' },
+      { native: 'Marijampolė', latin: 'Marijampole' },
+      { native: 'Ukmergė', latin: 'Ukmerge' },
+      { native: 'Plungė', latin: 'Plunge' },
+    ],
+    confusable: [id('latvian'), id('polish'), id('estonian')],
+  },
+  {
+    id: id('latvian'),
+    name: { de: 'Lettisch', en: 'Latvian' },
+    where: { de: 'Lettland', en: 'Latvia' },
+    font: 'latin',
+    features: [
+      { text: { de: 'Striche über den Vokalen: ā, ē, ī, ū', en: 'Bars over the vowels: ā, ē, ī, ū' }, mark: 'ā ē ī' },
+      { text: { de: 'Kommas unter Konsonanten: ķ, ļ, ņ, dazu ģ', en: 'Commas under consonants: ķ, ļ, ņ, plus ģ' }, mark: 'ķ ļ ņ' },
+    ],
+    samples: [
+      { native: 'Liepāja', latin: 'Liepaja' },
+      { native: 'Rēzekne', latin: 'Rezekne' },
+      { native: 'Jēkabpils', latin: 'Jekabpils' },
+      { native: 'Cēsis', latin: 'Cesis' },
+      { native: 'Līvāni', latin: 'Livani' },
+    ],
+    confusable: [id('lithuanian'), id('estonian'), id('slovak')],
+  },
+  {
+    id: id('estonian'),
+    name: { de: 'Estnisch', en: 'Estonian' },
+    where: { de: 'Estland', en: 'Estonia' },
+    font: 'latin',
+    features: [
+      { text: { de: 'õ mit Welle gibt es in Finnland nicht', en: 'Finland has no õ with a tilde' }, mark: 'õ' },
+      { text: { de: 'Sonst wie Finnisch: ä, ö, ü und viele doppelte Vokale', en: 'Otherwise like Finnish: ä, ö, ü and many double vowels' }, mark: 'ä ü' },
+    ],
+    samples: [
+      { native: 'Võru', latin: 'Voru' },
+      { native: 'Põlva', latin: 'Polva' },
+      { native: 'Jõhvi', latin: 'Johvi' },
+      { native: 'Põltsamaa', latin: 'Poltsamaa' },
+    ],
+    confusable: [id('finnish'), id('latvian'), id('portuguese')],
+  },
+
+  // ---------------------------------------------------------------- 12 Lateinisch IV: Norden
+  {
+    id: id('norwegian'),
+    name: { de: 'Norwegisch, Dänisch', en: 'Norwegian, Danish' },
+    where: { de: 'Norwegen, Dänemark', en: 'Norway, Denmark' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ø mit Schrägstrich und æ – Schweden schreibt dafür ö und ä', en: 'ø with a slash and æ – Sweden writes ö and ä instead' }, mark: 'ø æ' },
+      { text: { de: 'å gibt es auch in Schweden, allein verrät es nichts', en: 'Sweden has å too, so on its own it gives nothing away' }, mark: 'å' },
+    ],
+    samples: [
+      { native: 'Tromsø', latin: 'Tromso' },
+      { native: 'Bodø', latin: 'Bodo' },
+      { native: 'Førde', latin: 'Forde' },
+      { native: 'Næstved', latin: 'Naestved' },
+      { native: 'Køge', latin: 'Koge' },
+    ],
+    confusable: [id('swedish'), id('icelandic'), id('finnish')],
+  },
+  {
+    id: id('swedish'),
+    name: { de: 'Schwedisch', en: 'Swedish' },
+    where: { de: 'Schweden', en: 'Sweden' },
+    font: 'latin',
+    features: [
+      { text: { de: 'å zusammen mit ä oder ö', en: 'å together with ä or ö' }, mark: 'å ä ö' },
+      { text: { de: 'Nie ø oder æ (Norwegen, Dänemark); Finnland hat in finnischen Namen kein å', en: 'Never ø or æ (Norway, Denmark); Finnish names in Finland have no å' }, mark: 'ö' },
+    ],
+    samples: [
+      { native: 'Västerås', latin: 'Vasteras' },
+      { native: 'Mönsterås', latin: 'Monsteras' },
+      { native: 'Mörbylånga', latin: 'Morbylanga' },
+      { native: 'Övertorneå', latin: 'Overtornea' },
+      { native: 'Österåker', latin: 'Osteraker' },
+    ],
+    confusable: [id('norwegian'), id('finnish'), id('estonian')],
+  },
+  {
+    id: id('finnish'),
+    name: { de: 'Finnisch', en: 'Finnish' },
+    where: { de: 'Finnland', en: 'Finland' },
+    font: 'latin',
+    features: [
+      { text: { de: 'Viel ä und ö, aber kein å (das steht nur in schwedischen Namen) und kein õ wie in Estland', en: 'Lots of ä and ö, but no å (only in Swedish names) and no õ as in Estonia' }, mark: 'ä ö' },
+      { text: { de: 'Doppelte Vokale und Konsonanten: aa, ää, kk, nn – und viele y', en: 'Double vowels and consonants: aa, ää, kk, nn – and many y' }, mark: 'ää y' },
+    ],
+    samples: [
+      { native: 'Jyväskylä', latin: 'Jyvaskyla' },
+      { native: 'Hämeenlinna', latin: 'Hameenlinna' },
+      { native: 'Seinäjoki', latin: 'Seinajoki' },
+      { native: 'Hyvinkää', latin: 'Hyvinkaa' },
+      { native: 'Järvenpää', latin: 'Jarvenpaa' },
+    ],
+    confusable: [id('estonian'), id('swedish'), id('hungarian')],
+  },
+  {
+    id: id('icelandic'),
+    name: { de: 'Isländisch', en: 'Icelandic' },
+    where: { de: 'Island', en: 'Iceland' },
+    font: 'latin',
+    features: [
+      { text: { de: 'þ (Thorn) gibt es nur im Isländischen', en: 'þ (thorn) exists only in Icelandic' }, mark: 'þ' },
+      { text: { de: 'ð mit Querstrich, dazu á, é, í, ó, ú, ý und æ', en: 'ð with a bar, plus á, é, í, ó, ú, ý and æ' }, mark: 'ð' },
+      { text: { de: 'Viele Namen enden auf -fjörður, -staðir, -vík', en: 'Many names end in -fjörður, -staðir, -vík' }, mark: '-fjörður' },
+    ],
+    samples: [
+      { native: 'Þorlákshöfn', latin: 'Thorlakshofn' },
+      { native: 'Egilsstaðir', latin: 'Egilsstadir' },
+      { native: 'Siglufjörður', latin: 'Siglufjordur' },
+      { native: 'Sauðárkrókur', latin: 'Saudarkrokur' },
+      { native: 'Ísafjörður', latin: 'Isafjordur' },
+    ],
+    confusable: [id('norwegian'), id('swedish'), id('finnish')],
+  },
+
+  // ---------------------------------------------------------------- 13 Lateinisch V: Südwesten
+  {
+    id: id('portuguese'),
+    name: { de: 'Portugiesisch', en: 'Portuguese' },
+    where: { de: 'Portugal, Brasilien', en: 'Portugal, Brazil' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ã und õ mit Welle, besonders -ão (São)', en: 'ã and õ with a tilde, especially -ão (São)' }, mark: 'ã' },
+      { text: { de: 'ç und â, ê, ô – aber kein ñ (dafür nh: Minho)', en: 'ç and â, ê, ô – but no ñ (nh instead: Minho)' }, mark: 'ç nh' },
+    ],
+    samples: [
+      { native: 'São Paulo', latin: 'Sao Paulo' },
+      { native: 'Guimarães', latin: 'Guimaraes' },
+      { native: 'Ribeirão Preto', latin: 'Ribeirao Preto' },
+      { native: 'Conceição', latin: 'Conceicao' },
+      { native: 'São Luís', latin: 'Sao Luis' },
+    ],
+    confusable: [id('spanish'), id('romanian'), id('estonian')],
+  },
+  {
+    id: id('spanish'),
+    name: { de: 'Spanisch', en: 'Spanish' },
+    where: { de: 'Spanien, Lateinamerika', en: 'Spain, Latin America' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ñ mit Welle (Portugal schreibt nh)', en: 'ñ with a tilde (Portugal writes nh)' }, mark: 'ñ' },
+      { text: { de: 'Akzente á, é, í, ó, ú, aber nie ã oder ç', en: 'Accents á, é, í, ó, ú, but never ã or ç' }, mark: 'á í ó' },
+    ],
+    samples: [
+      { native: 'Logroño', latin: 'Logrono' },
+      { native: 'A Coruña', latin: 'A Coruna' },
+      { native: 'Viña del Mar', latin: 'Vina del Mar' },
+      { native: 'Ñuñoa', latin: 'Nunoa' },
+    ],
+    confusable: [id('portuguese'), id('romanian'), id('croatian')],
   },
 ];
 
@@ -613,5 +958,51 @@ export const SCRIPT_LESSONS: ScriptLesson[] = [
     goal: { de: 'Sonderbuchstaben von Serbien bis zur Mongolei.', en: 'Special letters from Serbia to Mongolia.' },
     newIds: [id('serbian'), id('macedonian'), id('kazakh'), id('mongolian')],
     reviewIds: [id('russian'), id('bulgarian')],
+  },  {
+    id: 'scripts-l8',
+    number: 8,
+    title: { de: 'Georgien', en: 'Georgia' },
+    goal: { de: 'Die runde Schrift aus dem Kaukasus – seit 2026 in Street View.', en: 'The round script of the Caucasus – on Street View since 2026.' },
+    newIds: [id('georgian')],
+    reviewIds: [id('greek'), id('cyrillic'), id('sinhala')],
+  },
+  {
+    id: 'scripts-l9',
+    number: 9,
+    title: { de: 'Lateinisch I: Mitteleuropa', en: 'Latin I: Central Europe' },
+    goal: { de: 'Ungarn, Polen, Tschechien oder Slowakei? Ein Sonderzeichen reicht.', en: 'Hungary, Poland, Czechia or Slovakia? One special letter is enough.' },
+    newIds: [id('hungarian'), id('polish'), id('czech'), id('slovak')],
+  },
+  {
+    id: 'scripts-l10',
+    number: 10,
+    title: { de: 'Lateinisch II: Südosteuropa', en: 'Latin II: Southeast Europe' },
+    goal: { de: 'Rumänien, Türkei, Kroatien oder Albanien?', en: 'Romania, Türkiye, Croatia or Albania?' },
+    newIds: [id('romanian'), id('turkish'), id('croatian'), id('albanian')],
+    reviewIds: [id('czech')],
+  },
+  {
+    id: 'scripts-l11',
+    number: 11,
+    title: { de: 'Lateinisch III: Baltikum', en: 'Latin III: The Baltics' },
+    goal: { de: 'Litauen, Lettland oder Estland?', en: 'Lithuania, Latvia or Estonia?' },
+    newIds: [id('lithuanian'), id('latvian'), id('estonian')],
+    reviewIds: [id('polish')],
+  },
+  {
+    id: 'scripts-l12',
+    number: 12,
+    title: { de: 'Lateinisch IV: Norden', en: 'Latin IV: The North' },
+    goal: { de: 'ø oder ö, å oder nicht: Skandinavien, Finnland, Island.', en: 'ø or ö, å or not: Scandinavia, Finland, Iceland.' },
+    newIds: [id('norwegian'), id('swedish'), id('finnish'), id('icelandic')],
+    reviewIds: [id('estonian')],
+  },
+  {
+    id: 'scripts-l13',
+    number: 13,
+    title: { de: 'Lateinisch V: Südwesten', en: 'Latin V: The Southwest' },
+    goal: { de: 'Portugal und Brasilien oder Spanien und Lateinamerika?', en: 'Portugal and Brazil or Spain and Latin America?' },
+    newIds: [id('portuguese'), id('spanish')],
+    reviewIds: [id('romanian'), id('turkish')],
   },
 ];

@@ -3,13 +3,13 @@
 // src/content/scripts/data.ts:  node tools/script-fonts.mjs
 // (A test checks that every character of the course is covered.)
 // The font packages are only needed for this step, so they are not in package.json:
-//   npm i --no-save @fontsource/noto-sans-{arabic,hebrew,lao,khmer,devanagari,gurmukhi,gujarati,oriya,tamil,telugu,kannada,malayalam,sinhala,jp,tc,kr} @fontsource/noto-serif-tibetan
+//   npm i --no-save @fontsource/noto-sans-{arabic,hebrew,georgian,lao,khmer,devanagari,gurmukhi,gujarati,oriya,tamil,telugu,kannada,malayalam,sinhala,jp,tc,kr} @fontsource/noto-serif-tibetan
 import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const FONTS = {
-  arabic: 'noto-sans-arabic', hebrew: 'noto-sans-hebrew', lao: 'noto-sans-lao', khmer: 'noto-sans-khmer',
+  arabic: 'noto-sans-arabic', hebrew: 'noto-sans-hebrew', georgian: 'noto-sans-georgian', lao: 'noto-sans-lao', khmer: 'noto-sans-khmer',
   devanagari: 'noto-sans-devanagari', gurmukhi: 'noto-sans-gurmukhi', gujarati: 'noto-sans-gujarati', oriya: 'noto-sans-oriya',
   tibetan: 'noto-serif-tibetan', tamil: 'noto-sans-tamil', telugu: 'noto-sans-telugu', kannada: 'noto-sans-kannada',
   malayalam: 'noto-sans-malayalam', sinhala: 'noto-sans-sinhala', jp: 'noto-sans-jp', tc: 'noto-sans-tc', kr: 'noto-sans-kr',

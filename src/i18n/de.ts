@@ -361,7 +361,7 @@ export const de: Record<MessageKey, string> = {
   'mistakes.practiseOpen': 'Nur die {n} offenen',
   'scripts.title': 'Schriften erkennen',
   'scripts.subtitle': 'Ein Blick aufs Schild verrät oft schon das Land – noch bevor du ein Wort lesen kannst.',
-  'scripts.card': 'Welche Schrift, welches Land? {n} Schriften von Laos bis zur Mongolei',
+  'scripts.card': 'Welche Schrift, welches Land? {n} Schriften und Sonderzeichen von Island bis zur Mongolei',
   'scripts.known': '{n} von {total} Schriften sicher erkannt',
   'scripts.started': '{n} angefangen',
   'scripts.startHere': 'Mit Lektion 1 starten',

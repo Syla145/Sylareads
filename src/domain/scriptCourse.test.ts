@@ -41,7 +41,7 @@ describe('scripts course data', () => {
 
   // Samples must be written in the script they stand for.
   const BLOCKS: Partial<Record<ScriptFont, [number, number][]>> = {
-    arabic: [[0x0600, 0x06ff]], hebrew: [[0x0590, 0x05ff]], thai: [[0x0e00, 0x0e7f]], lao: [[0x0e80, 0x0eff]], khmer: [[0x1780, 0x17ff]],
+    arabic: [[0x0600, 0x06ff]], hebrew: [[0x0590, 0x05ff]], georgian: [[0x10d0, 0x10ff]], thai: [[0x0e00, 0x0e7f]], lao: [[0x0e80, 0x0eff]], khmer: [[0x1780, 0x17ff]],
     devanagari: [[0x0900, 0x097f]], bengali: [[0x0980, 0x09ff]], gurmukhi: [[0x0a00, 0x0a7f]], gujarati: [[0x0a80, 0x0aff]], oriya: [[0x0b00, 0x0b7f]],
     tamil: [[0x0b80, 0x0bff]], telugu: [[0x0c00, 0x0c7f]], kannada: [[0x0c80, 0x0cff]], malayalam: [[0x0d00, 0x0d7f]], sinhala: [[0x0d80, 0x0dff]],
     tibetan: [[0x0f00, 0x0fff]], kr: [[0xac00, 0xd7af]], jp: [[0x3040, 0x30ff], [0x4e00, 0x9fff]], tc: [[0x4e00, 0x9fff]],
@@ -73,11 +73,55 @@ describe('scripts course data', () => {
     for (const [id, re] of Object.entries(giveaway)) for (const s of SCRIPT_BY_ID.get(id)!.samples) expect(re.test(s.native), `${id}: ${s.native}`).toBe(true);
   });
 
+  // Latin special letters: every sample has its giveaway, and no sample would also pass for another country.
+  const LATIN: Record<string, RegExp> = {
+    'scripts:hungarian': /[őű]/iu,
+    'scripts:polish': /[łżźśń]/iu,
+    'scripts:czech': /[řěů]/iu,
+    'scripts:slovak': /[ľĺŕô]/iu,
+    'scripts:romanian': /[șță]/iu,
+    'scripts:turkish': /[ğış]|İ/u,
+    'scripts:croatian': /[đć]/iu,
+    'scripts:albanian': /ë/iu,
+    'scripts:lithuanian': /[ėųį]/iu,
+    'scripts:latvian': /[āēīķļņģ]/iu,
+    'scripts:estonian': /õ/iu,
+    'scripts:norwegian': /[æø]/iu,
+    'scripts:swedish': /^(?=.*å)(?=.*[äö])[^æø]*$/iu,
+    'scripts:finnish': /^[a-zäö -]*[äö][a-zäö -]*$/iu,
+    'scripts:icelandic': /[þð]/iu,
+    'scripts:portuguese': /ã/iu,
+    'scripts:spanish': /ñ/iu,
+  };
+  it('every Latin special-letter sample is unambiguous', () => {
+    const latinIds = Object.keys(LATIN);
+    expect(latinIds.every((id) => SCRIPT_BY_ID.has(id))).toBe(true);
+    for (const id of latinIds) {
+      for (const s of SCRIPT_BY_ID.get(id)!.samples) {
+        expect(LATIN[id].test(s.native), `${id}: ${s.native}`).toBe(true);
+        for (const other of latinIds) if (other !== id) expect(LATIN[other].test(s.native), `${id}: ${s.native} also looks like ${other}`).toBe(false);
+      }
+    }
+  });
+
+  it('places that overlap are never offered together', () => {
+    const pool = new Set(SCRIPT_ENTRIES.map((e) => e.id));
+    for (let seed = 1; seed < 40; seed++) {
+      for (const id of ['scripts:croatian', 'scripts:serbian']) {
+        const other = id === 'scripts:croatian' ? 'scripts:serbian' : 'scripts:croatian';
+        const where = retask({ key: 'k', kind: 'where', itemId: id, sample: SCRIPT_BY_ID.get(id)!.samples[0], options: [] }, pool, seededRng(seed));
+        const pick = retask({ key: 'k', kind: 'pick', itemId: id, options: [] }, pool, seededRng(seed));
+        expect(where.kind === 'where' && where.options).not.toContain(other);
+        expect(pick.kind === 'pick' && pick.options.map((o) => o.itemId)).not.toContain(other);
+      }
+    }
+  });
+
   it('the bundled font subsets cover every character of the course', () => {
     const css = fs.readFileSync(path.join(__dirname, '../features/scripts/fonts.css'), 'utf8');
     const faces = [...css.matchAll(/font-family: '([^']+)';[\s\S]*?unicode-range: ([^;]+);/g)].map((m) => ({ family: m[1], range: m[2] }));
     const FAMILY: Partial<Record<ScriptFont, string>> = {
-      arabic: 'Noto Sans Arabic', hebrew: 'Noto Sans Hebrew', lao: 'Noto Sans Lao', khmer: 'Noto Sans Khmer', devanagari: 'Noto Sans Devanagari',
+      arabic: 'Noto Sans Arabic', hebrew: 'Noto Sans Hebrew', georgian: 'Noto Sans Georgian', lao: 'Noto Sans Lao', khmer: 'Noto Sans Khmer', devanagari: 'Noto Sans Devanagari',
       gurmukhi: 'Noto Sans Gurmukhi', gujarati: 'Noto Sans Gujarati', oriya: 'Noto Sans Oriya', tibetan: 'Noto Serif Tibetan', tamil: 'Noto Sans Tamil',
       telugu: 'Noto Sans Telugu', kannada: 'Noto Sans Kannada', malayalam: 'Noto Sans Malayalam', sinhala: 'Noto Sans Sinhala',
       jp: 'Noto Sans JP', tc: 'Noto Sans TC', kr: 'Noto Sans KR',
@@ -186,7 +230,7 @@ describe('scripts lessons and practice', () => {
   it('Script Spotter tiers and the family specials', () => {
     const root = emptyRoot('de', 1);
     root.courses.scripts = { ...emptyCourse(1), items: Object.fromEntries(SCRIPT_ENTRIES.map((e) => [e.id, box(5)])) };
-    expect(newlyUnlocked(root, 'scripts', null)).toEqual(expect.arrayContaining(['scripts:spotter:1', 'scripts:spotter:2', 'scripts:spotter:3', 'scripts:cyrillic', 'scripts:india']));
+    expect(newlyUnlocked(root, 'scripts', null)).toEqual(expect.arrayContaining(['scripts:spotter:1', 'scripts:spotter:2', 'scripts:spotter:3', 'scripts:cyrillic', 'scripts:india', 'scripts:latin']));
     root.courses.scripts.items['scripts:lao'] = box(4);
     const ids = newlyUnlocked(root, 'scripts', null);
     expect(ids).not.toContain('scripts:spotter:3');

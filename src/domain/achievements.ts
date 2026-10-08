@@ -256,13 +256,17 @@ const SCRIPTS: AchievementDef[] = [
     { de: 'Schriftkenner', en: 'Script Spotter' },
     [
       { de: '10 Schriften auf Pro', en: '10 scripts on Pro' },
-      { de: '20 Schriften auf Pro', en: '20 scripts on Pro' },
+      { de: '25 Schriften auf Pro', en: '25 scripts on Pro' },
       { de: `Alle ${SCRIPT_ENTRIES.length} Schriften auf Pro`, en: `All ${SCRIPT_ENTRIES.length} scripts on Pro` },
     ],
-    (tier, root) => m(countAt(root.courses.scripts, SCRIPT_ENTRIES.map((e) => e.id), PRO), [10, 20, SCRIPT_ENTRIES.length][tier - 1]),
+    (tier, root) => m(countAt(root.courses.scripts, SCRIPT_ENTRIES.map((e) => e.id), PRO), [10, 25, SCRIPT_ENTRIES.length][tier - 1]),
   ),
   single('scripts', 'cyrillic', { de: 'Kyrillisch-Detektiv', en: 'Cyrillic Detective' }, { de: 'Alle Kyrillisch-Varianten auf Pro', en: 'All Cyrillic variants on Pro' }, (root) => {
     const ids = lessonIds(6, 7);
+    return m(countAt(root.courses.scripts, ids, PRO), ids.length);
+  }),
+  single('scripts', 'latin', { de: 'Häkchen-Kenner', en: 'Diacritics Detective' }, { de: 'Alle lateinischen Sonderzeichen auf Pro', en: 'All Latin special letters on Pro' }, (root) => {
+    const ids = lessonIds(9, 10, 11, 12, 13);
     return m(countAt(root.courses.scripts, ids, PRO), ids.length);
   }),
   single('scripts', 'india', { de: 'Indien-Kenner', en: 'India Expert' }, { de: 'Alle Schriften Indiens und Sri Lankas auf Pro', en: 'All scripts of India and Sri Lanka on Pro' }, (root) => {

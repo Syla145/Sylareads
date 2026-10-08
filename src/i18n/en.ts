@@ -359,7 +359,7 @@ export const en = {
   'mistakes.practiseOpen': 'Only the {n} still open',
   'scripts.title': 'Recognise Scripts',
   'scripts.subtitle': 'One look at a sign often gives away the country – before you can read a single word.',
-  'scripts.card': 'Which script, which country? {n} scripts from Laos to Mongolia',
+  'scripts.card': 'Which script, which country? {n} scripts and special letters from Iceland to Mongolia',
   'scripts.known': '{n} of {total} scripts recognised reliably',
   'scripts.started': '{n} started',
   'scripts.startHere': 'Start with lesson 1',
