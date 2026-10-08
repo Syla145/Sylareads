@@ -12,6 +12,14 @@ export interface Evaluation {
   mismatchAt?: number;
 }
 
+const oToA = (s: string) => s.replace(/o/g, 'a');
+const looseSets = new WeakMap<Set<string>, Set<string>>();
+const loose = (set: Set<string>) => {
+  let out = looseSets.get(set);
+  if (!out) looseSets.set(set, (out = new Set([...set].map(oToA))));
+  return out;
+};
+
 /** Does `input` name or read `item`? Exact match against explicit and rule-defined answers only. */
 export function accepts(index: CourseIndex, item: Item, input: string): boolean {
   const norm = normalize(input);
@@ -19,6 +27,7 @@ export function accepts(index: CourseIndex, item: Item, input: string): boolean 
   const set = index.answers.get(item.id);
   if (set?.has(norm)) return true;
   if (item.kind === 'letter') return false;
+  if (set && index.content.looseVowels && item.kind !== 'combo' && loose(set).has(oToA(norm))) return true;
   const segs = index.segments.get(item.id);
   if (segs && matchSegments(input, segs)) return true;
   const extra = index.extraSegments.get(item.id);

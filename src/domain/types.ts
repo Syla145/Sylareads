@@ -191,6 +191,12 @@ export interface CourseContent {
   requiredLetters: (native: string) => string[];
   /** Feature flags for the course (e.g. upper/lower case). */
   hasCase: boolean;
+  /**
+   * o and a count as the same letter in typed names and words (Bengali: the
+   * built-in vowel is spoken o but written a in official names, so both
+   * readings of রংপুর – Rongpur, Rangpur – are right). Not for letters.
+   */
+  looseVowels?: boolean;
   /** Lazily loaded map with clickable areas (only some courses). */
   loadMap?: () => Promise<CourseMap>;
 }

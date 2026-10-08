@@ -22,6 +22,7 @@ const content: CourseContent = {
   segments: () => [],
   requiredLetters: requiredUnitsBn,
   hasCase: false,
+  looseVowels: true,
   loadMap: () => import('./map.json').then((m) => m.default as unknown as CourseMap),
 };
 

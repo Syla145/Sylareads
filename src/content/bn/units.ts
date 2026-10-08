@@ -22,7 +22,10 @@ const consonant = (slug: string, ch: string, base: string, example: string, exam
   reading: base,
   // the consonant alone, or with its inherent vowel (k, ko, ka)
   accepted: [...new Set([base, `${base}o`, `${base}a`, ...extra])],
-  mnemonic: { de: `${ch} = ${base}, mit inhärentem Vokal ${base}o. Beispiel: ${example} = ${exampleRoman}.`, en: `${ch} = ${base}, with its inherent vowel ${base}o. Example: ${example} = ${exampleRoman}.` },
+  mnemonic: {
+    de: `${ch} = ${base}, mit eingebautem Vokal ${base}a (gesprochen eher ${base}o). Beispiel: ${example} = ${exampleRoman}.`,
+    en: `${ch} = ${base}, with its built-in vowel ${base}a (spoken more like ${base}o). Example: ${example} = ${exampleRoman}.`,
+  },
   note,
 });
 
@@ -90,7 +93,7 @@ const vowel = (slug: string, glyph: string, reading: string, accepted: string[],
 
 /** Independent vowels: only at the start of a word or after another vowel. */
 const INDEPENDENT: LetterItem[] = [
-  vowel('v-o', 'অ', 'o', ['a'], 'Der inhärente Vokal als eigener Buchstabe, am Wortanfang: অনেক = onek.', 'The inherent vowel as a letter of its own, at the start of a word: অনেক = onek.'),
+  vowel('v-o', 'অ', 'o', ['a'], 'Der eingebaute Vokal als eigener Buchstabe, am Wortanfang: অনেক = onek. In Ortsnamen meist a geschrieben.', 'The built-in vowel as a letter of its own, at the start of a word: অনেক = onek. Usually written a in place names.'),
   vowel('v-aa', 'আ', 'a', ['aa'], 'Am Wortanfang: আম = am (Mango).', 'At the start of a word: আম = am (mango).'),
   vowel('v-i', 'ই', 'i', [], 'Am Wortanfang: ইট = it.', 'At the start of a word: ইট = it.'),
   vowel('v-ii', 'ঈ', 'i', ['ee', 'ii'], 'Langes i, klingt heute wie ই: ঈদ = Id (Eid).', 'Long i, sounds like ই today: ঈদ = Id (Eid).'),
@@ -204,10 +207,10 @@ export const ENDINGS: ComboItem[] = [
   ending(
     'suf-ganj',
     '-গঞ্জ',
-    'gonj',
-    ['ganj', 'gang'],
-    '„Marktort“. Gesprochen gonj (eingebautes o), auf englischen Schildern aber -ganj geschrieben: নারায়ণগঞ্জ = Narayanganj, হবিগঞ্জ = Habiganj.',
-    '“Market town”. Said gonj (built-in o), but written -ganj on English signs: নারায়ণগঞ্জ = Narayanganj, হবিগঞ্জ = Habiganj.',
+    'ganj',
+    ['gonj', 'gang'],
+    '„Marktort“: নারায়ণগঞ্জ = Narayanganj, হবিগঞ্জ = Habiganj. গ ohne Vokalzeichen = ga (der eingebaute Vokal wird in Namen a geschrieben, gesprochen eher gonj).',
+    '“Market town”: নারায়ণগঞ্জ = Narayanganj, হবিগঞ্জ = Habiganj. গ without a vowel sign = ga (the built-in vowel is written a in names, spoken more like gonj).',
   ),
   ending('suf-bazar', '-বাজার', 'bazar', ['bajar'], '„Markt“: কক্সবাজার, মৌলভীবাজার.', '“Market”: কক্সবাজার, মৌলভীবাজার.'),
   ending('suf-hat', '-হাট', 'hat', [], '„Wochenmarkt“: বাগেরহাট, লালমনিরহাট.', '“Weekly market”: বাগেরহাট, লালমনিরহাট.'),

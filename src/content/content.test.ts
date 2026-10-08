@@ -141,3 +141,17 @@ describe('lesson order', () => {
     }
   });
 });
+
+describe('Bengali: o and a', () => {
+  const index = buildIndex(bn);
+  const item = (id: string) => index.byId.get(id)!;
+  it('names and words accept the spoken o as well as the written a, letters do not', () => {
+    expect(accepts(index, item('bn:city:narayanganj'), 'Narayongonj')).toBe(true);
+    expect(accepts(index, item('bn:district:rangpur'), 'Rongpur')).toBe(true);
+    expect(accepts(index, item('bn:district:rangpur'), 'Rangpur')).toBe(true);
+    expect(accepts(index, item('bn:district:rangpur'), 'Dinajpur')).toBe(false);
+    expect(accepts(index, item('bn:letter:k-aa'), 'ko')).toBe(false);
+    expect(accepts(index, item('bn:combo:suf-ganj'), 'ganj')).toBe(true);
+    expect((item('bn:combo:suf-ganj') as { reading?: string }).reading).toBe('ganj');
+  });
+});

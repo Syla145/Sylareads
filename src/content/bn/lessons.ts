@@ -24,7 +24,10 @@ const core: Omit<Lesson, 'number'>[] = [
   {
     id: 'bn-l01', phaseId: 'principle', type: 'letters',
     title: { de: 'Konsonant + Vokal', en: 'Consonant + Vowel' },
-    goal: { de: 'Jeder Konsonant trägt ein o in sich. ◌া macht daraus a: কা = ka.', en: 'Every consonant carries an o. ◌া turns it into a: কা = ka.' },
+    goal: {
+      de: 'Jeder Konsonant trägt einen eingebauten Vokal: gesprochen eher o, in Ortsnamen a geschrieben (রংপুর = Rangpur). ◌া ist immer a: কা = ka.',
+      en: 'Every consonant carries a built-in vowel: spoken more like o, written a in place names (রংপুর = Rangpur). ◌া is always a: কা = ka.',
+    },
     newIds: U('ka', 'na', 'ma', 'la', 'ra', 'k-aa'),
     wordIds: W('nam', 'lal', 'kal', 'mala', 'kola'),
   },
@@ -166,8 +169,8 @@ const divisionLesson: Omit<Lesson, 'number'> = {
   type: 'places',
   title: { de: 'Die acht Divisionen', en: 'The Eight Divisions' },
   goal: {
-    de: 'Jede Division trägt den Namen ihrer Hauptstadt. বিভাগ (bibhag) heißt Division. Englische Namen schreiben das eingebaute o oft als a: রংপুর spricht man Rongpur, geschrieben wird Rangpur.',
-    en: 'Each division is named after its capital. বিভাগ (bibhag) means division. English names often write the built-in o as a: রংপুর sounds like Rongpur but is spelled Rangpur.',
+    de: 'Jede Division trägt den Namen ihrer Hauptstadt. বিভাগ (bibhag) heißt Division. Der eingebaute Vokal heißt in Namen a: রংপুর = Rangpur, বরিশাল = Barishal.',
+    en: 'Each division is named after its capital. বিভাগ (bibhag) means division. The built-in vowel is written a in names: রংপুর = Rangpur, বরিশাল = Barishal.',
   },
   newIds: DIVISIONS.map((d) => d.id),
 };
