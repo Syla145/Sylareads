@@ -391,7 +391,7 @@ export const en = {
   'ach.next': 'Next',
   'ach.nextTitle': 'Next achievements',
   'who.title': "Who's here",
-  'who.subtitle': 'Signed-in players who show their card: what they are learning and how far they are. The list refreshes every minute.',
+  'who.subtitle': 'Signed-in players who show their card: what they are learning and how far they are. The list refreshes every 5 minutes.',
   'who.now': 'Active now',
   'who.today': 'Today',
   'who.week': 'This week',
@@ -492,6 +492,8 @@ export const en = {
   'pwa.reload': 'Reload',
   'pwa.offlineChip': 'Offline',
   'pwa.offlineChipTitle': 'No connection. Keep learning; online progress catches up later.',
+  'who.many': '{n}+ players this week',
+  'sync.err.quota': 'Online saving has reached today’s limit and resumes at midnight Pacific time (09:00 in Central Europe). Your progress stays in this browser and catches up then.',
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -75,6 +75,7 @@ function errorText(t: ReturnType<typeof useT>, code: string): string {
     'auth/cancelled-popup-request': 'sync.err.closed',
     'auth/operation-not-allowed': 'sync.err.provider',
     'permission-denied': 'sync.err.rules',
+    'resource-exhausted': 'sync.err.quota',
     'newer-version': 'sync.err.newer',
   };
   return known[code] ? t(known[code]) : t('sync.err.other', { code });

@@ -34,11 +34,22 @@ interface PresenceState {
   cards: PlayerCard[];
   status: ListStatus;
   loadedAt: number | null;
-  refresh: () => Promise<void>;
+  /** How many cards the last load asked for. */
+  loadedLimit: number;
+  /** Loads the list unless a fresh enough one with at least `limit` cards is there (or `force`). */
+  refresh: (limit?: number, force?: boolean) => Promise<void>;
 }
 
 const CHANGE_DEBOUNCE_MS = 15_000;
-const LIST_REFRESH_MS = 60_000;
+/**
+ * Every card returned counts as one Firestore read, so the list is read
+ * sparingly: every 5 minutes while on screen, not again within 2 minutes when
+ * pages change, and the home page asks for a few cards only.
+ */
+const LIST_REFRESH_MS = 5 * 60_000;
+const LIST_MIN_GAP_MS = 2 * 60_000;
+export const STRIP_LIMIT = 12;
+export const PAGE_LIMIT = 60;
 
 let lastCard: PublicPlayer | null = null;
 let lastWrite = 0;
@@ -88,7 +99,7 @@ async function publish(force = false): Promise<void> {
       lastCard = card;
       lastWrite = Date.now();
       // A list on screen should show the own card right away.
-      if (first && usePresence.getState().loadedAt) void usePresence.getState().refresh();
+      if (first && usePresence.getState().loadedAt) void usePresence.getState().refresh(usePresence.getState().loadedLimit, true);
     } catch {
       /* offline or rules not yet published: try again with the next heartbeat */
     } finally {
@@ -111,20 +122,23 @@ async function unpublish(uid: string) {
   }
 }
 
-export const usePresence = create<PresenceState>((set) => ({
+export const usePresence = create<PresenceState>((set, get) => ({
   cards: [],
   status: 'idle',
   loadedAt: null,
-  refresh: async () => {
+  loadedLimit: 0,
+  refresh: async (limit = STRIP_LIMIT, force = false) => {
     const cloud = currentCloud();
     const user = useSync.getState().user;
     if (!cloud || !user) return;
+    const { loadedAt, loadedLimit } = get();
+    if (!force && loadedAt && Date.now() - loadedAt < LIST_MIN_GAP_MS && loadedLimit >= limit) return;
     set((s) => ({ status: s.loadedAt ? s.status : 'loading' }));
     try {
       const now = Date.now();
-      const stored = await cloud.listCards(now - LIST_DAYS * 86_400_000);
+      const stored = await cloud.listCards(now - LIST_DAYS * 86_400_000, limit);
       const cards = stored.map((c) => cardOf(c.uid, c.data, c.seen)).filter((c): c is PlayerCard => !!c);
-      set({ cards: sortPlayers(cards, user.uid, now), status: 'ready', loadedAt: now });
+      set({ cards: sortPlayers(cards, user.uid, now), status: 'ready', loadedAt: now, loadedLimit: limit });
     } catch {
       set({ status: 'error' });
     }
@@ -132,9 +146,9 @@ export const usePresence = create<PresenceState>((set) => ({
 }));
 
 /** Keeps the list fresh while a component that shows it is mounted (and the app is visible). */
-export function watchPlayers(): () => void {
+export function watchPlayers(limit = STRIP_LIMIT): () => void {
   const tick = () => {
-    if (document.visibilityState === 'visible') void usePresence.getState().refresh();
+    if (document.visibilityState === 'visible') void usePresence.getState().refresh(limit);
   };
   tick();
   const id = setInterval(tick, LIST_REFRESH_MS);

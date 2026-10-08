@@ -5,7 +5,7 @@ import { activityOf, cleanName, effectiveShare, NAME_MAX, type Activity, type Pl
 import { SCRIPTS_COURSE_ID } from '../../domain/scriptCourse';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { usePresence, watchPlayers } from '../../sync/presenceStore';
+import { STRIP_LIMIT, usePresence, watchPlayers } from '../../sync/presenceStore';
 import { useSync } from '../../sync/syncStore';
 import { Button, Card as Panel, ProgressBar } from '../../ui/primitives';
 import { FlameIcon } from '../../ui/TopBar';
@@ -110,11 +110,12 @@ export function PlayerCard({ card, me, now }: { card: Card; me: boolean; now: nu
 }
 
 /** Loads the list while mounted; returns the cards and a clock that ticks with each refresh. */
-export function usePlayers() {
+export function usePlayers(limit = STRIP_LIMIT) {
   const signedIn = useSync((s) => !!s.user);
-  const { cards, status, loadedAt } = usePresence();
-  useEffect(() => (signedIn ? watchPlayers() : undefined), [signedIn]);
-  return { cards, status, now: loadedAt ?? Date.now(), signedIn };
+  const { cards, status, loadedAt, loadedLimit } = usePresence();
+  useEffect(() => (signedIn ? watchPlayers(limit) : undefined), [signedIn, limit]);
+  // The list may hold fewer cards than asked for when it was read for the home page.
+  return { cards, status, now: loadedAt ?? Date.now(), signedIn, more: loadedLimit > 0 && cards.length >= loadedLimit };
 }
 
 export const groupOf = (card: Card, now: number): Activity => activityOf(card.seen, now) ?? 'week';

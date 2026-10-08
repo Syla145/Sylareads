@@ -4,12 +4,15 @@ import { migrate } from '../store/persistence';
 import { useProgress } from '../store/progressStore';
 import { loadCloud, type Cloud, type CloudUser } from './cloud';
 import { firebaseConfig } from './firebaseConfig';
+import { uploadDelay } from './timing';
 
 /**
  * Online progress (optional). The local copy stays the working copy; the
  * cloud copy is merged in on start, when the app comes back to the
- * foreground, and a few seconds after every change. A merge never loses
- * progress from either side (see domain/merge.ts).
+ * foreground, right after a finished lesson or practice, when the app is left,
+ * and otherwise at most every two minutes while answers come in (that keeps
+ * Firebase within its free daily quota). A merge never loses progress from
+ * either side (see domain/merge.ts).
  */
 export type SyncStatus = 'unconfigured' | 'off' | 'signed-out' | 'syncing' | 'synced' | 'offline' | 'error';
 
@@ -28,8 +31,7 @@ interface SyncState {
 }
 
 const FLAG = 'sylareads.sync';
-const DEBOUNCE_MS = 6000;
-const FOCUS_INTERVAL_MS = 30000;
+const FOCUS_INTERVAL_MS = 60_000;
 
 const flag = {
   get: () => {
@@ -139,13 +141,17 @@ export const useSync = create<SyncState>((set, get) => {
       }
     },
     signOut: async () => {
-      if (timer) clearTimeout(timer);
       await get().syncNow();
       await cloud?.signOut();
       flag.set(false);
       set({ user: null, status: 'signed-out', lastSyncAt: null });
     },
-    syncNow: () => run(false),
+    syncNow: () => {
+      // A sync now carries every pending change: drop a planned one.
+      if (timer) clearTimeout(timer);
+      timer = null;
+      return run(false);
+    },
     overwriteCloud: () => run(true),
   };
 });
@@ -161,11 +167,16 @@ export function startSync() {
     useSync.setState({ status: 'signed-out' });
   }
 
-  // A few seconds after progress changes, merge and upload.
+  // After progress changes: soon after a finished step, otherwise at most every two minutes.
   useProgress.subscribe((s, prev) => {
     if (applying || s.root === prev.root || !useSync.getState().user) return;
+    const milestone = s.milestones !== prev.milestones;
+    if (timer && !milestone) return; // an upload is already planned and will carry this change
     if (timer) clearTimeout(timer);
-    timer = setTimeout(() => void useSync.getState().syncNow(), DEBOUNCE_MS);
+    timer = setTimeout(() => {
+      timer = null;
+      void useSync.getState().syncNow();
+    }, uploadDelay(Date.now(), useSync.getState().lastSyncAt, milestone));
   });
 
   const onForeground = () => {

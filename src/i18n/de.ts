@@ -393,7 +393,7 @@ export const de: Record<MessageKey, string> = {
   'ach.next': 'Nächste Stufe',
   'ach.nextTitle': 'Nächste Erfolge',
   'who.title': 'Wer ist da',
-  'who.subtitle': 'Angemeldete Spieler, die ihre Karte zeigen: was sie gerade lernen und wie weit sie sind. Die Liste aktualisiert sich jede Minute.',
+  'who.subtitle': 'Angemeldete Spieler, die ihre Karte zeigen: was sie gerade lernen und wie weit sie sind. Die Liste aktualisiert sich alle 5 Minuten.',
   'who.now': 'Gerade aktiv',
   'who.today': 'Heute',
   'who.week': 'Diese Woche',
@@ -494,4 +494,6 @@ export const de: Record<MessageKey, string> = {
   'pwa.reload': 'Neu laden',
   'pwa.offlineChip': 'Offline',
   'pwa.offlineChipTitle': 'Kein Netz. Du kannst weiterlernen; Online-Speichern holt alles nach.',
+  'who.many': '{n}+ Spieler diese Woche',
+  'sync.err.quota': 'Online-Speichern ist für heute ausgelastet und läuft ab 9 Uhr (deutsche Zeit) wieder. Dein Fortschritt bleibt in diesem Browser und wird dann nachgeholt.',
 };

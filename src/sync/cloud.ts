@@ -21,7 +21,7 @@ export interface Cloud {
   publishCard: (uid: string, card: PublicPlayer) => Promise<void>;
   removeCard: (uid: string) => Promise<void>;
   /** Public cards seen since `sinceMs`, newest first. */
-  listCards: (sinceMs: number) => Promise<StoredCard[]>;
+  listCards: (sinceMs: number, limit: number) => Promise<StoredCard[]>;
 }
 
 export interface StoredCard {
@@ -32,7 +32,6 @@ export interface StoredCard {
 
 /** Public cards, one per player who opted in (document id = user id). */
 const PLAYERS = 'players';
-const LIST_LIMIT = 60;
 
 let loading: Promise<Cloud> | null = null;
 
@@ -70,8 +69,8 @@ export function loadCloud(config: FirebaseWebConfig): Promise<Cloud> {
       removeCard: async (uid) => {
         await fs.deleteDoc(fs.doc(db, PLAYERS, uid));
       },
-      listCards: async (sinceMs) => {
-        const q = fs.query(fs.collection(db, PLAYERS), fs.where('seen', '>=', fs.Timestamp.fromMillis(sinceMs)), fs.orderBy('seen', 'desc'), fs.limit(LIST_LIMIT));
+      listCards: async (sinceMs, limit) => {
+        const q = fs.query(fs.collection(db, PLAYERS), fs.where('seen', '>=', fs.Timestamp.fromMillis(sinceMs)), fs.orderBy('seen', 'desc'), fs.limit(limit));
         const snap = await fs.getDocs(q);
         return snap.docs.map((d) => {
           const data = d.data();

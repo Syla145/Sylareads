@@ -28,6 +28,8 @@ import { backupCurrent, clearAll, loadRoot, saveRoot } from './persistence';
 
 interface ProgressState {
   root: ProgressRoot;
+  /** Counts finished steps (lesson, practice, challenge, settings): online saving uploads soon after one. */
+  milestones: number;
   setLang: (lang: Lang) => void;
   setMapLabels: (which: 'mapLabels' | 'taskMapLabels', value: MapLabels) => void;
   startCourse: (courseId: string) => void;
@@ -63,8 +65,8 @@ interface ProgressState {
 export const DEFAULT_TEMPO: TempoSettings = { seconds: 5, flashMs: 1000 };
 
 export const useProgress = create<ProgressState>((set, get) => {
-  const commit = (root: ProgressRoot, immediate = false) => {
-    set({ root });
+  const commit = (root: ProgressRoot, immediate = false, milestone = immediate) => {
+    set(milestone ? { root, milestones: get().milestones + 1 } : { root });
     saveRoot(root, immediate);
   };
   const unlock = (courseId: string, index: CourseIndex | null) => {
@@ -74,6 +76,7 @@ export const useProgress = create<ProgressState>((set, get) => {
   };
   return {
     root: loadRoot(),
+    milestones: 0,
     setLang: (uiLang) => commit({ ...get().root, settings: { ...get().root.settings, uiLang } }, true),
     setMapLabels: (which, value) => commit({ ...get().root, settings: { ...get().root.settings, [which]: value } }, true),
     startCourse: (courseId) => {
@@ -108,7 +111,7 @@ export const useProgress = create<ProgressState>((set, get) => {
       const ids = newlyUnlocked(get().root, courseId, index);
       if (ids.length) commit(unlockAchievements(get().root, ids), true);
     },
-    saveDaily: (courseId, day, score, done) => commit(recordDailyResult(get().root, courseId, day, score, done), true),
+    saveDaily: (courseId, day, score, done) => commit(recordDailyResult(get().root, courseId, day, score, done), true, done),
     setShare: (on, name) => {
       const root = get().root;
       const share = { on, name: cleanName(name), at: Date.now() };
@@ -129,7 +132,7 @@ export const useProgress = create<ProgressState>((set, get) => {
       backupCurrent(get().root);
       commit(root, true);
     },
-    applyMerged: (root) => commit(root, true),
+    applyMerged: (root) => commit(root, true, false),
     markExported: () => commit({ ...get().root, lastExportAt: Date.now() }, true),
     reset: () => {
       backupCurrent(get().root);

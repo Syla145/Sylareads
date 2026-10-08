@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import type { Activity } from '../../domain/presence';
 import { useT, type TKey } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
+import { PAGE_LIMIT, STRIP_LIMIT } from '../../sync/presenceStore';
 import { useSync } from '../../sync/syncStore';
 import { Button, Card } from '../../ui/primitives';
 import { TopBar } from '../../ui/TopBar';
@@ -17,7 +18,7 @@ const GROUPS: { id: Activity; label: TKey }[] = [
 export default function PlayersPage() {
   const t = useT();
   const navigate = useNavigate();
-  const { cards, status, now, signedIn } = usePlayers();
+  const { cards, status, now, signedIn } = usePlayers(PAGE_LIMIT);
   const me = useSync((s) => s.user?.uid ?? null);
   const sharing = useProgress((s) => !!s.root.profile.share?.on);
   const syncStatus = useSync((s) => s.status);
@@ -74,7 +75,7 @@ export default function PlayersPage() {
 export function PlayersStrip() {
   const t = useT();
   const syncStatus = useSync((s) => s.status);
-  const { cards: all, now, signedIn, status } = usePlayers();
+  const { cards: all, now, signedIn, status, more } = usePlayers(STRIP_LIMIT);
   const me = useSync((s) => s.user?.uid ?? null);
   if (syncStatus === 'unconfigured') return null;
   // The strip shows the others; the own card is on the list page.
@@ -97,7 +98,7 @@ export function PlayersStrip() {
     <Card className="players-strip">
       <div className="players-strip-head">
         <h2 className="card-label">{t('who.title')}</h2>
-        <span className="muted small">{active.length ? t('who.activeNow', { n: active.length }) : t('who.recent', { n: cards.length })}</span>
+        <span className="muted small">{active.length && !(more && active.length >= cards.length) ? t('who.activeNow', { n: active.length }) : more ? t('who.many', { n: cards.length }) : t('who.recent', { n: cards.length })}</span>
         <Link to="/players" className="players-strip-link small">
           {t('who.all')}
         </Link>
