@@ -117,3 +117,27 @@ describe('coordinates', () => {
     }
   });
 });
+
+describe('lesson order', () => {
+  it('Bengali: divisions and districts right after the letters they need, then cities, terms last', () => {
+    const order = bn.lessons.map((l) => l.phaseId);
+    const first = (p: string) => order.indexOf(p);
+    expect(first('regions')).toBeLessThan(first('districts'));
+    expect(first('districts')).toBeLessThan(first('cities'));
+    expect(first('cities')).toBeLessThan(first('terms'));
+    expect(order.lastIndexOf('clusters')).toBeLessThan(first('regions'));
+  });
+
+  it('Bengali: every place lesson only needs letters taught before it', () => {
+    const taught = new Set<string>();
+    for (const lesson of bn.lessons) {
+      if (lesson.type === 'places') {
+        for (const id of lesson.newIds) {
+          const place = bn.places.find((p) => p.id === id)!;
+          for (const unit of bn.requiredLetters(place.native)) expect(taught.has(unit), `${lesson.id}: ${place.native} needs ${unit}`).toBe(true);
+        }
+      }
+      for (const id of lesson.newIds) taught.add(id);
+    }
+  });
+});

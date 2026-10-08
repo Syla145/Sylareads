@@ -201,7 +201,14 @@ const ending = (slug: string, native: string, reading: string, accepted: string[
 /** Place-name endings: recognising them makes long names readable at a glance. */
 export const ENDINGS: ComboItem[] = [
   ending('suf-pur', '-পুর', 'pur', [], '„Stadt“: দিনাজপুর, রংপুর, ফরিদপুর.', '“Town”: দিনাজপুর, রংপুর, ফরিদপুর.'),
-  ending('suf-ganj', '-গঞ্জ', 'ganj', ['gonj', 'gang'], '„Marktort“: নারায়ণগঞ্জ, হবিগঞ্জ.', '“Market town”: নারায়ণগঞ্জ, হবিগঞ্জ.'),
+  ending(
+    'suf-ganj',
+    '-গঞ্জ',
+    'gonj',
+    ['ganj', 'gang'],
+    '„Marktort“. Gesprochen gonj (eingebautes o), auf englischen Schildern aber -ganj geschrieben: নারায়ণগঞ্জ = Narayanganj, হবিগঞ্জ = Habiganj.',
+    '“Market town”. Said gonj (built-in o), but written -ganj on English signs: নারায়ণগঞ্জ = Narayanganj, হবিগঞ্জ = Habiganj.',
+  ),
   ending('suf-bazar', '-বাজার', 'bazar', ['bajar'], '„Markt“: কক্সবাজার, মৌলভীবাজার.', '“Market”: কক্সবাজার, মৌলভীবাজার.'),
   ending('suf-hat', '-হাট', 'hat', [], '„Wochenmarkt“: বাগেরহাট, লালমনিরহাট.', '“Weekly market”: বাগেরহাট, লালমনিরহাট.'),
   ending('suf-gram', '-গ্রাম', 'gram', [], '„Dorf“: চট্টগ্রাম, কুড়িগ্রাম.', '“Village”: চট্টগ্রাম, কুড়িগ্রাম.'),

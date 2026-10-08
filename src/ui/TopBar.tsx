@@ -51,7 +51,10 @@ export function TopBar({ course }: { course?: CourseMeta }) {
       <div className="topbar-inner">
         <div className="topbar-left">
           <Link to="/" className="wordmark" aria-label="Sylareads – Home">
-            Sylareads
+            <span className="wordmark-logo" aria-hidden="true">
+              Я
+            </span>
+            <span className="wordmark-text">Sylareads</span>
           </Link>
           {course && (
             <details className="course-switch">

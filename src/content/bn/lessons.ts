@@ -9,10 +9,10 @@ export const PHASES: PhaseDef[] = [
   { id: 'aspirates', title: { de: 'Behauchte Laute & Rest', en: 'Aspirates & the Rest' } },
   { id: 'vowels', title: { de: 'Zeichen & Vokale', en: 'Marks & Vowels' } },
   { id: 'clusters', title: { de: 'Verbundene Konsonanten', en: 'Joined Consonants' } },
-  { id: 'terms', title: { de: 'GeoGuessr-Begriffe', en: 'GeoGuessr Terms' } },
   { id: 'regions', title: { de: 'Divisionen', en: 'Divisions' } },
   { id: 'districts', title: { de: 'Die 64 Distrikte', en: 'The 64 Districts' } },
   { id: 'cities', title: { de: 'Ortsnamen', en: 'Place Names' } },
+  { id: 'terms', title: { de: 'GeoGuessr-Begriffe', en: 'GeoGuessr Terms' } },
 ];
 
 const U = (...s: string[]) => s.map(unitId);
@@ -92,8 +92,8 @@ const core: Omit<Lesson, 'number'>[] = [
     wordIds: W('am', 'ek', 'it', 'onek', 'ojon'),
   },
   {
-    id: 'bn-l11', phaseId: 'vowels', type: 'letters',
-    title: { de: 'Vokale am Wortanfang II', en: 'Word-initial Vowels II' },
+    id: 'bn-l11', phaseId: 'cities', type: 'letters',
+    title: { de: 'Seltene Vokale am Wortanfang', en: 'Rare Word-initial Vowels' },
     goal: { de: 'ঈ, ঊ, ঋ, ঐ, ঔ – selten, aber dann wichtig.', en: 'ঈ, ঊ, ঋ, ঐ, ঔ – rare, but important when they appear.' },
     newIds: U('v-ii', 'v-uu', 'v-ri', 'v-oi', 'v-ou'),
     wordIds: W('id', 'rin', 'usha', 'oushodh'),
@@ -165,7 +165,10 @@ const divisionLesson: Omit<Lesson, 'number'> = {
   phaseId: 'regions',
   type: 'places',
   title: { de: 'Die acht Divisionen', en: 'The Eight Divisions' },
-  goal: { de: 'Jede Division trägt den Namen ihrer Hauptstadt. বিভাগ (bibhag) heißt Division.', en: 'Each division is named after its capital. বিভাগ (bibhag) means division.' },
+  goal: {
+    de: 'Jede Division trägt den Namen ihrer Hauptstadt. বিভাগ (bibhag) heißt Division. Englische Namen schreiben das eingebaute o oft als a: রংপুর spricht man Rongpur, geschrieben wird Rangpur.',
+    en: 'Each division is named after its capital. বিভাগ (bibhag) means division. English names often write the built-in o as a: রংপুর sounds like Rongpur but is spelled Rangpur.',
+  },
   newIds: DIVISIONS.map((d) => d.id),
 };
 
@@ -181,6 +184,16 @@ const districtLessons: Omit<Lesson, 'number'>[] = DISTRICT_GROUPS.map((g) => ({
   newIds: g.slugs.map((s) => `bn:district:${s}`),
 }));
 
-// Divisions and districts come before the cities: the 64 district names are
-// the backbone of every sign in Bangladesh.
-export const LESSONS: Lesson[] = [...core, divisionLesson, ...districtLessons, ...cityLessons].map((l, i) => ({ ...l, number: i + 1 }));
+// The letters the divisions and districts need come first (all letter and
+// cluster lessons except the rare word-initial vowels), then divisions, the
+// 64 districts and the cities: those narrow down the location most. The rare
+// vowels (needed by one city) come right before the cities, the GeoGuessr
+// terms (road, bridge, mosque …) last. A test checks that every place lesson
+// only uses letters taught before it.
+const byId = (id: string) => core.find((l) => l.id === id)!;
+const isTerm = (l: Omit<Lesson, 'number'>) => l.phaseId === 'terms';
+const letters = core.filter((l) => !isTerm(l) && l.id !== 'bn-l11');
+export const LESSONS: Lesson[] = [...letters, divisionLesson, ...districtLessons, byId('bn-l11'), ...cityLessons, ...core.filter(isTerm)].map((l, i) => ({
+  ...l,
+  number: i + 1,
+}));
