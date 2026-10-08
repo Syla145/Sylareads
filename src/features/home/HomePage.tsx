@@ -14,6 +14,7 @@ import { mapGoalCounts, mapLayer } from '../map/layer';
 import { useSync } from '../../sync/syncStore';
 import { SCRIPT_ENTRIES } from '../../content/scripts/data';
 import { PlayersStrip } from '../players/PlayersPage';
+import { InstallHint } from '../../pwa/PwaParts';
 import { nextScriptLesson, SCRIPTS_COURSE_ID, scriptsKnown, scriptsStarted } from '../../domain/scriptCourse';
 import type { CourseProgress } from '../../domain/progress';
 
@@ -167,6 +168,7 @@ export function HomePage() {
           </section>
         )}
         {!signedIn && <PlayersStrip />}
+        <InstallHint />
         <StorageNote />
       </main>
     </div>

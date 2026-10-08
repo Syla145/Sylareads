@@ -1,0 +1,57 @@
+/* App und offline */
+
+.pwa-status {
+  margin-top: var(--s-4);
+  color: var(--text-secondary);
+}
+.pwa-status.is-ready {
+  color: var(--success);
+}
+
+.install-hint {
+  margin-top: var(--s-6);
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.install-hint p {
+  margin: 0;
+  flex: 1 1 260px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.install-hint strong {
+  color: var(--text-primary);
+}
+.install-hint-actions {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.update-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--gutter);
+  background: var(--accent-subtle);
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+}
+.update-banner .btn {
+  min-height: 36px;
+  padding-block: 0;
+  white-space: nowrap;
+  flex: none;
+}
+
+.chip-offline {
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}

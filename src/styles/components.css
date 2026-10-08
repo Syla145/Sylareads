@@ -248,7 +248,7 @@
 }
 
 @media (max-width: 520px) {
-  .topbar .chip:not(.chip-streak),
+  .topbar .chip:not(.chip-streak):not(.chip-offline),
   .topbar .lang-toggle {
     display: none; /* language: in the profile */
   }

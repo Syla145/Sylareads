@@ -190,6 +190,16 @@ Erfolge sind nach Kursen gruppiert; die meisten haben drei Stufen (Bronze, Silbe
 
 Die Übersicht im Profil zeigt je Erfolg die drei Medaillen und die nächste Stufe; Kurse ohne erreichten Erfolg sind eingeklappt. Die Kursübersicht zeigt unter „Nächste Erfolge“ die zwei nächstliegenden Ziele mit Fortschrittsbalken. Erfolge werden beim Öffnen eines Kurses und nach jeder Sitzung nachgeprüft, also auch rückwirkend vergeben. Erfolge aus der alten Liste (vor der Umstellung) werden nicht mehr angezeigt.
 
+## App und offline
+
+Sylareads lässt sich als App installieren (Android/Chrome/Edge: „App installieren“ im Profil oder Tipp auf der Startseite; iPhone: Safari → Teilen → „Zum Home-Bildschirm“) und läuft danach ohne Netz.
+
+- Beim Bauen schreibt das Plugin `sylareadsPwa` in `vite.config.ts` die Datei `sw.js` mit der Liste aller gebauten Dateien (Logik ohne Browser in `src/pwa/serviceWorker.ts`). Beim ersten Besuch lädt der Service Worker sie im Hintergrund (≈ 3 MB): alle Kurse, Karten, Schriften. Ausgenommen sind die Firebase-Teile (nur für Angemeldete; sie werden beim ersten Gebrauch gespeichert) und die alten `.woff`-Dateien.
+- Seitenaufrufe bekommen immer die gespeicherte `index.html` der aktiven Version, Dateien kommen aus dem Speicher. Eine neue Version lädt im Hintergrund und wartet; oben erscheint „Eine neue Version von Sylareads ist da · Neu laden“. Erst danach werden alte Dateien gelöscht, so mischen sich nie zwei Versionen.
+- Ohne Netz zeigt die Kopfleiste „Offline“. Online-Speichern holt alles nach, sobald wieder Netz da ist. Installiert bittet Sylareads den Browser, den Speicher nicht zu räumen (`navigator.storage.persist`).
+- Icons in `public/icons/` (aus Inter, „Я“ wie das Favicon), Manifest `public/manifest.webmanifest`. Im Einzeldatei-Build (`build:single`) gibt es keinen Service Worker.
+- Zustand und Oberfläche: `src/pwa/pwaStore.ts`, `src/pwa/PwaParts.tsx` (Karte „App und offline“ im Profil, Tipp auf der Startseite, Update-Hinweis, Offline-Chip).
+
 ## Online-Speicherung (optional, Firebase)
 
 Im Profil erscheint „Online speichern“, sobald eine Firebase-Konfiguration eingetragen ist. Nutzer melden sich mit Google an; der Fortschritt wird ein paar Sekunden nach jeder Änderung, beim Öffnen und beim Zurückkehren in die App abgeglichen. Fortschritt von mehreren Geräten wird **zusammengeführt** (pro Lernobjekt gilt die zuletzt beantwortete Version, Lektionen und Achievements werden vereinigt), nichts wird überschrieben. Nur „Fortschritt zurücksetzen“ und „Importieren“ ersetzen bewusst auch die Online-Kopie. Firebase wird erst geladen, wenn jemand die Online-Speicherung nutzt.

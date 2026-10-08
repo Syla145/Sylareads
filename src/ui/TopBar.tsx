@@ -5,6 +5,7 @@ import { displayedStreak, levelFromXp } from '../domain/gamification';
 import type { CourseMeta } from '../domain/types';
 import { useLang, useT } from '../i18n';
 import { useProgress } from '../store/progressStore';
+import { OfflineChip, UpdateBanner } from '../pwa/PwaParts';
 
 export function LangToggle() {
   const lang = useLang();
@@ -78,6 +79,7 @@ export function TopBar({ course }: { course?: CourseMeta }) {
           )}
         </div>
         <div className="topbar-right">
+          <OfflineChip />
           <span className={`chip chip-streak${streak > 0 ? ' is-on' : ''}`} title={t('chip.streak', { n: streak })}>
             <FlameIcon />
             {streak}
@@ -91,6 +93,7 @@ export function TopBar({ course }: { course?: CourseMeta }) {
           </NavLink>
         </div>
       </div>
+      <UpdateBanner />
     </header>
   );
 }

@@ -10,6 +10,7 @@ import { LangToggle, TopBar } from '../../ui/TopBar';
 import { SyncCard } from '../../sync/SyncCard';
 import { ShareCard } from '../players/PlayerParts';
 import { useSync } from '../../sync/syncStore';
+import { AppCard } from '../../pwa/PwaParts';
 
 export function ProfilePage() {
   const t = useT();
@@ -90,6 +91,7 @@ export function ProfilePage() {
 
         <SyncCard />
         <ShareCard withLink />
+        <AppCard />
 
         <Card>
           <h2 className="card-label">{t('profile.data')}</h2>

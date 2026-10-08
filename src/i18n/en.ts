@@ -477,6 +477,21 @@ export const en = {
   'practice.pairCount.other': '{n} pairs',
   'practice.confusersEmpty': 'No look-alikes yet. As soon as you mix up two similar characters or have learned pairs like ব/র, you can practise them against each other here.',
   'dash.trainConfusers': 'Practise look-alikes',
+  'pwa.title': 'App and offline',
+  'pwa.why': 'Add Sylareads to your home screen: its own window without the browser bar, starts faster and works without a connection.',
+  'pwa.install': 'Install app',
+  'pwa.installed': 'You are using Sylareads as an app.',
+  'pwa.ios': 'In Safari, tap “Share” at the bottom, then “Add to Home Screen”.',
+  'pwa.menu': 'Choose “Install app” or “Add to home screen” in your browser menu. Some browsers (e.g. Firefox on desktop) can’t do this.',
+  'pwa.offlineReady': 'Ready offline: every course works without a connection. Online progress catches up as soon as you are back online.',
+  'pwa.preparing': 'Getting ready for offline use …',
+  'pwa.unsupported': 'This browser can’t keep Sylareads for offline use.',
+  'pwa.hintTitle': 'Tip:',
+  'pwa.hintClose': 'Don’t show again',
+  'pwa.update': 'A new version of Sylareads is ready.',
+  'pwa.reload': 'Reload',
+  'pwa.offlineChip': 'Offline',
+  'pwa.offlineChipTitle': 'No connection. Keep learning; online progress catches up later.',
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -12,10 +12,12 @@ import { App } from './App';
 import { installFlushHandlers } from './store/persistence';
 import { startSync } from './sync/syncStore';
 import { startPresence } from './sync/presenceStore';
+import { startPwa } from './pwa/pwaStore';
 
 installFlushHandlers();
 startSync();
 startPresence();
+startPwa();
 
 // After a new deployment the file names change. A tab that still runs the old
 // version then requests files that no longer exist (404): reload once to get
