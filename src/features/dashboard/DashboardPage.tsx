@@ -11,6 +11,7 @@ import { PlacementCard } from '../placement/PlacementOptions';
 import { MistakesCard } from '../mistakes/MistakesCard';
 import { NextGoals } from '../achievements/AchievementParts';
 import { recommendedPath } from './recommend';
+import { DailyCard } from '../challenge/ChallengePages';
 
 const BAR_ORDER: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
 
@@ -106,6 +107,7 @@ export function DashboardPage() {
               <ButtonLink to={second.to}>{second.label}</ButtonLink>
             </div>
           </Card>
+          <DailyCard />
           <MistakesCard />
           <MapGoal />
         </div>

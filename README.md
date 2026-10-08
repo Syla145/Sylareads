@@ -14,6 +14,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - XP, Level, Streak, Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
+- Daily Challenge und Duell (`#/<kurs>/daily`, `#/<kurs>/duel`): 10 Ortsnamen, Lesung eintippen, mehr Richtige gewinnt, bei Gleichstand die kürzere Zeit (siehe unten)
 - „Wer ist da“ (`#/players`): angemeldete Spieler (Karte standardmäßig an, abschaltbar) mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
 
 ### Greek
@@ -158,6 +159,13 @@ Weitere Hinweise:
 - Schlägt ein Test fehl, wird nicht veröffentlicht. Die Inhaltstests prüfen u. a., dass jeder Ort mit allen Namen erkannt wird und keine Antwort zwei Orte gleichzeitig trifft.
 - Eigene Domain: unter **Settings → Pages → Custom domain** eintragen.
 
+## Daily Challenge und Duell
+
+Beide nutzen denselben Ablauf (`src/domain/challenge.ts`, ohne Oberfläche): 10 Städte des Kurses (4 große, 3 mittlere, 3 kleinere), ausgewählt mit einem Startwert, sodass alle mit demselben Startwert dieselben Namen bekommen. Die Lesung wird eingetippt, ein Versuch pro Name. Gewertet wird erst nach Richtigen, dann nach Gesamtzeit; die Uhr läuft nur, solange ein Name zu sehen ist.
+
+- **Daily Challenge:** Startwert = Kurs + Tag. Ein Versuch pro Tag und Kurs; jede Antwort wird sofort im Fortschritt gespeichert (`courses.<kurs>.daily`, 30 Tage), auch beim Abbrechen, und folgt dem Konto auf alle Geräte. Das Ergebnis des Tages steht auf der öffentlichen Karte (Feld `tempo`), die Seite zeigt die Tagesliste aller, die ihre Karte zeigen.
+- **Duell:** zufälliger Startwert; nach der Runde wird ein Link geteilt, der Startwert, Name und Ergebnis enthält (`#/<kurs>/duel?s=…&n=…&r=…&t=…`). Kein Konto und keine Firebase-Regeln nötig. Wer den Link öffnet, spielt dieselben 10 Namen und sieht den Vergleich; eigene Duell-Ergebnisse merkt sich das Gerät, damit ein zurückgeschickter Link direkt den Vergleich zeigt.
+
 ## Fortschritt und Datenschutz
 
 Ohne Anmeldung bleibt alles im Browser des Nutzers (localStorage, ca. 200 KB im Vollausbau). Es gibt keine Tracker. Safari kann Website-Daten nach 7 Tagen ohne Besuch löschen; deshalb im Profil regelmäßig **Fortschritt exportieren** oder online speichern. Der Import zeigt vorher an, was ersetzt wird, und behält den alten Stand als Sicherung.
@@ -214,7 +222,7 @@ Einrichtung (einmalig, kostenloser Spark-Tarif reicht):
    Jeder angemeldete Nutzer kann so nur sein eigenes Fortschritts-Dokument lesen und schreiben. Die öffentlichen Karten für „Wer ist gerade da“ (`players/<uid>`) kann jeder Angemeldete lesen, aber nur der Besitzer schreiben oder löschen; die Zeit „zuletzt gesehen“ setzt der Server.
 5. **Projekteinstellungen (Zahnrad) → Allgemein → Meine Apps → Web-App hinzufügen (`</>`)**, Name `Sylareads`, kein Firebase Hosting. Die angezeigte `firebaseConfig` in `src/sync/firebaseConfig.ts` bei `FIREBASE_CONFIG` eintragen (statt `null`). Die Werte sind öffentlich und dürfen ins Repository; geschützt wird über die Regeln oben.
 
-**Wer ist da.** Standardmäßig an, abschaltbar im Profil unter „Deine Karte“: Die Karte wird beim Start, kurz nach jeder Änderung und alle zwei Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als fünf Minuten. Die Liste zeigt alle Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist (jede Minute neu). Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte ist für die Ranglisten reserviert.
+**Wer ist da.** Standardmäßig an, abschaltbar im Profil unter „Deine Karte“: Die Karte wird beim Start, kurz nach jeder Änderung und alle zwei Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als fünf Minuten. Die Liste zeigt alle Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist (jede Minute neu). Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte trägt das letzte Daily-Challenge-Ergebnis je Kurs.
 
 Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung. Angemeldete Spieler bekommen zusätzlich eine öffentliche Karte `players/<uid>` mit Anzeigename, aktuellem Kurs, Fortschritt je Kurs (Mastery in %, Lektionen, lesbare Städte), Streak, Level und XP. Die Karte ist standardmäßig an (Anzeigename = Vorname aus Google); Ausschalten im Profil unter „Deine Karte“ löscht sie.
 

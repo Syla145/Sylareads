@@ -16,6 +16,7 @@ import { TempoPage } from './features/tempo/TempoPage';
 import { TempoRoute } from './features/tempo/TempoRun';
 import { PlacementRoute } from './features/placement/PlacementRoute';
 import PlayersPage from './features/players/PlayersPage';
+import { DailyRoute, DuelRoute } from './features/challenge/ChallengePages';
 
 // The scripts course brings its own fonts; load it only when it is opened.
 const ScriptsHome = lazy(() => import('./features/scripts/ScriptsHome'));
@@ -77,6 +78,8 @@ export function App() {
           <Route path="practice/run" element={<PracticeRoute />} />
           <Route path="tempo/run" element={<TempoRoute />} />
           <Route path="placement" element={<PlacementRoute />} />
+          <Route path="daily" element={<DailyRoute />} />
+          <Route path="duel" element={<DuelRoute />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

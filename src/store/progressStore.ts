@@ -1,3 +1,4 @@
+import type { ChallengeScore } from '../domain/challenge';
 import { cleanName } from '../domain/presence';
 import { create } from 'zustand';
 import { newlyUnlocked, SECRET_ID } from '../domain/achievements';
@@ -10,6 +11,7 @@ import {
   emptyCourse,
   emptyRoot,
   recordAnswer,
+  recordDailyResult,
   recordIntro,
   recordTempo,
   unlockAchievements,
@@ -42,6 +44,8 @@ interface ProgressState {
   finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
   setSignView: (view: SignView) => void;
+  /** Daily Challenge: saved after every answer. */
+  saveDaily: (courseId: string, day: string, score: ChallengeScore, done: boolean) => void;
   /** Opt-in public card for "Wer ist gerade da". */
   setShare: (on: boolean, name: string) => void;
   /** Easter egg; true when it was new. */
@@ -104,6 +108,7 @@ export const useProgress = create<ProgressState>((set, get) => {
       const ids = newlyUnlocked(get().root, courseId, index);
       if (ids.length) commit(unlockAchievements(get().root, ids), true);
     },
+    saveDaily: (courseId, day, score, done) => commit(recordDailyResult(get().root, courseId, day, score, done), true),
     setShare: (on, name) => {
       const root = get().root;
       const share = { on, name: cleanName(name), at: Date.now() };

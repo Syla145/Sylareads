@@ -3,6 +3,7 @@ import type { CourseProgress, LessonRecord, ProgressRoot } from './progress';
 import type { ItemProgress } from './srs';
 import { mergeMistakes } from './mistakes';
 import { mergeTempo } from './tempo';
+import { mergeDaily } from './challenge';
 import { mergeShare, type ShareSetting } from './presence';
 
 const shareField = (s: ShareSetting | undefined) => (s ? { share: s } : {});
@@ -58,6 +59,7 @@ function mergeCourse(a: CourseProgress, b: CourseProgress): CourseProgress {
     lastPracticeConfig: newer.lastPracticeConfig ?? a.lastPracticeConfig ?? b.lastPracticeConfig,
     ...(a.tempo || b.tempo ? { tempo: mergeTempo(a.tempo, b.tempo) } : {}),
     ...(a.mistakes || b.mistakes ? { mistakes: mergeMistakes(a.mistakes, b.mistakes) } : {}),
+    ...(a.daily || b.daily ? { daily: mergeDaily(a.daily, b.daily) } : {}),
   };
 }
 

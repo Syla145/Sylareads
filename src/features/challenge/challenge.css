@@ -1,0 +1,140 @@
+/* Daily Challenge and duel */
+
+.challenge-name {
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.challenge-feedback {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+}
+
+.challenge-feedback.is-correct {
+  border-color: var(--success-border);
+  background: var(--success-subtle);
+}
+
+.challenge-feedback.is-wrong {
+  border-color: var(--error-border);
+  background: var(--error-subtle);
+}
+
+.challenge-intro {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.challenge-rules {
+  display: grid;
+  gap: var(--s-2);
+  padding-left: 1.2em;
+  color: var(--text-secondary);
+  list-style: disc;
+}
+
+.challenge-target {
+  font-size: 17px;
+}
+
+.challenge-time {
+  font-size: 0.5em;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.challenge-answers {
+  display: grid;
+}
+
+.challenge-answers li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.challenge-answers li:last-child {
+  border-bottom: 0;
+}
+
+.challenge-answers .native {
+  font-size: 20px;
+}
+
+.challenge-answers li.is-correct .native {
+  color: var(--success);
+}
+
+.challenge-answers li.is-wrong .native {
+  color: var(--error);
+}
+
+.challenge-typed {
+  display: block;
+  color: var(--error);
+}
+
+.challenge-board {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.challenge-board li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 44px;
+}
+
+.challenge-board li.is-me .challenge-board-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.challenge-rank {
+  width: 2em;
+  color: var(--text-secondary);
+}
+
+.challenge-board-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.challenge-verdict {
+  display: grid;
+  gap: 4px;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  font-size: 18px;
+}
+
+.challenge-verdict.is-win {
+  border-color: var(--success-border);
+  background: var(--success-subtle);
+}
+
+.challenge-verdict.is-loss {
+  border-color: var(--error-border);
+  background: var(--error-subtle);
+}
+
+.challenge-share {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+
+.challenge-share .card-label {
+  margin-bottom: 0;
+}

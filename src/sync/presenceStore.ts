@@ -98,6 +98,9 @@ async function publish(force = false): Promise<void> {
   return writing;
 }
 
+/** Report in right away (e.g. after a finished Daily Challenge). */
+export const reportNow = () => publish();
+
 async function unpublish(uid: string) {
   lastCard = null;
   lastWrite = 0;

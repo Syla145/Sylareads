@@ -3,6 +3,7 @@ import type { MistakeLog } from '../domain/mistakes';
 import { clampFlash, clampSeconds, type TempoProgress } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 import { shareOf } from '../domain/presence';
+import { dailyOf } from '../domain/challenge';
 
 /**
  * Persistence: one versioned JSON document in localStorage (≈ 225 KB at full
@@ -82,6 +83,7 @@ export function migrate(raw: unknown): ProgressRoot {
         lastPracticeConfig: isObj(c.lastPracticeConfig) ? (c.lastPracticeConfig as never) : undefined,
         ...(isObj(c.tempo) ? { tempo: tempoOf(c.tempo) } : {}),
         ...(isObj(c.mistakes) ? { mistakes: c.mistakes as MistakeLog } : {}),
+        ...(dailyOf(c.daily) ? { daily: dailyOf(c.daily) } : {}),
       };
     }
   }

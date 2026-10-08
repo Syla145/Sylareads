@@ -41,6 +41,16 @@ export interface PublicPlayer {
   streak: number;
   level: number;
   xp: number;
+  /** Latest finished Daily Challenge per course (Firestore field `tempo`). */
+  tempo?: Record<string, PublicDaily>;
+}
+
+export interface PublicDaily {
+  /** Day (YYYY-MM-DD). */
+  d: string;
+  c: number;
+  n: number;
+  ms: number;
 }
 
 /** A card as read back, with the server's "last seen" time. */
@@ -125,7 +135,19 @@ export function simpleCourse(known: number, total: number, lessons: number, less
 
 /** The public card. `courses` holds the started courses the caller could compute. */
 export function publicSnapshot(root: ProgressRoot, name: string, courses: Record<string, PublicCourse>, today = dayKey()): PublicPlayer {
+  const tempo: Record<string, PublicDaily> = {};
+  for (const [id, cp] of Object.entries(root.courses)) {
+    const day = Object.keys(cp.daily ?? {})
+      .filter((d) => cp.daily![d].done)
+      .sort()
+      .pop();
+    if (day) {
+      const r = cp.daily![day];
+      tempo[id] = { d: day, c: r.c, n: r.n, ms: Math.round(r.ms) };
+    }
+  }
   return {
+    ...(Object.keys(tempo).length ? { tempo } : {}),
     v: 1,
     name: cleanName(name),
     course: currentCourse(root),
@@ -185,7 +207,17 @@ export function cardOf(uid: string, raw: Record<string, unknown>, seen: number):
       };
     }
   }
+  const tempo: Record<string, PublicDaily> = {};
+  if (raw.tempo && typeof raw.tempo === 'object') {
+    for (const [id, t] of Object.entries(raw.tempo as Record<string, unknown>)) {
+      if (!t || typeof t !== 'object') continue;
+      const r = t as Record<string, unknown>;
+      if (typeof r.d !== 'string') continue;
+      tempo[id] = { d: r.d, c: num(r.c), n: num(r.n), ms: num(r.ms) };
+    }
+  }
   return {
+    ...(Object.keys(tempo).length ? { tempo } : {}),
     v: 1,
     uid,
     seen,
