@@ -6,6 +6,8 @@ import {
   activityOf,
   cardOf,
   cleanName,
+  DEFAULT_NAME,
+  effectiveShare,
   currentCourse,
   mergeShare,
   NAME_MAX,
@@ -30,6 +32,12 @@ describe('Wer ist gerade da', () => {
     expect(cleanName('\n\t')).toBe('');
     expect(suggestName('Josef Heininger')).toBe('Josef');
     expect(suggestName(null)).toBe('');
+  });
+
+  it('signed-in players are shown by default until they choose otherwise', () => {
+    expect(effectiveShare(undefined, 'Josef Heininger')).toEqual({ on: true, name: 'Josef', at: 0 });
+    expect(effectiveShare(undefined, null).name).toBe(DEFAULT_NAME);
+    expect(effectiveShare({ on: false, name: 'Syla', at: 5 }, 'Josef').on).toBe(false);
   });
 
   it('the newer sharing choice wins on both devices and survives a reload', () => {

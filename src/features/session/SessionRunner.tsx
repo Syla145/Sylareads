@@ -199,13 +199,14 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
 
   return (
     <div className="session">
+      <h1 className="sr-only">{t('session.heading')}</h1>
       <header className="session-bar">
         <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
         </button>
-        <div className="session-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress.ratio * 100)}>
+        <div className="session-progress" role="progressbar" aria-label={t('session.progress')} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress.ratio * 100)}>
           <div className="session-progress-fill" style={{ width: `${progress.ratio * 100}%` }} />
         </div>
         <span className="session-count tabular">

@@ -13,7 +13,7 @@ export const COURSES: CourseMeta[] = [
   {
     id: 'ru',
     slug: 'russian',
-    name: { de: 'Russian Cyrillic', en: 'Russian Cyrillic' },
+    name: { de: 'Russisch', en: 'Russian Cyrillic' },
     scriptId: 'Cyrl',
     languageId: 'ru',
     countryIds: ['RU'],
@@ -26,7 +26,7 @@ export const COURSES: CourseMeta[] = [
   {
     id: 'el',
     slug: 'greek',
-    name: { de: 'Greek', en: 'Greek' },
+    name: { de: 'Griechisch', en: 'Greek' },
     scriptId: 'Grek',
     languageId: 'el',
     countryIds: ['GR'],

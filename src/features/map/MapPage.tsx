@@ -135,7 +135,7 @@ export function MapGoal() {
   return (
     <Card className="goal-card">
       <h2 className="card-label">{t('map.goalTitle', { n: total, what: t(`map.what.${layer}`) })}</h2>
-      <div className="goal-bar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={sure}>
+      <div className="goal-bar" role="progressbar" aria-label={t('map.goalTitle', { n: total, what: t(`map.what.${layer}`) })} aria-valuemin={0} aria-valuemax={total} aria-valuenow={sure}>
         <div className="goal-bar-seen" style={{ width: `${(seen / total) * 100}%` }} />
         <div className="goal-bar-sure" style={{ width: `${(sure / total) * 100}%` }} />
       </div>

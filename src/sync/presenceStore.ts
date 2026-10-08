@@ -3,6 +3,7 @@ import { COURSES } from '../content/registry';
 import { SCRIPT_ENTRIES, SCRIPT_LESSONS } from '../content/scripts/data';
 import {
   cardOf,
+  effectiveShare,
   HEARTBEAT_MS,
   LIST_DAYS,
   publicCourse,
@@ -45,10 +46,10 @@ let writing: Promise<void> | null = null;
 let changeTimer: ReturnType<typeof setTimeout> | null = null;
 
 const sharing = () => {
-  const share = useProgress.getState().root.profile.share;
   const { user, lastSyncAt } = useSync.getState();
+  const share = effectiveShare(useProgress.getState().root.profile.share, user?.name);
   // Only after the first merge with the cloud copy, so a choice made on another device is known.
-  return share?.on && share.name && user && lastSyncAt ? { uid: user.uid, name: share.name } : null;
+  return share.on && share.name && user && lastSyncAt ? { uid: user.uid, name: share.name } : null;
 };
 
 /** Card values for every started course (language courses need their content, loaded on demand). */
@@ -143,19 +144,20 @@ export function watchPlayers(): () => void {
 
 /** Call once at app start (after startSync). */
 export function startPresence() {
-  let wasOn = !!useProgress.getState().root.profile.share?.on;
+  const shareOf = (root: ProgressRoot) => effectiveShare(root.profile.share, useSync.getState().user?.name);
+  let wasOn = shareOf(useProgress.getState().root).on;
 
   // Sharing switched off on this device: delete the card right away.
   useProgress.subscribe((s, prev) => {
     if (s.root === prev.root) return;
-    const on = !!s.root.profile.share?.on;
+    const on = shareOf(s.root).on;
     const uid = useSync.getState().user?.uid;
     if (wasOn && !on && uid) void unpublish(uid);
-    const nameChanged = s.root.profile.share?.name !== prev.root.profile.share?.name;
+    const nameChanged = shareOf(s.root).name !== shareOf(prev.root).name;
     wasOn = on;
     if (!on) return;
     if (changeTimer) clearTimeout(changeTimer);
-    changeTimer = setTimeout(() => void publish(), nameChanged || !prev.root.profile.share?.on ? 500 : CHANGE_DEBOUNCE_MS);
+    changeTimer = setTimeout(() => void publish(), nameChanged || !shareOf(prev.root).on ? 500 : CHANGE_DEBOUNCE_MS);
   });
 
   // First merge done or signed in: report in.

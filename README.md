@@ -14,7 +14,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - XP, Level, Streak, Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
-- „Wer ist da“ (`#/players`): angemeldete Spieler, die ihre Karte zeigen, mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
+- „Wer ist da“ (`#/players`): angemeldete Spieler (Karte standardmäßig an, abschaltbar) mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
 
 ### Greek
 
@@ -214,9 +214,9 @@ Einrichtung (einmalig, kostenloser Spark-Tarif reicht):
    Jeder angemeldete Nutzer kann so nur sein eigenes Fortschritts-Dokument lesen und schreiben. Die öffentlichen Karten für „Wer ist gerade da“ (`players/<uid>`) kann jeder Angemeldete lesen, aber nur der Besitzer schreiben oder löschen; die Zeit „zuletzt gesehen“ setzt der Server.
 5. **Projekteinstellungen (Zahnrad) → Allgemein → Meine Apps → Web-App hinzufügen (`</>`)**, Name `Sylareads`, kein Firebase Hosting. Die angezeigte `firebaseConfig` in `src/sync/firebaseConfig.ts` bei `FIREBASE_CONFIG` eintragen (statt `null`). Die Werte sind öffentlich und dürfen ins Repository; geschützt wird über die Regeln oben.
 
-**Wer ist da.** Freiwillig (Profil → „Deine Karte“): Die Karte wird beim Start, kurz nach jeder Änderung und alle zwei Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als fünf Minuten. Die Liste zeigt alle Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist (jede Minute neu). Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte ist für die Ranglisten reserviert.
+**Wer ist da.** Standardmäßig an, abschaltbar im Profil unter „Deine Karte“: Die Karte wird beim Start, kurz nach jeder Änderung und alle zwei Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als fünf Minuten. Die Liste zeigt alle Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist (jede Minute neu). Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte ist für die Ranglisten reserviert.
 
-Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung. Wer im Profil „In ‚Wer ist da‘ zeigen“ einschaltet, bekommt zusätzlich eine öffentliche Karte `players/<uid>` mit Anzeigename, aktuellem Kurs, Fortschritt je Kurs (Mastery in %, Lektionen, lesbare Städte), Streak, Level und XP. Ausschalten löscht die Karte.
+Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung. Angemeldete Spieler bekommen zusätzlich eine öffentliche Karte `players/<uid>` mit Anzeigename, aktuellem Kurs, Fortschritt je Kurs (Mastery in %, Lektionen, lesbare Städte), Streak, Level und XP. Die Karte ist standardmäßig an (Anzeigename = Vorname aus Google); Ausschalten im Profil unter „Deine Karte“ löscht sie.
 
 ## Projektstruktur
 

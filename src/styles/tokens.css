@@ -13,7 +13,7 @@
 
   --text-primary: #eceae4;
   --text-secondary: #a3a7ad;
-  --text-tertiary: #6e737a;
+  --text-tertiary: #8f949b;
 
   --accent: #e3a857;
   --accent-hover: #edb96f;
@@ -29,7 +29,7 @@
   --error-subtle: rgba(224, 108, 108, 0.12);
   --error-border: rgba(224, 108, 108, 0.45);
 
-  --state-new: #5c6168;
+  --state-new: #6e737a;
   --state-learning: #8aa0bd;
   --state-familiar: #c9a15a;
   --state-mastered: #4fb286;

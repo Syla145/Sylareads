@@ -54,7 +54,7 @@ export function TopBar({ course }: { course?: CourseMeta }) {
           </Link>
           {course && (
             <details className="course-switch">
-              <summary aria-label={t('nav.switchCourse')}>
+              <summary aria-label={`${course.name[lang]} – ${t('nav.switchCourse')}`}>
                 <span>{course.name[lang]}</span>
                 <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
                   <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.5" />

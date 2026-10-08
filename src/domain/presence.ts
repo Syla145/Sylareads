@@ -67,6 +67,16 @@ export function suggestName(displayName: string | null | undefined): string {
   return cleanName((displayName ?? '').split(' ')[0] ?? '');
 }
 
+/**
+ * The choice in effect. Signed-in players who never chose are shown by
+ * default, under the first name of their Google account.
+ */
+export function effectiveShare(share: ShareSetting | undefined, displayName: string | null | undefined): ShareSetting {
+  return share ?? { on: true, name: suggestName(displayName) || DEFAULT_NAME, at: 0 };
+}
+
+export const DEFAULT_NAME = 'Spieler';
+
 /** The newer choice wins; equal times keep the local one. */
 export function mergeShare(a: ShareSetting | undefined, b: ShareSetting | undefined): ShareSetting | undefined {
   if (!a || !b) return a ?? b;

@@ -248,8 +248,9 @@
 }
 
 @media (max-width: 520px) {
-  .topbar .chip:not(.chip-streak) {
-    display: none;
+  .topbar .chip:not(.chip-streak),
+  .topbar .lang-toggle {
+    display: none; /* language: in the profile */
   }
   .wordmark {
     font-size: 17px;
@@ -300,13 +301,18 @@
 
 @media (max-width: 520px) {
   .course-tabs-inner {
-    padding: 0 6px;
+    padding: 0 4px;
+    gap: 0;
   }
   .course-tabs a {
-    flex: 1;
+    flex: 1 0 auto;
     text-align: center;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 13px 5px 14px;
+    font-size: 14px;
+  }
+  .course-tabs a.active::after {
+    left: 5px;
+    right: 5px;
   }
 }
 
@@ -1772,6 +1778,9 @@
 }
 
 .link-danger {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--error);
   font-size: 15px;
   font-weight: 500;
@@ -2004,6 +2013,18 @@
 
 .ltoggle-btn:focus-visible {
   outline: 2px solid var(--accent-ring);
+}
+
+/* Touch screens: segmented toggles big enough to hit (44 px with the frame). */
+@media (pointer: coarse) {
+  .ltoggle-btn {
+    min-height: 38px;
+    padding: 8px 14px;
+  }
+  .lang-toggle button {
+    height: 38px;
+    padding: 0 14px;
+  }
 }
 
 /* Map page */

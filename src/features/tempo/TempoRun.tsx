@@ -319,6 +319,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
 
   return (
     <div className="session tempo-session">
+      <h1 className="sr-only">{t('tempo.title')}</h1>
       <header className="session-bar">
         <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
@@ -332,7 +333,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
           </>
         ) : (
           <>
-            <div className="session-progress" role="progressbar" aria-valuemin={0} aria-valuemax={tasks.length} aria-valuenow={done}>
+            <div className="session-progress" role="progressbar" aria-label={t('session.progress')} aria-valuemin={0} aria-valuemax={tasks.length} aria-valuenow={done}>
               <div className="session-progress-fill" style={{ width: `${(done / tasks.length) * 100}%` }} />
             </div>
             <span className="session-count tabular">

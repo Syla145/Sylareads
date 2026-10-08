@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { COURSES } from '../../content/registry';
-import { activityOf, cleanName, NAME_MAX, suggestName, type Activity, type PlayerCard as Card } from '../../domain/presence';
+import { activityOf, cleanName, effectiveShare, NAME_MAX, type Activity, type PlayerCard as Card } from '../../domain/presence';
 import { SCRIPTS_COURSE_ID } from '../../domain/scriptCourse';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
@@ -124,24 +124,20 @@ export function ShareCard({ withLink = false }: { withLink?: boolean }) {
   const t = useT();
   const user = useSync((s) => s.user);
   const status = useSync((s) => s.status);
-  const share = useProgress((s) => s.root.profile.share);
+  const stored = useProgress((s) => s.root.profile.share);
+  const share = effectiveShare(stored, user?.name);
   const setShare = useProgress((s) => s.setShare);
-  const [name, setName] = useState(share?.name || suggestName(user?.name));
+  const [name, setName] = useState(share.name);
   const [error, setError] = useState(false);
-  useEffect(() => {
-    if (share?.name) setName(share.name);
-  }, [share?.name]);
-  useEffect(() => {
-    if (!share?.name && user?.name) setName((n) => n || suggestName(user.name));
-  }, [user?.name, share?.name]);
+  useEffect(() => setName(share.name), [share.name]);
   if (status === 'unconfigured') return null;
 
-  const on = !!share?.on;
+  const on = share.on;
   const clean = cleanName(name);
   const toggle = () => {
     if (!on && !clean) return setError(true);
     setError(false);
-    setShare(!on, clean || share?.name || '');
+    setShare(!on, clean || share.name);
   };
   const save = () => {
     if (!clean) return setError(true);
@@ -174,7 +170,7 @@ export function ShareCard({ withLink = false }: { withLink?: boolean }) {
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && save()}
               />
-              {clean !== (share?.name ?? '') && clean && <Button onClick={save}>{t('who.share.save')}</Button>}
+              {clean !== share.name && clean && <Button onClick={save}>{t('who.share.save')}</Button>}
             </span>
           </label>
           {error && (
