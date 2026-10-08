@@ -7,6 +7,7 @@ import { useSync } from '../../sync/syncStore';
 import { Button, Card } from '../../ui/primitives';
 import { TopBar } from '../../ui/TopBar';
 import { Avatar, groupOf, PlayerCard, ShareCard, usePlayers } from './PlayerParts';
+import { SiteFooter } from '../legal/LegalPages';
 
 const GROUPS: { id: Activity; label: TKey }[] = [
   { id: 'now', label: 'who.now' },
@@ -67,6 +68,7 @@ export default function PlayersPage() {
           </>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

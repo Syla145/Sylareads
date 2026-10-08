@@ -5,6 +5,7 @@ import { useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { CourseTabs, TopBar } from '../../ui/TopBar';
 import { CourseContext, useCourseIndex } from './useCourse';
+import { SiteFooter } from '../legal/LegalPages';
 
 /** Resolves the course from the URL and provides its content index. `focus` hides navigation (sessions). */
 export function CourseGate({ focus = false }: { focus?: boolean }) {
@@ -42,6 +43,7 @@ export function CourseGate({ focus = false }: { focus?: boolean }) {
       <TopBar course={meta} />
       <CourseTabs course={meta} />
       <main className="page">{body}</main>
+      <SiteFooter />
     </div>
   );
 }

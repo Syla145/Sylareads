@@ -501,6 +501,15 @@ export const en = {
   'sync.deleteConfirm': 'This deletes your online progress, your card in “Who’s here” and your Sylareads account. Google may ask you to sign in once more. Progress in this browser stays; you can reset it under “Your data”.',
   'sync.deleteFinal': 'Delete for good',
   'sync.deleted': 'Your account and online data are deleted. Progress in this browser is still here.',
+  'legal.about': 'About Sylareads',
+  'legal.privacy': 'Privacy',
+  'legal.impressum': 'Legal notice',
+  'legal.credits': 'Sources and licences',
+  'legal.feedback': 'Feedback',
+  'legal.footer': 'Legal and info',
+  'legal.notAffiliated': 'Independent fan project, not affiliated with GeoGuessr AB. Free, no ads, no tracking.',
+  'legal.placeholder': 'Placeholder: name and address will be filled in before the public launch.',
+  'sync.privacyLink': 'What gets stored',
 } as const;
 
 export type MessageKey = keyof typeof en;

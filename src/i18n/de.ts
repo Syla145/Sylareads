@@ -503,4 +503,13 @@ export const de: Record<MessageKey, string> = {
   'sync.deleteConfirm': 'Das löscht deinen Online-Fortschritt, deine Karte in „Wer ist da“ und dein Sylareads-Konto. Google fragt dafür eventuell noch einmal nach deiner Anmeldung. Der Fortschritt in diesem Browser bleibt; den kannst du unter „Deine Daten“ zurücksetzen.',
   'sync.deleteFinal': 'Endgültig löschen',
   'sync.deleted': 'Dein Konto und deine Online-Daten sind gelöscht. Der Fortschritt in diesem Browser ist noch da.',
+  'legal.about': 'Über Sylareads',
+  'legal.privacy': 'Datenschutz',
+  'legal.impressum': 'Impressum',
+  'legal.credits': 'Quellen und Lizenzen',
+  'legal.feedback': 'Feedback',
+  'legal.footer': 'Rechtliches und Infos',
+  'legal.notAffiliated': 'Unabhängiges Fanprojekt, nicht mit der GeoGuessr AB verbunden. Kostenlos, ohne Werbung, ohne Tracking.',
+  'legal.placeholder': 'Platzhalter: Name und Anschrift werden vor dem öffentlichen Start eingetragen.',
+  'sync.privacyLink': 'Was dabei gespeichert wird',
 };

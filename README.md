@@ -190,6 +190,10 @@ Erfolge sind nach Kursen gruppiert; die meisten haben drei Stufen (Bronze, Silbe
 
 Die Übersicht im Profil zeigt je Erfolg die drei Medaillen und die nächste Stufe; Kurse ohne erreichten Erfolg sind eingeklappt. Die Kursübersicht zeigt unter „Nächste Erfolge“ die zwei nächstliegenden Ziele mit Fortschrittsbalken. Erfolge werden beim Öffnen eines Kurses und nach jeder Sitzung nachgeprüft, also auch rückwirkend vergeben. Erfolge aus der alten Liste (vor der Umstellung) werden nicht mehr angezeigt.
 
+## Rechtliches und Infos
+
+Seiten `#/about`, `#/privacy` (Datenschutz, DE/EN), `#/impressum`, `#/credits` (Quellen und Lizenzen) in `src/features/legal/LegalPages.tsx`, verlinkt in der Fußzeile jeder Seite zusammen mit „Feedback“ (GitHub-Issues) und dem Hinweis „nicht mit der GeoGuessr AB verbunden“. Name, Anschrift und E-Mail stehen an einer Stelle in `src/content/legal.ts` – **vor dem öffentlichen Start echte Daten eintragen und `placeholder: false` setzen** (ein Test prüft, dass dann keine Musterdaten mehr drinstehen). Die OFL-Lizenztexte der Schriften liegen in `public/licenses/`.
+
 ## App und offline
 
 Sylareads lässt sich als App installieren (Android/Chrome/Edge: „App installieren“ im Profil oder Tipp auf der Startseite; iPhone: Safari → Teilen → „Zum Home-Bildschirm“) und läuft danach ohne Netz.

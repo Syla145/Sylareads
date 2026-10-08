@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { formatDateTime, useLang, useT, type TKey } from '../i18n';
 import { Button, Card } from '../ui/primitives';
 import { useSync } from './syncStore';
@@ -84,6 +85,9 @@ export function SyncCard() {
               {t('sync.signIn')}
             </Button>
           </div>
+          <p className="small">
+            <Link to="/privacy">{t('sync.privacyLink')}</Link>
+          </p>
         </>
       )}
       {deleted && !user && (

@@ -11,6 +11,7 @@ import { SyncCard } from '../../sync/SyncCard';
 import { ShareCard } from '../players/PlayerParts';
 import { useSync } from '../../sync/syncStore';
 import { AppCard } from '../../pwa/PwaParts';
+import { SiteFooter } from '../legal/LegalPages';
 
 export function ProfilePage() {
   const t = useT();
@@ -146,6 +147,7 @@ export function ProfilePage() {
           )}
         </Modal>
       </main>
+      <SiteFooter />
     </div>
   );
 }

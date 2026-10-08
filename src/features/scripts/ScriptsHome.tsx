@@ -12,6 +12,7 @@ import { NextGoals } from '../achievements/AchievementParts';
 import { ScriptCard, ScriptText } from './ScriptParts';
 import './scripts.css';
 import { SignViewToggle } from '../signs/SignViewToggle';
+import { SiteFooter } from '../legal/LegalPages';
 
 const NO_ITEMS = {};
 
@@ -113,6 +114,7 @@ export default function ScriptsHome() {
           </div>
         </section>
       </main>
+      <SiteFooter />
 
       <Modal open={!!open} onClose={() => setOpen(null)} title={open ? `${open.where[lang]} · ${open.name[lang]}` : ''}>
         {open && <ScriptCard entry={open} head={false} />}

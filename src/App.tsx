@@ -17,6 +17,7 @@ import { TempoRoute } from './features/tempo/TempoRun';
 import { PlacementRoute } from './features/placement/PlacementRoute';
 import PlayersPage from './features/players/PlayersPage';
 import { DailyRoute, DuelRoute } from './features/challenge/ChallengePages';
+import { AboutPage, CreditsPage, ImpressumPage, PrivacyPage, SiteFooter } from './features/legal/LegalPages';
 
 // The scripts course brings its own fonts; load it only when it is opened.
 const ScriptsHome = lazy(() => import('./features/scripts/ScriptsHome'));
@@ -45,6 +46,7 @@ function NotFound() {
           {t('common.toHome')}
         </Link>
       </main>
+      <SiteFooter />
     </div>
   );
 }
@@ -61,6 +63,10 @@ export function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/players" element={<PlayersPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/impressum" element={<ImpressumPage />} />
+        <Route path="/credits" element={<CreditsPage />} />
         <Route path="/scripts" element={lazyPage(<ScriptsHome />)} />
         <Route path="/schilder" element={lazyPage(<SignsPreview />)} />
         <Route path="/scripts/lesson/:lessonId" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />
