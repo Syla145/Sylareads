@@ -168,7 +168,6 @@ export function HomePage() {
             <ScriptsCourseCard />
           </section>
         )}
-        {!signedIn && <PlayersStrip />}
         <InstallHint />
         <StorageNote />
       </main>

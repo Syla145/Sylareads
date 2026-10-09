@@ -82,18 +82,8 @@ export function PlayersStrip() {
   if (syncStatus === 'unconfigured') return null;
   // The strip shows the others; the own card is on the list page.
   const cards = all.filter((c) => c.uid !== me);
-  if (!signedIn) {
-    return (
-      <Card className="players-strip">
-        <div className="players-strip-head">
-          <h2 className="card-label">{t('who.title')}</h2>
-        </div>
-        <p className="muted small">
-          {t('who.signedOut')} <Link to="/profile">{t('who.toProfile')}</Link>
-        </p>
-      </Card>
-    );
-  }
+  // Signed-out visitors don't see the box at all (an empty list looks deserted).
+  if (!signedIn) return null;
   const active = cards.filter((c) => groupOf(c, now) === 'now');
   const shown = (active.length ? active : cards).slice(0, 8);
   return (

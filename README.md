@@ -15,7 +15,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 - Daily Challenge und Duell (`#/<kurs>/daily`, `#/<kurs>/duel`): 10 Ortsnamen, Lesung eintippen, mehr Richtige gewinnt, bei Gleichstand die kürzere Zeit (siehe unten)
-- „Wer ist da“ (`#/players`): angemeldete Spieler, die zugestimmt haben, mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
+- „Wer ist da“ (`#/players`, Leiste auf der Startseite nur für Angemeldete): angemeldete Spieler, die zugestimmt haben, mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
 
 ### Greek
 
