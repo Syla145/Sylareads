@@ -34,7 +34,8 @@ function PracticeSession() {
     const rng = Math.random;
     const cp = before.courses[meta.id];
     const items = cp?.items ?? {};
-    const ctx = { items, confusedTwice: confusedTwiceSet(cp) };
+    const meaning = before.settings.askMeaning === true;
+    const ctx = { items, confusedTwice: confusedTwiceSet(cp), meaning };
     let tasks: Task[] = [];
     let notice: string | undefined;
     if (req.kind === 'confusers') {
@@ -55,7 +56,7 @@ function PracticeSession() {
       const count = req.kind === 'lesson' ? req.count : ids.length;
       const list: string[] = [];
       while (ids.length && list.length < count) list.push(...shuffle(ids, rng));
-      tasks = list.slice(0, count).flatMap((id) => practiceTasksFor(index, index.byId.get(id)!, items[id], rng));
+      tasks = list.slice(0, count).flatMap((id) => practiceTasksFor(index, index.byId.get(id)!, items[id], rng, meaning));
     }
     return { tasks, deps: { rng, retask: retaskFor(index, rng) }, notice, req };
     // build once per session

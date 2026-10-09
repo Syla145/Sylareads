@@ -511,6 +511,8 @@ export const en = {
   'legal.placeholder': 'Placeholder: name and address will be filled in before the public launch.',
   'sync.privacyLink': 'What gets stored',
   'session.meaningNotReading': '“{r}” is read correctly. This one asks for the meaning, though: what does it mean in English or German?',
+  'practice.askMeaning': 'Also ask for meanings',
+  'practice.askMeaningHint': 'Off: practice is about reading only. On: well-learned terms sometimes ask “What does it mean?”. Best turned on once reading is solid.',
 } as const;
 
 export type MessageKey = keyof typeof en;

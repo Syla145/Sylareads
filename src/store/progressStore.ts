@@ -46,6 +46,7 @@ interface ProgressState {
   finishPlacement: (courseId: string, outcome: PlacementOutcome, index: CourseIndex) => string[];
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
   setSignView: (view: SignView) => void;
+  setAskMeaning: (on: boolean) => void;
   /** Daily Challenge: saved after every answer. */
   saveDaily: (courseId: string, day: string, score: ChallengeScore, done: boolean) => void;
   /** Opt-in public card for "Wer ist gerade da". */
@@ -118,6 +119,11 @@ export const useProgress = create<ProgressState>((set, get) => {
       commit({ ...root, updatedAt: share.at, profile: { ...root.profile, share } }, true);
     },
     setSignView: (signView) => commit({ ...get().root, settings: { ...get().root.settings, signView } }, true),
+    setAskMeaning: (on) => {
+      const { askMeaning: _old, ...rest } = get().root.settings;
+      void _old;
+      commit({ ...get().root, settings: on ? { ...rest, askMeaning: true } : rest }, true);
+    },
     setTempoSettings: (patch) => {
       const root = get().root;
       const tempo = { ...DEFAULT_TEMPO, ...root.settings.tempo, ...patch };

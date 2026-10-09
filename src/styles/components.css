@@ -3069,3 +3069,11 @@
 .phase-done:not([open]) {
   margin-bottom: var(--s-3);
 }
+
+.meaning-switch {
+  margin-top: var(--s-6);
+}
+.meaning-switch p {
+  margin: var(--s-2) 0 0;
+  max-width: 560px;
+}

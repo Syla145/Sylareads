@@ -47,6 +47,8 @@ export interface PracticeContext {
   /** Items in confusion pairs that happened at least twice. */
   confusedTwice: Set<string>;
   today?: string;
+  /** Also ask what terms mean (the player's choice; off by default). */
+  meaning?: boolean;
 }
 
 export function weakItemIds(index: CourseIndex, ctx: PracticeContext): string[] {
@@ -167,7 +169,7 @@ function selectItems(index: CourseIndex, config: PracticeConfig, ctx: PracticeCo
 }
 
 /** The task for one practice item, by kind and mastery. New items start with their learning card. */
-export function practiceTasksFor(index: CourseIndex, item: Item, p: ItemProgress | undefined, rng: Rng): Task[] {
+export function practiceTasksFor(index: CourseIndex, item: Item, p: ItemProgress | undefined, rng: Rng, meaning = false): Task[] {
   const box = p?.box ?? 0;
   const tasks: Task[] = [];
   if (box === 0) tasks.push(introTask(item.id));
@@ -184,7 +186,7 @@ export function practiceTasksFor(index: CourseIndex, item: Item, p: ItemProgress
   } else if (item.kind === 'city' || item.kind === 'region') {
     if (box >= 3 && rng() < 0.2 && (index.lookalikes.get(item.id)?.length ?? 0) >= 3) tasks.push(scanTask(index, item as PlaceItem, rng));
     else tasks.push(identifyTask(item as PlaceItem));
-  } else if (item.kind === 'term' && box >= 3 && rng() < 0.25) {
+  } else if (meaning && item.kind === 'term' && box >= 3 && rng() < 0.25) {
     tasks.push(meaningTask(item));
   } else {
     tasks.push(readTask(item, rng));
@@ -193,7 +195,7 @@ export function practiceTasksFor(index: CourseIndex, item: Item, p: ItemProgress
 }
 
 export function buildPractice(index: CourseIndex, config: PracticeConfig, ctx: PracticeContext, rng: Rng): Task[] {
-  return selectItems(index, config, ctx, rng).flatMap((it) => practiceTasksFor(index, it, ctx.items[it.id], rng));
+  return selectItems(index, config, ctx, rng).flatMap((it) => practiceTasksFor(index, it, ctx.items[it.id], rng, ctx.meaning));
 }
 
 /** Share of the selected pool that is decodable with the letters learned so far (for the "learn more letters first" hint). */

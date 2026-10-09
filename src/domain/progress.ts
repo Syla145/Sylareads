@@ -74,6 +74,8 @@ export interface Settings {
   tempo?: TempoSettings;
   /** Schildansicht: names on drawn signs (default "mixed"). */
   signView?: SignView;
+  /** Practice also asks what terms mean (off by default: reading comes first). */
+  askMeaning?: boolean;
 }
 
 export interface TempoSettings {

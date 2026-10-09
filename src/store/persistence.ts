@@ -92,7 +92,7 @@ export function migrate(raw: unknown): ProgressRoot {
   const signView = settings.signView === 'off' || settings.signView === 'mixed' || settings.signView === 'always' ? settings.signView : undefined;
   return {
     ...base,
-    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}), ...(signView ? { signView } : {}) },
+    settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}), ...(signView ? { signView } : {}), ...(settings.askMeaning === true ? { askMeaning: true } : {}) },
     updatedAt: typeof raw.updatedAt === 'number' ? raw.updatedAt : Date.now(),
     lastExportAt: typeof raw.lastExportAt === 'number' ? raw.lastExportAt : null,
     profile: {

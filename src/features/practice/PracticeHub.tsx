@@ -158,6 +158,25 @@ export function PracticeHub() {
         </div>
         </Card>
       </details>
+
+      <MeaningSwitch />
+    </div>
+  );
+}
+
+/** Off by default: translations come once reading is solid. */
+function MeaningSwitch() {
+  const t = useT();
+  const on = useProgress((s) => s.root.settings.askMeaning === true);
+  const set = useProgress((s) => s.setAskMeaning);
+  return (
+    <div className="meaning-switch">
+      <label className="switch">
+        <input type="checkbox" checked={on} onChange={(e) => set(e.target.checked)} />
+        <span className="switch-track" aria-hidden="true" />
+        <span>{t('practice.askMeaning')}</span>
+      </label>
+      <p className="muted small">{t('practice.askMeaningHint')}</p>
     </div>
   );
 }
