@@ -510,6 +510,7 @@ export const en = {
   'legal.notAffiliated': 'Independent fan project, not affiliated with GeoGuessr AB. Free, no ads, no tracking.',
   'legal.placeholder': 'Placeholder: name and address will be filled in before the public launch.',
   'sync.privacyLink': 'What gets stored',
+  'session.meaningNotReading': '“{r}” is read correctly. This one asks for the meaning, though: what does it mean in English or German?',
 } as const;
 
 export type MessageKey = keyof typeof en;

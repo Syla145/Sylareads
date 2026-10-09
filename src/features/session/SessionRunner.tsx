@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CourseIndex } from '../../domain/courseIndex';
-import { evaluateTyped, type Evaluation } from '../../domain/evaluate';
+import { accepts, evaluateTyped, type Evaluation } from '../../domain/evaluate';
 import { isSecretPhrase } from '../../domain/achievements';
 import '../achievements/achievements.css';
 import { advance, createSession, currentTask, submit, type EngineDeps, type SessionMode, type SessionState } from '../../domain/sessionEngine';
@@ -41,6 +41,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
   const [input, setInput] = useState('');
   const [quitOpen, setQuitOpen] = useState(false);
   const [secret, setSecret] = useState(false);
+  /** A meaning task answered with the reading: said so, without counting it as a try. */
+  const [readOnly, setReadOnly] = useState<{ key: string; value: string } | null>(null);
   const unlockSecret = useProgress((s) => s.unlockSecret);
   useEffect(() => {
     if (!secret) return;
@@ -96,6 +98,14 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
       if (unlockSecret()) setSecret(true);
       return;
     }
+    // Asked for the meaning, but typed the reading: right, just not what was asked.
+    const item = index.byId.get(tk.itemId);
+    if (tk.kind === 'meaning' && item && accepts(index, item, value) && !evaluateTyped(index, tk, value).correct) {
+      setReadOnly({ key: tk.key, value: value.trim() });
+      setInput('');
+      return;
+    }
+    setReadOnly(null);
     doSubmit(value, evaluateTyped(index, tk, value));
   }, [doSubmit, index, mode, unlockSecret]);
 
@@ -244,6 +254,9 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
               signs={!noRepeat && (mode === 'practice' || !deferredIds?.has(task.itemId))}
             />
             <div className="session-response" aria-live="polite">
+              {readOnly?.key === task.key && !showFeedback && (
+                <p className="notice notice-accent">{t('session.meaningNotReading', { r: readOnly.value })}</p>
+              )}
               {showRetry && <RetryHint index={index} task={task} evaluation={state.evaluation} input={state.lastInput} />}
               {showFeedback && <FeedbackPanel index={index} task={task} state={state} />}
             </div>

@@ -512,4 +512,5 @@ export const de: Record<MessageKey, string> = {
   'legal.notAffiliated': 'Unabhängiges Fanprojekt, nicht mit der GeoGuessr AB verbunden. Kostenlos, ohne Werbung, ohne Tracking.',
   'legal.placeholder': 'Platzhalter: Name und Anschrift werden vor dem öffentlichen Start eingetragen.',
   'sync.privacyLink': 'Was dabei gespeichert wird',
+  'session.meaningNotReading': '„{r}“ ist richtig gelesen. Gefragt ist hier aber die Bedeutung: Was heißt das auf Deutsch oder Englisch?',
 };
