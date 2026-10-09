@@ -205,7 +205,7 @@ Sylareads lässt sich als App installieren (Android/Chrome/Edge: „App installi
 - Beim Bauen schreibt das Plugin `sylareadsPwa` in `vite.config.ts` die Datei `sw.js` mit der Liste aller gebauten Dateien (Logik ohne Browser in `src/pwa/serviceWorker.ts`). Beim ersten Besuch lädt der Service Worker sie im Hintergrund (≈ 3 MB): alle Kurse, Karten, Schriften. Ausgenommen sind die Firebase-Teile (nur für Angemeldete; sie werden beim ersten Gebrauch gespeichert) und die alten `.woff`-Dateien.
 - Seitenaufrufe bekommen immer die gespeicherte `index.html` der aktiven Version, Dateien kommen aus dem Speicher. Eine neue Version lädt im Hintergrund und wartet; oben erscheint „Eine neue Version von Sylareads ist da · Neu laden“. Erst danach werden alte Dateien gelöscht, so mischen sich nie zwei Versionen.
 - Ohne Netz zeigt die Kopfleiste „Offline“. Online-Speichern holt alles nach, sobald wieder Netz da ist. Installiert bittet Sylareads den Browser, den Speicher nicht zu räumen (`navigator.storage.persist`).
-- Icons in `public/icons/` (aus Inter, „Я“ wie das Favicon), Manifest `public/manifest.webmanifest`. Im Einzeldatei-Build (`build:single`) gibt es keinen Service Worker.
+- Logo: Globus mit „Я“ (`LogoMark` in `src/ui/TopBar.tsx`); App-Symbole und Favicons in `public/icons/` erzeugt `tools/app-icons.mjs` (braucht Playwright), Manifest `public/manifest.webmanifest`. Im Einzeldatei-Build (`build:single`) gibt es keinen Service Worker.
 - Zustand und Oberfläche: `src/pwa/pwaStore.ts`, `src/pwa/PwaParts.tsx` (Karte „App und offline“ im Profil, Tipp auf der Startseite, Update-Hinweis, Offline-Chip).
 
 ## Online-Speicherung (optional, Firebase)

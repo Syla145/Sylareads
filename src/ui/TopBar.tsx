@@ -7,6 +7,26 @@ import { useLang, useT } from '../i18n';
 import { useProgress } from '../store/progressStore';
 import { OfflineChip, UpdateBanner } from '../pwa/PwaParts';
 
+/** The globe with the Я (same drawing as the app icon, see tools/ and public/icons/). */
+export function LogoMark() {
+  return (
+    <svg className="wordmark-logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <g transform="rotate(-20 32 32)" fill="none">
+        <circle cx="32" cy="32" r="22" fill="var(--surface-2)" stroke="var(--accent)" strokeWidth="2.6" />
+        <ellipse cx="32" cy="32" rx="9" ry="22" stroke="var(--accent)" strokeOpacity=".5" strokeWidth="1.6" />
+        <ellipse cx="32" cy="32" rx="17" ry="22" stroke="var(--accent)" strokeOpacity=".3" strokeWidth="1.4" />
+        <path d="M10 32h44M13.5 21h37M13.5 43h37" stroke="var(--accent)" strokeOpacity=".5" strokeWidth="1.6" />
+      </g>
+      <text x="32" y="41.5" textAnchor="middle" fill="var(--surface-2)" stroke="var(--surface-2)" strokeWidth="3.6" strokeLinejoin="round">
+        Я
+      </text>
+      <text x="32" y="41.5" textAnchor="middle" fill="var(--accent)">
+        Я
+      </text>
+    </svg>
+  );
+}
+
 export function LangToggle() {
   const lang = useLang();
   const setLang = useProgress((s) => s.setLang);
@@ -51,9 +71,7 @@ export function TopBar({ course }: { course?: CourseMeta }) {
       <div className="topbar-inner">
         <div className="topbar-left">
           <Link to="/" className="wordmark" aria-label="Sylareads – Home">
-            <span className="wordmark-logo" aria-hidden="true">
-              Я
-            </span>
+            <LogoMark />
             <span className="wordmark-text">Sylareads</span>
           </Link>
           {course && (

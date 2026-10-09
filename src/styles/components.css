@@ -126,21 +126,23 @@
   white-space: nowrap;
 }
 
-/* The app icon's Я: gold on dark, with a thin edge so it reads on the dark bar. */
+/* The globe with the Я, as in the app icon. */
 .wordmark-logo {
-  display: inline-grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
+  margin: -4px 0;
   flex: none;
-  border-radius: 8px;
-  background: var(--surface-2);
-  box-shadow: inset 0 0 0 1px var(--border-strong);
-  color: var(--accent);
-  font-size: 21px;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1;
+}
+@media (max-width: 520px) {
+  .wordmark-logo {
+    width: 36px;
+    height: 36px;
+  }
+}
+.wordmark-logo text {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 26px;
 }
 
 .course-switch {
