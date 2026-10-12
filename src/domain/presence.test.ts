@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { COURSES } from '../content/registry';
+import { parseDuel } from './challenge';
+import { SCRIPTS_COURSE_ID } from './scriptCourse';
 import ru from '../content/ru';
 import { buildIndex } from './courseIndex';
 import { mergeRoots } from './merge';
 import {
   activityOf,
+  CARD_COURSES,
+  CARD_LIMITS,
   cardOf,
   cleanName,
   CONSENT_VERSION,
@@ -113,5 +118,45 @@ describe('Wer ist gerade da', () => {
     const me: PlayerCard = { ...card, uid: 'me', seen: now - 5 * 3600_000 };
     const other: PlayerCard = { ...card, uid: 'u5', seen: now - 10 };
     expect(sortPlayers([card, old, other, me], 'me', now).map((c) => c.uid)).toEqual(['me', 'u5', 'u2']);
+  });
+
+  it('cards that break the rules: hidden by name, unknown courses dropped, numbers in range (S4)', () => {
+    const seen = T0;
+    expect(cardOf('a', { name: 'fuck_you_all' }, seen)).toBeNull();
+    expect(cardOf('b', { name: 'Admin Sylareads' }, seen)).toBeNull();
+    expect(cardOf('c', { name: '<img src=x>' }, seen)).toBeNull();
+    const card = cardOf(
+      'd',
+      {
+        name: 'Tom',
+        course: 'Schreib mir: evil@example.com',
+        courses: { bn: { m: 99, l: 1e21, lt: -3 }, 'Besucht meine Seite': { m: 1, l: 1, lt: 1 } },
+        tempo: { bn: { d: '2026-10-12', c: 99, n: 10, ms: 1e12 }, evil: { d: '2026-10-12', c: 1, n: 10, ms: 1 } },
+        level: 1e300,
+        xp: 9007199254740991,
+        streak: 9007199254740991,
+      },
+      seen,
+    )!;
+    expect(card.course).toBe('');
+    expect(Object.keys(card.courses)).toEqual(['bn']);
+    expect(card.courses.bn.lt).toBe(0);
+    expect(card.courses.bn.l).toBeLessThanOrEqual(500);
+    expect(Object.keys(card.tempo ?? {})).toEqual(['bn']);
+    expect(card.tempo!.bn.c).toBe(10);
+    expect(card.tempo!.bn.ms).toBe(3_600_000);
+    expect(card.level).toBe(CARD_LIMITS.level);
+    expect(card.xp).toBe(CARD_LIMITS.xp);
+    expect(card.streak).toBe(CARD_LIMITS.streak);
+  });
+
+  it('the card course list matches the courses of the app', () => {
+    expect([...CARD_COURSES].sort()).toEqual([...COURSES.map((c) => c.id), SCRIPTS_COURSE_ID].sort());
+  });
+
+  it('duel links: a blocked name shows as someone, an absurd time is ignored (S11)', () => {
+    expect(parseDuel(new URLSearchParams('s=abcd2345&n=Hitler&r=5&t=30000'))?.from?.name).toBe('');
+    expect(parseDuel(new URLSearchParams('s=abcd2345&n=Josef!&r=5&t=30000'))?.from?.name).toBe('Josef!');
+    expect(parseDuel(new URLSearchParams('s=abcd2345&n=Josef&r=5&t=99999999999'))?.from).toBeUndefined();
   });
 });

@@ -2,6 +2,7 @@ import type { CourseIndex } from './courseIndex';
 import { accepts } from './evaluate';
 import { seededRng, shuffle } from './taskFactory';
 import type { Item, PlaceItem } from './types';
+import { nameProblem } from './names';
 
 /**
  * Daily Challenge and 1v1 duel: 10 place names in the native script, the
@@ -202,9 +203,11 @@ export function duelQuery(seed: string, from?: { name: string; score: ChallengeS
 export function parseDuel(params: URLSearchParams): DuelOffer | null {
   const seed = params.get('s') ?? '';
   if (!/^[a-z0-9]{4,16}$/.test(seed)) return null;
-  const name = (params.get('n') ?? '').replace(/[\p{C}]/gu, '').trim().slice(0, CHALLENGE.nameMax);
+  const typed = (params.get('n') ?? '').replace(/[\p{C}]/gu, '').trim().slice(0, CHALLENGE.nameMax);
+  // Anyone can edit a link: a name that breaks the name rules is shown as "someone".
+  const name = typed && nameProblem(typed) === 'blocked' ? '' : typed;
   const c = Number(params.get('r'));
   const ms = Number(params.get('t'));
-  if (!name || !Number.isInteger(c) || c < 0 || c > CHALLENGE.count || !Number.isFinite(ms) || ms <= 0) return { seed };
+  if (!typed || !Number.isInteger(c) || c < 0 || c > CHALLENGE.count || !Number.isFinite(ms) || ms <= 0 || ms > 3_600_000) return { seed };
   return { seed, from: { name, score: { c, n: CHALLENGE.count, ms } } };
 }

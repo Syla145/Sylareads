@@ -3,6 +3,9 @@ import { dayKey } from './dates';
 import { displayedStreak, levelFromXp } from './gamification';
 import type { ProgressRoot } from './progress';
 import { courseStats } from './stats';
+import { cleanName, nameProblem } from './names';
+
+export { cleanName, NAME_MAX, NAME_MIN, NAME_PATTERN, nameProblem, type NameProblem } from './names';
 
 /**
  * "Wer ist gerade da": an opt-in public card per signed-in player.
@@ -66,19 +69,11 @@ export interface PlayerCard extends PublicPlayer {
   seen: number;
 }
 
-export const NAME_MAX = 24;
-export const NAME_MIN = 2;
 /** "Gerade aktiv" means seen within this time; the device reports in at least twice as often. */
 const ACTIVE_MS = 10 * 60_000;
 export const HEARTBEAT_MS = 5 * 60_000;
 /** Cards older than this are not listed. */
 export const LIST_DAYS = 7;
-
-/** Trims, collapses spaces, drops control characters and cuts to NAME_MAX characters. */
-export function cleanName(raw: string): string {
-  const s = [...raw.replace(/[\p{C}]/gu, '').replace(/\s+/g, ' ').trim()];
-  return s.slice(0, NAME_MAX).join('').trim();
-}
 
 /** A neutral suggestion such as "Reader 4821", the same for one account on every device. */
 export function pseudonym(uid: string): string {
@@ -96,28 +91,16 @@ export function effectiveShare(share: ShareSetting | undefined): ShareSetting {
   return { on: false, name: share?.c === CONSENT_VERSION ? share.name : '', at: share?.at ?? 0 };
 }
 
-export type NameProblem = 'short' | 'chars' | 'blocked';
+/**
+ * Course ids a card may carry (the language courses and the scripts course).
+ * firestore.rules accepts only these keys; a test keeps both lists in step
+ * with the course register.
+ */
+export const CARD_COURSES = ['ru', 'el', 'bn', 'th', 'scripts'] as const;
+const isCardCourse = (id: string) => (CARD_COURSES as readonly string[]).includes(id);
 
-/** Letters (any script, with their marks), digits, spaces and . _ - ; starts with a letter or digit. The Firestore rules check the same. */
-const NAME_PATTERN = /^[\p{L}\p{N}][\p{L}\p{M}\p{N} ._-]*$/u;
-
-/** Words that make a name unusable: as part of any name (first list) or as a whole word (second list, they hide in harmless words). */
-const BLOCKED_ANYWHERE = ['fuck', 'cunt', 'nigg', 'fotze', 'hurensohn', 'wichser', 'schwuchtel', 'faggot', 'hitler', 'missgeburt', 'kanake'];
-const BLOCKED_WORDS = ['arsch', 'hure', 'nazi', 'slut', 'whore', 'bitch', 'shit', 'spast', 'neger', 'retard', 'rape', 'porn', 'sex', 'admin', 'moderator', 'sylareads', 'geoguessr'];
-
-const unleet = (s: string) => s.toLowerCase().replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't');
-
-/** Why a display name can't be used, or null when it is fine. */
-export function nameProblem(raw: string): NameProblem | null {
-  const name = cleanName(raw);
-  if ([...name].length < NAME_MIN) return 'short';
-  if (!NAME_PATTERN.test(name)) return 'chars';
-  const plain = unleet(name);
-  const squashed = plain.replace(/[ ._-]/g, '');
-  if (BLOCKED_ANYWHERE.some((w) => squashed.includes(w))) return 'blocked';
-  if (plain.split(/[ ._-]+/).some((w) => BLOCKED_WORDS.includes(w))) return 'blocked';
-  return null;
-}
+/** Upper bounds of the numbers on a card (the rules check the same). */
+export const CARD_LIMITS = { level: 999, xp: 100_000_000, streak: 100_000 } as const;
 
 /** The newer choice wins; equal times keep the local one. */
 export function mergeShare(a: ShareSetting | undefined, b: ShareSetting | undefined): ShareSetting | undefined {
@@ -169,6 +152,7 @@ export function simpleCourse(known: number, total: number, lessons: number, less
 export function publicSnapshot(root: ProgressRoot, name: string, courses: Record<string, PublicCourse>, today = dayKey()): PublicPlayer {
   const tempo: Record<string, PublicDaily> = {};
   for (const [id, cp] of Object.entries(root.courses)) {
+    if (!isCardCourse(id)) continue;
     const day = Object.keys(cp.daily ?? {})
       .filter((d) => cp.daily![d].done)
       .sort()
@@ -182,11 +166,11 @@ export function publicSnapshot(root: ProgressRoot, name: string, courses: Record
     ...(Object.keys(tempo).length ? { tempo } : {}),
     v: 2,
     name: cleanName(name),
-    course: currentCourse(root),
-    courses,
-    streak: displayedStreak(root.profile.streak, today),
-    level: levelFromXp(root.profile.xp),
-    xp: Math.round(root.profile.xp),
+    course: isCardCourse(currentCourse(root)) ? currentCourse(root) : '',
+    courses: Object.fromEntries(Object.entries(courses).filter(([id]) => isCardCourse(id))),
+    streak: Math.min(CARD_LIMITS.streak, displayedStreak(root.profile.streak, today)),
+    level: Math.min(CARD_LIMITS.level, levelFromXp(root.profile.xp)),
+    xp: Math.min(CARD_LIMITS.xp, Math.max(0, Math.round(root.profile.xp))),
   };
 }
 
@@ -222,42 +206,49 @@ export function sortPlayers(cards: PlayerCard[], me: string | null, now: number)
     .sort((a, b) => (a.uid === me ? -1 : b.uid === me ? 1 : b.seen - a.seen));
 }
 
-/** Reads a stored card defensively (other clients may be older or newer). */
+/**
+ * Reads a stored card defensively. Cards are written by other people's
+ * devices (or by anyone who talks to Firebase directly), so everything is
+ * checked again here: a name that breaks the name rules hides the card,
+ * unknown courses are left out and all numbers stay in their range.
+ */
 export function cardOf(uid: string, raw: Record<string, unknown>, seen: number): PlayerCard | null {
   if (typeof raw.name !== 'string') return null;
-  const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+  const name = cleanName(raw.name);
+  if (nameProblem(name)) return null;
+  const num = (v: unknown, max: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.max(0, Math.min(max, Math.round(v))) : 0);
+  const entries = (v: unknown) => (v && typeof v === 'object' ? Object.entries(v as Record<string, unknown>).filter(([id]) => isCardCourse(id)) : []);
   const courses: Record<string, PublicCourse> = {};
-  if (raw.courses && typeof raw.courses === 'object') {
-    for (const [id, c] of Object.entries(raw.courses as Record<string, unknown>)) {
-      if (!c || typeof c !== 'object') continue;
-      const r = c as Record<string, unknown>;
-      courses[id] = {
-        m: Math.max(0, Math.min(100, num(r.m))),
-        l: num(r.l),
-        lt: num(r.lt),
-        ...(typeof r.ct === 'number' ? { c: num(r.c), ct: num(r.ct) } : {}),
-      };
-    }
+  for (const [id, c] of entries(raw.courses)) {
+    if (!c || typeof c !== 'object') continue;
+    const r = c as Record<string, unknown>;
+    const lt = num(r.lt, 500);
+    courses[id] = {
+      m: num(r.m, 100),
+      l: Math.min(num(r.l, 500), lt || 500),
+      lt,
+      ...(typeof r.ct === 'number' ? { c: Math.min(num(r.c, 5000), num(r.ct, 5000)), ct: num(r.ct, 5000) } : {}),
+    };
   }
   const tempo: Record<string, PublicDaily> = {};
-  if (raw.tempo && typeof raw.tempo === 'object') {
-    for (const [id, t] of Object.entries(raw.tempo as Record<string, unknown>)) {
-      if (!t || typeof t !== 'object') continue;
-      const r = t as Record<string, unknown>;
-      if (typeof r.d !== 'string') continue;
-      tempo[id] = { d: r.d, c: num(r.c), n: num(r.n), ms: num(r.ms) };
-    }
+  for (const [id, t] of entries(raw.tempo)) {
+    if (!t || typeof t !== 'object') continue;
+    const r = t as Record<string, unknown>;
+    if (typeof r.d !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(r.d)) continue;
+    const n = num(r.n, 10) || 10;
+    tempo[id] = { d: r.d, c: Math.min(num(r.c, 10), n), n, ms: num(r.ms, 3_600_000) };
   }
+  const course = typeof raw.course === 'string' && isCardCourse(raw.course) ? raw.course : '';
   return {
     ...(Object.keys(tempo).length ? { tempo } : {}),
     v: 2,
     uid,
     seen,
-    name: cleanName(raw.name),
-    course: typeof raw.course === 'string' ? raw.course : '',
+    name,
+    course,
     courses,
-    streak: num(raw.streak),
-    level: Math.max(1, num(raw.level)),
-    xp: num(raw.xp),
+    streak: num(raw.streak, CARD_LIMITS.streak),
+    level: Math.max(1, num(raw.level, CARD_LIMITS.level)),
+    xp: num(raw.xp, CARD_LIMITS.xp),
   };
 }

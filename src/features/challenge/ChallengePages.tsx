@@ -256,11 +256,11 @@ export function DuelRoute() {
     const from = offer?.from;
     return (
       <main className="session-done challenge-intro">
-        <h1 className="complete-title">{from ? t('ch.duelFrom', { name: from.name }) : t('ch.duelNew')}</h1>
+        <h1 className="complete-title">{from ? t('ch.duelFrom', { name: from.name || t('ch.someone') }) : t('ch.duelNew')}</h1>
         <p className="muted">{t('ch.duelIntro', { n: ids.length, course: meta.name[lang] })}</p>
         {from && (
           <p className="challenge-target">
-            {from.name}: <strong className="tabular">{scoreText(from.score, lang)}</strong> · {t('ch.beatIt')}
+            {from.name || t('ch.someone')}: <strong className="tabular">{scoreText(from.score, lang)}</strong> · {t('ch.beatIt')}
           </p>
         )}
         <ul className="challenge-rules">
@@ -283,7 +283,7 @@ export function DuelRoute() {
       <div className="complete">
         <h1 className="complete-title">{t('ch.duelTitle')}</h1>
         {mine && <ScoreLine score={mine} />}
-        {offer?.from && mine && <DuelVerdict mine={mine} theirs={offer.from.score} name={offer.from.name} />}
+        {offer?.from && mine && <DuelVerdict mine={mine} theirs={offer.from.score} name={offer.from.name || t('ch.someone')} />}
         {finished && <AnswerList index={index} state={finished} />}
         {mine && <ShareDuel meta={meta} seed={seed} score={mine} reply={!!offer?.from} />}
         <ResultActions
