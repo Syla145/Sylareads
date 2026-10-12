@@ -5,6 +5,7 @@ import { mergeMistakes } from './mistakes';
 import { mergeTempo } from './tempo';
 import { mergeDaily } from './challenge';
 import { mergeShare, type ShareSetting } from './presence';
+import { mergeNotes } from './notes';
 
 const shareField = (s: ShareSetting | undefined) => (s ? { share: s } : {});
 
@@ -60,6 +61,7 @@ function mergeCourse(a: CourseProgress, b: CourseProgress): CourseProgress {
     ...(a.tempo || b.tempo ? { tempo: mergeTempo(a.tempo, b.tempo) } : {}),
     ...(a.mistakes || b.mistakes ? { mistakes: mergeMistakes(a.mistakes, b.mistakes) } : {}),
     ...(a.daily || b.daily ? { daily: mergeDaily(a.daily, b.daily) } : {}),
+    ...(a.notes || b.notes ? { notes: mergeNotes(a.notes, b.notes) } : {}),
   };
 }
 

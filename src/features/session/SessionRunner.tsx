@@ -170,6 +170,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (quitRef.current) return;
+      // Writing an Eselsbrücke: keys belong to the text field.
+      if ((e.target as HTMLElement | null)?.closest?.('.note-editor')) return;
       const s = stateRef.current;
       const tk = currentTask(s);
       if (!tk) return;

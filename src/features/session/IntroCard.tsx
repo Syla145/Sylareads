@@ -6,6 +6,7 @@ import { placeNameLine, useLang, useT } from '../../i18n';
 import { Button } from '../../ui/primitives';
 import { mapGroupOf } from '../map/layer';
 import { MapView } from '../map/MapView';
+import { NoteEditor } from '../notes/NoteParts';
 
 /** First contact with an item: a learning card. Enter continues. */
 export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemId: string; lower?: boolean; onNext: () => void }) {
@@ -67,6 +68,8 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
       )}
 
       {(item.kind === 'city' || item.kind === 'region') && <PlaceIntro place={item} />}
+
+      <NoteEditor courseId={index.content.id} itemId={item.id} />
 
       <Button ref={btn} variant="primary" className="intro-next" onClick={onNext}>
         {t('session.gotIt')}

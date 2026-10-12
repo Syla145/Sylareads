@@ -25,6 +25,7 @@ import type { SignView } from '../domain/signs';
 import type { TempoContent, TempoState } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 import { backupCurrent, clearAll, loadRoot, saveRoot } from './persistence';
+import { withNote } from '../domain/notes';
 
 interface ProgressState {
   root: ProgressRoot;
@@ -47,6 +48,8 @@ interface ProgressState {
   setTempoSettings: (patch: Partial<TempoSettings>) => void;
   setSignView: (view: SignView) => void;
   setAskMeaning: (on: boolean) => void;
+  /** Own note (Eselsbrücke) for an item; empty text deletes it. */
+  setNote: (courseId: string, itemId: string, text: string) => void;
   /** Daily Challenge: saved after every answer. */
   saveDaily: (courseId: string, day: string, score: ChallengeScore, done: boolean) => void;
   /** Opt-in public card for "Wer ist gerade da". */
@@ -111,6 +114,12 @@ export const useProgress = create<ProgressState>((set, get) => {
     syncAchievements: (courseId, index) => {
       const ids = newlyUnlocked(get().root, courseId, index);
       if (ids.length) commit(unlockAchievements(get().root, ids), true);
+    },
+    setNote: (courseId, itemId, text) => {
+      const root = get().root;
+      const course = root.courses[courseId] ?? emptyCourse();
+      const now = Date.now();
+      commit({ ...root, updatedAt: now, courses: { ...root.courses, [courseId]: { ...course, notes: withNote(course.notes, itemId, text, now) } } }, true);
     },
     saveDaily: (courseId, day, score, done) => commit(recordDailyResult(get().root, courseId, day, score, done), true, done),
     setShare: (on, name) => {

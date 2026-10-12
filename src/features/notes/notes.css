@@ -1,0 +1,93 @@
+/* Own notes (Eselsbrücken) */
+
+.note-view,
+.note-editor {
+  margin-top: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--accent-subtle);
+  border: 1px solid rgba(227, 168, 87, 0.3);
+  text-align: left;
+}
+.note-label {
+  display: block;
+  margin: 0 0 var(--s-1);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+.note-text {
+  margin: 0;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+.note-link {
+  margin-top: var(--s-2);
+  padding: 4px 0;
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.note-input {
+  width: 100%;
+  resize: vertical;
+  min-height: 72px;
+  font: inherit;
+  line-height: 1.5;
+}
+.note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+.note-count {
+  margin-left: auto;
+}
+.note-add {
+  margin-top: var(--s-3);
+  padding: 8px 12px;
+  border-radius: var(--r-pill);
+  border: 1px dashed var(--border-strong);
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.note-add:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+.note-add.is-nudge {
+  border-style: solid;
+  border-color: rgba(227, 168, 87, 0.45);
+  color: var(--text-primary);
+}
+.note-hint {
+  margin: var(--s-2) 0 0;
+  font-size: 14px;
+  white-space: pre-wrap;
+}
+@media (pointer: coarse) {
+  .note-add,
+  .note-link {
+    min-height: 44px;
+  }
+}
+
+/* A small mark on letter tiles that have a note */
+.letter-tile-note {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 12px;
+  color: var(--accent);
+}

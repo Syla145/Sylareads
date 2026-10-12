@@ -7,6 +7,7 @@ import { placeNameLine, useLang, useT } from '../../i18n';
 import { layerOfItem, mapGroupOf } from '../map/layer';
 import { MapView } from '../map/MapView';
 import { ClickedLine, ConfusionLine } from './SessionRunner';
+import { NoteEditor, NoteHint } from '../notes/NoteParts';
 
 /**
  * Feedback after every graded answer. For places it always shows the full
@@ -77,7 +78,10 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
 
       {(item.kind === 'city' || item.kind === 'region') && <PlaceFacts index={index} place={item} withMap={!mapShown} />}
 
+      <NoteEditor courseId={index.content.id} itemId={item.id} invite={ok ? 'none' : 'mistake'} />
+
       {!ok && typed && state.evaluation?.confusedWith && <ConfusionLine index={index} input={state.lastInput} otherId={state.evaluation.confusedWith} />}
+      {!ok && state.evaluation?.confusedWith && <NoteHint courseId={index.content.id} itemId={state.evaluation.confusedWith} label={t('notes.otherLabel')} />}
       {!ok && task.kind === 'locate' && state.lastInput && <ClickedLine index={index} id={state.lastInput} />}
       {!ok && task.kind === 'choice' && (task.question === 'scan' || task.question === 'map') && <ScanMiss index={index} state={state} task={task} />}
     </div>

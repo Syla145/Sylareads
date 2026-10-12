@@ -6,6 +6,7 @@ import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { MasteryLegend, Modal, StateDot } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
+import { NoteEditor } from '../notes/NoteParts';
 
 /** Stable fallback: a fresh `{}` inside the selector would re-render forever. */
 const NO_ITEMS = {};
@@ -16,6 +17,7 @@ export function ScriptPage() {
   const t = useT();
   const lang = useLang();
   const items = useProgress((s) => s.root.courses[meta.id]?.items) ?? NO_ITEMS;
+  const notes = useProgress((s) => s.root.courses[meta.id]?.notes);
   const [open, setOpen] = useState<LetterItem | null>(null);
   // Alphabetical order here (the lesson path teaches in didactic order). Scripts
   // without case (Thai, Bengali) list their units in traditional order already.
@@ -47,6 +49,11 @@ export function ScriptPage() {
             </span>
             <span className="letter-tile-reading">{l.reading || '–'}</span>
             <StateDot state={masteryState(items[l.id])} />
+            {notes?.[l.id]?.t && (
+              <span className="letter-tile-note" aria-label={t('notes.has')}>
+                ✎
+              </span>
+            )}
             <span className="sr-only">{t(`state.${masteryState(items[l.id])}`)}</span>
           </button>
         ))}
@@ -95,6 +102,7 @@ export function ScriptPage() {
             <h3 className="card-label">{t('script.mnemonic')}</h3>
             <p>{open.mnemonic[lang]}</p>
             {open.note && <p className="muted">{open.note[lang]}</p>}
+            <NoteEditor courseId={meta.id} itemId={open.id} />
             {(index.contrastOf.get(open.id)?.length ?? 0) > 0 && (
               <>
                 <h3 className="card-label">{t('script.contrast')}</h3>

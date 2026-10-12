@@ -515,4 +515,13 @@ export const de: Record<MessageKey, string> = {
   'session.meaningNotReading': '„{r}“ ist richtig gelesen. Gefragt ist hier aber die Bedeutung: Was heißt das auf Deutsch oder Englisch?',
   'practice.askMeaning': 'Auch Bedeutungen abfragen',
   'practice.askMeaningHint': 'Aus: Beim Üben wird nur gelesen. An: Bei gut gelernten Begriffen kommt ab und zu „Was bedeutet das?“. Am besten erst einschalten, wenn das Lesen sitzt.',
+  'notes.title': 'Deine Eselsbrücke',
+  'notes.add': 'Eigene Eselsbrücke',
+  'notes.addAfterMistake': 'Verwechselt? Schreib dir eine Eselsbrücke',
+  'notes.edit': 'Bearbeiten',
+  'notes.save': 'Speichern',
+  'notes.delete': 'Löschen',
+  'notes.placeholder': 'Was hilft dir beim Merken? Ein Bild, ein Wort, ein Vergleich – z. B. „ব sieht aus wie ein Beutel → b“',
+  'notes.otherLabel': 'Deine Eselsbrücke für das andere Zeichen:',
+  'notes.has': 'hat eine Eselsbrücke',
 };

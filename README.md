@@ -190,6 +190,10 @@ Erfolge sind nach Kursen gruppiert; die meisten haben drei Stufen (Bronze, Silbe
 
 Die Übersicht im Profil zeigt je Erfolg die drei Medaillen und die nächste Stufe; Kurse ohne erreichten Erfolg sind eingeklappt. Die Kursübersicht zeigt unter „Nächste Erfolge“ die zwei nächstliegenden Ziele mit Fortschrittsbalken. Erfolge werden beim Öffnen eines Kurses und nach jeder Sitzung nachgeprüft, also auch rückwirkend vergeben. Erfolge aus der alten Liste (vor der Umstellung) werden nicht mehr angezeigt.
 
+## Eigene Eselsbrücken
+
+Zu jedem Zeichen (und jedem anderen Lernobjekt) kann man sich eine eigene Notiz schreiben, höchstens 280 Zeichen: auf der Lernkarte („Eigene Eselsbrücke“), nach einem Fehler („Verwechselt? Schreib dir eine Eselsbrücke“) und unter „Zeichen“ beim Antippen eines Buchstabens (Kacheln mit Notiz tragen ein ✎). Nach einem Fehler steht die eigene Eselsbrücke in der Rückmeldung, bei einer Verwechslung auch die des anderen Zeichens. Gespeichert im Fortschritt je Kurs (`notes`, wird mitsynchronisiert; die neuere Fassung gewinnt, Löschen auch). Logik ohne Oberfläche in `src/domain/notes.ts`, Oberfläche in `src/features/notes/`.
+
 ## Bedeutungen abfragen
 
 Beim Üben geht es standardmäßig nur ums Lesen. Unter „Üben“ ganz unten schaltet „Auch Bedeutungen abfragen“ (Einstellung `askMeaning`, wird mitgespeichert) die Frage „Was bedeutet das?“ für gut gelernte Begriffe dazu. Wer dort die Lesung statt der Bedeutung eintippt, bekommt einen Hinweis statt eines Fehlers.

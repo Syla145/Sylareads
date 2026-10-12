@@ -4,6 +4,7 @@ import { clampFlash, clampSeconds, type TempoProgress } from '../domain/tempo';
 import type { Lang } from '../domain/types';
 import { shareOf } from '../domain/presence';
 import { dailyOf } from '../domain/challenge';
+import { notesOf } from '../domain/notes';
 
 /**
  * Persistence: one versioned JSON document in localStorage (≈ 225 KB at full
@@ -84,6 +85,7 @@ export function migrate(raw: unknown): ProgressRoot {
         ...(isObj(c.tempo) ? { tempo: tempoOf(c.tempo) } : {}),
         ...(isObj(c.mistakes) ? { mistakes: c.mistakes as MistakeLog } : {}),
         ...(dailyOf(c.daily) ? { daily: dailyOf(c.daily) } : {}),
+        ...(notesOf(c.notes) ? { notes: notesOf(c.notes) } : {}),
       };
     }
   }

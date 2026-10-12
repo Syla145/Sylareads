@@ -513,6 +513,15 @@ export const en = {
   'session.meaningNotReading': '“{r}” is read correctly. This one asks for the meaning, though: what does it mean in English or German?',
   'practice.askMeaning': 'Also ask for meanings',
   'practice.askMeaningHint': 'Off: practice is about reading only. On: well-learned terms sometimes ask “What does it mean?”. Best turned on once reading is solid.',
+  'notes.title': 'Your memory hook',
+  'notes.add': 'Add your own memory hook',
+  'notes.addAfterMistake': 'Mixed it up? Write yourself a memory hook',
+  'notes.edit': 'Edit',
+  'notes.save': 'Save',
+  'notes.delete': 'Delete',
+  'notes.placeholder': 'What helps you remember? A picture, a word, a comparison – e.g. “ব looks like a bag → b”',
+  'notes.otherLabel': 'Your memory hook for the other one:',
+  'notes.has': 'has a memory hook',
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -8,6 +8,7 @@ import { applyAnswer, introduce, raiseTo, settleNewItem, type ItemProgress, type
 import type { SignView } from './signs';
 import { applyTempoSession, type TempoContent, type TempoProgress, type TempoState } from './tempo';
 import type { Lang } from './types';
+import type { NoteMap } from './notes';
 
 /**
  * Persisted progress: one JSON document (spec section 13). Weak flags,
@@ -49,6 +50,8 @@ export interface CourseProgress {
   tempo?: TempoProgress;
   /** Daily Challenge per day (absent until the first one). */
   daily?: DailyLog;
+  /** Own notes (Eselsbrücken) per item. */
+  notes?: NoteMap;
 }
 
 export interface Profile {
