@@ -192,7 +192,7 @@ Die Übersicht im Profil zeigt je Erfolg die drei Medaillen und die nächste Stu
 
 ## Eigene Eselsbrücken
 
-Zu jedem Zeichen (und jedem anderen Lernobjekt) kann man sich eine eigene Notiz schreiben, höchstens 280 Zeichen: auf der Lernkarte („Eigene Eselsbrücke“), nach einem Fehler („Verwechselt? Schreib dir eine Eselsbrücke“) und unter „Zeichen“ beim Antippen eines Buchstabens (Kacheln mit Notiz tragen ein ✎). Nach einem Fehler steht die eigene Eselsbrücke in der Rückmeldung, bei einer Verwechslung auch die des anderen Zeichens. Gespeichert im Fortschritt je Kurs (`notes`, wird mitsynchronisiert; die neuere Fassung gewinnt, Löschen auch). Logik ohne Oberfläche in `src/domain/notes.ts`, Oberfläche in `src/features/notes/`.
+Zu jedem Zeichen (und jedem anderen Lernobjekt) kann man sich eine eigene Notiz schreiben, höchstens 280 Zeichen: auf der Lernkarte („Eigene Eselsbrücke“), nach einem Fehler („Verwechselt? Schreib dir eine Eselsbrücke“) und unter „Zeichen“ beim Antippen eines Buchstabens (Kacheln mit Notiz tragen ein ✎). Nach einem Fehler steht die eigene Eselsbrücke in der Rückmeldung, bei einer Verwechslung auch die des anderen Zeichens. Gespeichert im Fortschritt je Kurs (`notes`, wird mitsynchronisiert; die neuere Fassung gewinnt, Löschen auch). Logik ohne Oberfläche in `src/domain/notes.ts`, Oberfläche in `src/features/notes/`. Für Bengali gibt es zu jedem der 61 Zeichen einen Vorschlag (`src/content/bn/noteHints.ts`, Kursfeld `noteHints`): Er steht neben dem leeren Notizfeld mit „Übernehmen · Anpassen · Eigene schreiben“ und unter „Zeichen“ → „Eselsbrücken-Vorschläge“ als Liste zum Durchgehen. Erst Übernommenes wird zur eigenen Eselsbrücke.
 
 ## Bedeutungen abfragen
 

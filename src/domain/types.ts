@@ -197,6 +197,8 @@ export interface CourseContent {
    * readings of রংপুর – Rongpur, Rangpur – are right). Not for letters.
    */
   looseVowels?: boolean;
+  /** Suggested Eselsbrücken per item id, offered next to the player's own note. */
+  noteHints?: Record<string, L10n>;
   /** Lazily loaded map with clickable areas (only some courses). */
   loadMap?: () => Promise<CourseMap>;
 }

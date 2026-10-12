@@ -5,6 +5,7 @@ import { CONJUNCTS, CONTRAST_SETS, ENDINGS, PHALAS, requiredUnitsBn, SYLLABLES, 
 import { TERMS, WORDS } from './words';
 import { withCoords } from '../coords';
 import { COORDS } from './coords';
+import { NOTE_HINTS } from './noteHints';
 
 /**
  * Bengali: readings are listed explicitly (no rule-based segmentation),
@@ -23,6 +24,7 @@ const content: CourseContent = {
   requiredLetters: requiredUnitsBn,
   hasCase: false,
   looseVowels: true,
+  noteHints: NOTE_HINTS,
   loadMap: () => import('./map.json').then((m) => m.default as unknown as CourseMap),
 };
 

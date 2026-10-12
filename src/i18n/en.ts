@@ -522,6 +522,13 @@ export const en = {
   'notes.placeholder': 'What helps you remember? A picture, a word, a comparison – e.g. “ব looks like a bag → b”',
   'notes.otherLabel': 'Your memory hook for the other one:',
   'notes.has': 'has a memory hook',
+  'notes.suggestion': 'Suggested memory hook',
+  'notes.suggestionAfterMistake': 'Mixed it up? Suggested memory hook',
+  'notes.adopt': 'Use it',
+  'notes.adapt': 'Edit first',
+  'notes.ownInstead': 'Write my own',
+  'notes.reviewTitle': 'Suggested memory hooks',
+  'notes.reviewIntro': 'A suggestion for every character. Use what works for you, edit it or write your own. The ones you keep show up on learning cards and after mistakes.',
 } as const;
 
 export type MessageKey = keyof typeof en;

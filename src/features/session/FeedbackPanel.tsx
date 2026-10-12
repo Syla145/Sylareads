@@ -78,7 +78,7 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
 
       {(item.kind === 'city' || item.kind === 'region') && <PlaceFacts index={index} place={item} withMap={!mapShown} />}
 
-      <NoteEditor courseId={index.content.id} itemId={item.id} invite={ok ? 'none' : 'mistake'} />
+      <NoteEditor courseId={index.content.id} itemId={item.id} invite={ok ? 'none' : 'mistake'} suggestion={index.content.noteHints?.[item.id]?.[lang]} />
 
       {!ok && typed && state.evaluation?.confusedWith && <ConfusionLine index={index} input={state.lastInput} otherId={state.evaluation.confusedWith} />}
       {!ok && state.evaluation?.confusedWith && <NoteHint courseId={index.content.id} itemId={state.evaluation.confusedWith} label={t('notes.otherLabel')} />}

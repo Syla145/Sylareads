@@ -89,6 +89,25 @@ export function ScriptPage() {
         </details>
       )}
 
+      {index.content.noteHints && (
+        <details className="script-section">
+          <summary className="section-label">{t('notes.reviewTitle')}</summary>
+          <p className="muted small">{t('notes.reviewIntro')}</p>
+          <div className="note-review">
+            {letters
+              .filter((l) => index.content.noteHints?.[l.id])
+              .map((l) => (
+                <div key={l.id} className="note-review-row">
+                  <span className="glyph glyph-s note-review-glyph">
+                    {l.upper} <span className="muted small">{l.reading || '–'}</span>
+                  </span>
+                  <NoteEditor courseId={meta.id} itemId={l.id} suggestion={index.content.noteHints?.[l.id]?.[lang]} />
+                </div>
+              ))}
+          </div>
+        </details>
+      )}
+
       <Modal open={!!open} onClose={() => setOpen(null)} title={open ? letterGlyphs(open, ' ') : ''}>
         {open && (
           <div className="letter-detail">
@@ -102,7 +121,7 @@ export function ScriptPage() {
             <h3 className="card-label">{t('script.mnemonic')}</h3>
             <p>{open.mnemonic[lang]}</p>
             {open.note && <p className="muted">{open.note[lang]}</p>}
-            <NoteEditor courseId={meta.id} itemId={open.id} />
+            <NoteEditor courseId={meta.id} itemId={open.id} suggestion={index.content.noteHints?.[open.id]?.[lang]} />
             {(index.contrastOf.get(open.id)?.length ?? 0) > 0 && (
               <>
                 <h3 className="card-label">{t('script.contrast')}</h3>

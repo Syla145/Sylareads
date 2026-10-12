@@ -11,7 +11,18 @@ const useNote = (courseId: string, itemId: string) => useProgress((s) => noteOf(
  * in place. `invite` shows the "add one" button when there is none (after a
  * mistake it is worded as a nudge).
  */
-export function NoteEditor({ courseId, itemId, invite = 'plain' }: { courseId: string; itemId: string; invite?: 'plain' | 'mistake' | 'none' }) {
+export function NoteEditor({
+  courseId,
+  itemId,
+  invite = 'plain',
+  suggestion,
+}: {
+  courseId: string;
+  itemId: string;
+  invite?: 'plain' | 'mistake' | 'none';
+  /** A suggested Eselsbrücke from the course, offered while there is no own note. */
+  suggestion?: string;
+}) {
   const t = useT();
   const note = useNote(courseId, itemId);
   const setNote = useProgress((s) => s.setNote);
@@ -23,8 +34,8 @@ export function NoteEditor({ courseId, itemId, invite = 'plain' }: { courseId: s
     if (editing) area.current?.focus();
   }, [editing]);
 
-  const open = () => {
-    setDraft(note);
+  const open = (text = note) => {
+    setDraft(text);
     setEditing(true);
   };
   const save = () => {
@@ -88,7 +99,7 @@ export function NoteEditor({ courseId, itemId, invite = 'plain' }: { courseId: s
       <div className="note-view">
         <p className="note-label">{t('notes.title')}</p>
         <p className="note-text">{note}</p>
-        <button type="button" className="note-link" onClick={open}>
+        <button type="button" className="note-link" onClick={() => open()}>
           {t('notes.edit')}
         </button>
       </div>
@@ -96,8 +107,27 @@ export function NoteEditor({ courseId, itemId, invite = 'plain' }: { courseId: s
   }
 
   if (invite === 'none') return null;
+  if (suggestion) {
+    return (
+      <div className="note-suggestion">
+        <p className="note-label">{invite === 'mistake' ? t('notes.suggestionAfterMistake') : t('notes.suggestion')}</p>
+        <p className="note-text">{suggestion}</p>
+        <div className="note-actions">
+          <button type="button" className="btn btn-secondary" onClick={() => setNote(courseId, itemId, suggestion)}>
+            {t('notes.adopt')}
+          </button>
+          <button type="button" className="note-link" onClick={() => open(suggestion)}>
+            {t('notes.adapt')}
+          </button>
+          <button type="button" className="note-link" onClick={() => open('')}>
+            {t('notes.ownInstead')}
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
-    <button type="button" className={`note-add${invite === 'mistake' ? ' is-nudge' : ''}`} onClick={open}>
+    <button type="button" className={`note-add${invite === 'mistake' ? ' is-nudge' : ''}`} onClick={() => open()}>
       <span aria-hidden="true">✎</span> {invite === 'mistake' ? t('notes.addAfterMistake') : t('notes.add')}
     </button>
   );

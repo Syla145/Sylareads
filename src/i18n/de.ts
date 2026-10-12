@@ -524,4 +524,11 @@ export const de: Record<MessageKey, string> = {
   'notes.placeholder': 'Was hilft dir beim Merken? Ein Bild, ein Wort, ein Vergleich – z. B. „ব sieht aus wie ein Beutel → b“',
   'notes.otherLabel': 'Deine Eselsbrücke für das andere Zeichen:',
   'notes.has': 'hat eine Eselsbrücke',
+  'notes.suggestion': 'Vorschlag für eine Eselsbrücke',
+  'notes.suggestionAfterMistake': 'Verwechselt? Vorschlag für eine Eselsbrücke',
+  'notes.adopt': 'Übernehmen',
+  'notes.adapt': 'Anpassen',
+  'notes.ownInstead': 'Eigene schreiben',
+  'notes.reviewTitle': 'Eselsbrücken-Vorschläge',
+  'notes.reviewIntro': 'Zu jedem Zeichen ein Vorschlag. Übernimm, was für dich funktioniert, pass es an oder schreib deine eigene. Übernommene erscheinen auf Lernkarten und nach Fehlern.',
 };

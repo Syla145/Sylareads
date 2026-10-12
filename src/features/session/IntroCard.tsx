@@ -69,7 +69,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
 
       {(item.kind === 'city' || item.kind === 'region') && <PlaceIntro place={item} />}
 
-      <NoteEditor courseId={index.content.id} itemId={item.id} />
+      <NoteEditor courseId={index.content.id} itemId={item.id} suggestion={index.content.noteHints?.[item.id]?.[lang]} />
 
       <Button ref={btn} variant="primary" className="intro-next" onClick={onNext}>
         {t('session.gotIt')}

@@ -155,3 +155,12 @@ describe('Bengali: o and a', () => {
     expect((item('bn:combo:suf-ganj') as { reading?: string }).reading).toBe('ganj');
   });
 });
+
+describe('Bengali: suggested Eselsbrücken', () => {
+  it('every letter, vowel sign and mark has one, in both languages, and only for real items', () => {
+    const hints = bn.noteHints ?? {};
+    for (const l of bn.letters) expect(hints[l.id]?.de && hints[l.id]?.en, l.id).toBeTruthy();
+    const ids = new Set(bn.letters.map((l) => l.id));
+    for (const id of Object.keys(hints)) expect(ids.has(id), id).toBe(true);
+  });
+});
