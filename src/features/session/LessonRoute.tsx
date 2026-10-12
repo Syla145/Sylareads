@@ -9,6 +9,7 @@ import { useCourse } from '../course/useCourse';
 import { recommendedPath } from '../dashboard/recommend';
 import { CompleteScreen, type CompleteData } from './CompleteScreen';
 import { SessionRunner } from './SessionRunner';
+import { useGoBack } from '../../ui/useBackGuard';
 
 export function LessonRoute() {
   const { lessonId } = useParams();
@@ -49,7 +50,7 @@ function LessonSession({ lessonId }: { lessonId: string }) {
     setDone({ before, after: useProgress.getState().root, session: s, unlocked });
   };
 
-  const back = () => navigate(`/${meta.slug}`);
+  const back = useGoBack(`/${meta.slug}`);
 
   if (done) {
     const cp = done.after.courses[meta.id];
@@ -72,6 +73,7 @@ function LessonSession({ lessonId }: { lessonId: string }) {
 
   return (
     <SessionRunner
+      kind="lesson"
       courseId={meta.id}
       index={index}
       tasks={setup.tasks}

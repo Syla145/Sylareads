@@ -12,6 +12,7 @@ import { useCourse } from '../course/useCourse';
 import { recommendedPath } from '../dashboard/recommend';
 import { SessionRunner } from '../session/SessionRunner';
 import { type ResultAction, ResultActions } from '../session/SessionParts';
+import { useGoBack } from '../../ui/useBackGuard';
 
 export const placementPath = (slug: string, scope: string, mode: PlacementMode) => `/${slug}/placement?scope=${encodeURIComponent(scope)}&m=${mode}`;
 
@@ -36,7 +37,7 @@ function PlacementSession() {
   const [before] = useState(() => useProgress.getState().root);
   const [done, setDone] = useState<Done | null>(null);
   const base = `/${meta.slug}`;
-  const back = () => (window.history.length > 1 ? navigate(-1) : navigate(base));
+  const back = useGoBack(base);
 
   const setup = useMemo(() => {
     const mode: PlacementMode = params.get('m') === 'test' ? 'test' : 'review';
@@ -94,6 +95,7 @@ function PlacementSession() {
 
   return (
     <SessionRunner
+      kind="placement"
       courseId={meta.id}
       index={index}
       tasks={setup.tasks}

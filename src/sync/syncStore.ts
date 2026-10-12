@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { mergeRoots, sameProgress } from '../domain/merge';
-import { migrate } from '../store/persistence';
+import { emptyRoot, type ProgressRoot } from '../domain/progress';
+import { migrate, wipeDevice } from '../store/persistence';
 import { useProgress } from '../store/progressStore';
 import { loadCloud, type Cloud, type CloudUser } from './cloud';
 import { firebaseConfig } from './firebaseConfig';
@@ -14,17 +15,26 @@ import { uploadDelay } from './timing';
  * Firebase within its free daily quota). A merge never loses progress from
  * either side (see domain/merge.ts).
  */
-export type SyncStatus = 'unconfigured' | 'off' | 'signed-out' | 'syncing' | 'synced' | 'offline' | 'error';
+export type SyncStatus = 'unconfigured' | 'off' | 'signed-out' | 'syncing' | 'synced' | 'offline' | 'error' | 'choose';
 
 interface SyncState {
   status: SyncStatus;
   user: CloudUser | null;
   lastSyncAt: number | null;
   error: string | null;
+  /** No uploads and no public card (while an account is being deleted or a choice is open). */
+  paused: boolean;
   signIn: () => Promise<void>;
   /** Loads Firebase ahead of a sign-in, so the Google window opens directly on the tap (Safari blocks it otherwise). */
   prepare: () => void;
-  signOut: () => Promise<void>;
+  /** `wipe`: also delete everything Sylareads stored on this device. */
+  signOut: (wipe?: boolean) => Promise<void>;
+  /**
+   * After signing in with another account than the one this device's progress
+   * belongs to: add that progress to the account, or start from the account's
+   * online progress only.
+   */
+  resolveOwner: (choice: 'merge' | 'online') => Promise<void>;
   /** Deletes the online progress, the public card and the account; this browser keeps its progress. */
   deleteAccount: () => Promise<boolean>;
   syncNow: () => Promise<void>;
@@ -33,6 +43,8 @@ interface SyncState {
 }
 
 const FLAG = 'sylareads.sync';
+/** The account this device's progress belongs to (set at the first sync). */
+const OWNER = 'sylareads.owner';
 const FOCUS_INTERVAL_MS = 60_000;
 
 const flag = {
@@ -53,6 +65,27 @@ const flag = {
   },
 };
 
+const owner = {
+  get: () => {
+    try {
+      return localStorage.getItem(OWNER);
+    } catch {
+      return null;
+    }
+  },
+  set: (uid: string | null) => {
+    try {
+      if (uid) localStorage.setItem(OWNER, uid);
+      else localStorage.removeItem(OWNER);
+    } catch {
+      /* private mode */
+    }
+  },
+};
+
+/** Anything learned on this device worth keeping. */
+export const hasProgress = (root: ProgressRoot) => root.profile.xp > 0 || Object.values(root.courses).some((c) => Object.keys(c.items).length > 0);
+
 let cloud: Cloud | null = null;
 
 /** The loaded Firebase connection (null until someone signed in on this device). */
@@ -70,6 +103,13 @@ async function connectCloud(): Promise<Cloud | null> {
     useSync.setState({ user });
     if (user) {
       flag.set(true);
+      const before = owner.get();
+      if (before && before !== user.uid && hasProgress(useProgress.getState().root)) {
+        // This device's progress belongs to someone else: ask before mixing it into this account.
+        useSync.setState({ status: 'choose', paused: true });
+        return;
+      }
+      owner.set(user.uid);
       void useSync.getState().syncNow();
     } else {
       flag.set(false);
@@ -102,16 +142,17 @@ export const useSync = create<SyncState>((set, get) => {
   const config = firebaseConfig();
 
   const sync = async (overwrite: boolean) => {
-    const { user } = get();
-    if (!cloud || !user) return;
+    const { user, paused } = get();
+    if (!cloud || !user || paused) return;
     set({ status: 'syncing', error: null });
     try {
-      const local = useProgress.getState().root;
       if (overwrite) {
-        await pushPaced(cloud, user.uid, JSON.stringify(local));
+        await pushPaced(cloud, user.uid, JSON.stringify(useProgress.getState().root));
       } else {
         const raw = await cloud.pull(user.uid);
         const remote = raw ? migrate(JSON.parse(raw)) : null;
+        // Taken after the download: answers given while waiting are part of it.
+        const local = useProgress.getState().root;
         const merged = remote ? mergeRoots(local, remote) : local;
         if (!sameProgress(merged, local)) {
           applying = true;
@@ -151,6 +192,7 @@ export const useSync = create<SyncState>((set, get) => {
     user: null,
     lastSyncAt: null,
     error: null,
+    paused: false,
     prepare: () => {
       connectCloud().catch(() => {});
     },
@@ -164,31 +206,70 @@ export const useSync = create<SyncState>((set, get) => {
         set({ status: 'error', error: errorCode(e) });
       }
     },
-    signOut: async () => {
-      await get().syncNow();
+    signOut: async (wipe = false) => {
+      if (!get().paused) await get().syncNow();
       await cloud?.signOut();
       flag.set(false);
-      set({ user: null, status: 'signed-out', lastSyncAt: null });
+      set({ user: null, status: 'signed-out', lastSyncAt: null, paused: false });
+      if (wipe) {
+        wipeDevice();
+        window.location.reload();
+      }
+    },
+    resolveOwner: async (choice) => {
+      const { user } = get();
+      if (!cloud || !user) return;
+      const progress = useProgress.getState();
+      if (choice === 'merge') {
+        // The yes to "Wer ist da" belongs to the other account and never moves.
+        const { share: _other, ...profile } = progress.root.profile;
+        void _other;
+        progress.applyMerged({ ...progress.root, profile });
+      } else {
+        set({ status: 'syncing' });
+        try {
+          const raw = await cloud.pull(user.uid);
+          const remote = raw ? migrate(JSON.parse(raw)) : null;
+          progress.replaceAll(remote ? { ...remote, settings: progress.root.settings } : emptyRoot(progress.root.settings.uiLang));
+        } catch (e) {
+          set({ status: isOffline(e) ? 'offline' : 'error', error: isOffline(e) ? null : errorCode(e) });
+          return;
+        }
+      }
+      owner.set(user.uid);
+      set({ paused: false });
+      await get().syncNow();
     },
     deleteAccount: async () => {
       const { user } = get();
       if (!cloud || !user) return false;
+      // Confirm with Google first, right on the tap (Safari blocks the window after a wait).
+      // Cancelled here = nothing deleted.
+      const confirmed = cloud.reauth ? cloud.reauth() : Promise.resolve();
       if (timer) clearTimeout(timer);
       timer = null;
-      set({ error: null });
+      set({ error: null, paused: true });
+      try {
+        await confirmed;
+      } catch (e) {
+        set({ paused: false, status: 'synced', error: errorCode(e) });
+        return false;
+      }
       try {
         await running;
         await cloud.deleteAccount(user.uid);
-        // The yes to "Wer ist da" belonged to this account.
-        const share = useProgress.getState().root.profile.share;
-        if (share?.on) useProgress.getState().setShare(false, share.name);
-        flag.set(false);
-        set({ user: null, status: 'signed-out', lastSyncAt: null });
-        return true;
       } catch (e) {
+        // Stays paused: nothing is uploaded again until the next start, so a retry finds nothing half restored.
         set({ status: 'error', error: errorCode(e) });
         return false;
       }
+      // The yes to "Wer ist da" belonged to this account.
+      const share = useProgress.getState().root.profile.share;
+      if (share?.on) useProgress.getState().setShare(false, share.name);
+      flag.set(false);
+      owner.set(null);
+      set({ user: null, status: 'signed-out', lastSyncAt: null, paused: false });
+      return true;
     },
     syncNow: () => {
       // A sync now carries every pending change: drop a planned one.
@@ -213,7 +294,7 @@ export function startSync() {
 
   // After progress changes: soon after a finished step, otherwise at most every two minutes.
   useProgress.subscribe((s, prev) => {
-    if (applying || s.root === prev.root || !useSync.getState().user) return;
+    if (applying || s.root === prev.root || !useSync.getState().user || useSync.getState().paused) return;
     const milestone = s.milestones !== prev.milestones;
     if (timer && !milestone) return; // an upload is already planned and will carry this change
     if (timer) clearTimeout(timer);

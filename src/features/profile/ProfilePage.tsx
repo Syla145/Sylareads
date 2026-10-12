@@ -3,7 +3,8 @@ import { AchievementsOverview } from '../achievements/AchievementParts';
 import { dayKey } from '../../domain/dates';
 import { displayedStreak, levelProgress } from '../../domain/gamification';
 import { formatDate, useLang, useT, type TKey } from '../../i18n';
-import { exportJson, parseImport, type ImportPreview } from '../../store/persistence';
+import { exportJson, parseImport, readBackup, wipeDevice, type ImportPreview } from '../../store/persistence';
+import { downloadText } from '../../ui/download';
 import { useProgress } from '../../store/progressStore';
 import { Button, Card, Modal, ProgressBar } from '../../ui/primitives';
 import { LangToggle, TopBar } from '../../ui/TopBar';
@@ -27,21 +28,25 @@ export function ProfilePage() {
   // Reset and import replace the online copy too (a merge would bring the old progress back).
   const overwriteCloud = useSync((s) => s.overwriteCloud);
   const signedIn = useSync((s) => !!s.user);
+  const signOut = useSync((s) => s.signOut);
+  const restoreBackup = useProgress((s) => s.restoreBackup);
+  const [backup, setBackup] = useState(() => readBackup());
+  const [wipeStep, setWipeStep] = useState(0);
 
   const lp = levelProgress(root.profile.xp);
   const streak = displayedStreak(root.profile.streak, dayKey());
 
   const doExport = () => {
-    const blob = new Blob([exportJson(root)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sylareads-progress.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadText('sylareads-progress.json', exportJson(root));
     markExported();
+  };
+
+  const wipe = () => {
+    if (signedIn) void signOut(true);
+    else {
+      wipeDevice();
+      window.location.reload();
+    }
   };
 
   const onFile = async (file: File | undefined) => {
@@ -110,6 +115,28 @@ export function ProfilePage() {
               {message}
             </p>
           )}
+          {backup && (
+            <div className="backup-line">
+              <p className="small muted">
+                {t('profile.backup', {
+                  d: formatDate(backup.at, lang),
+                  x: backup.root.profile.xp,
+                  l: Object.values(backup.root.courses).reduce((n, c) => n + Object.keys(c.lessons).length, 0),
+                })}
+              </p>
+              <Button
+                onClick={() => {
+                  if (restoreBackup()) {
+                    if (signedIn) void overwriteCloud();
+                    setBackup(readBackup());
+                    setMessage(t('profile.backupDone'));
+                  }
+                }}
+              >
+                {t('profile.backupRestore')}
+              </Button>
+            </div>
+          )}
           <div className="danger-zone">
             {resetStep === 0 ? (
               <button type="button" className="link-danger" onClick={() => setResetStep(1)}>
@@ -119,10 +146,27 @@ export function ProfilePage() {
               <div className="notice notice-error">
                 <p>{t('profile.resetConfirm')}</p>
                 <div className="actions">
-                  <Button variant="danger" onClick={() => { reset(); if (signedIn) void overwriteCloud(); setResetStep(0); setMessage(t('profile.resetDone')); }}>
+                  <Button variant="danger" onClick={() => { reset(); if (signedIn) void overwriteCloud(); setResetStep(0); setBackup(readBackup()); setMessage(t('profile.resetDone')); }}>
                     {t('profile.resetFinal')}
                   </Button>
                   <Button variant="ghost" onClick={() => setResetStep(0)}>
+                    {t('common.cancel')}
+                  </Button>
+                </div>
+              </div>
+            )}
+            {wipeStep === 0 ? (
+              <button type="button" className="link-danger" onClick={() => setWipeStep(1)}>
+                {t('profile.wipe')}
+              </button>
+            ) : (
+              <div className="notice notice-error">
+                <p>{t('profile.wipeConfirm')}</p>
+                <div className="actions">
+                  <Button variant="danger" onClick={wipe}>
+                    {t('profile.wipeFinal')}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setWipeStep(0)}>
                     {t('common.cancel')}
                   </Button>
                 </div>
@@ -136,7 +180,7 @@ export function ProfilePage() {
             <>
               <p>{t('profile.importPreview', { c: preview.courses, l: preview.lessons, x: preview.xp })}</p>
               <div className="actions">
-                <Button variant="primary" onClick={() => { replaceAll(preview.root); if (signedIn) void overwriteCloud(); setPreview(null); setMessage(t('profile.importDone')); }}>
+                <Button variant="primary" onClick={() => { replaceAll(preview.root); if (signedIn) void overwriteCloud(); setPreview(null); setBackup(readBackup()); setMessage(t('profile.importDone')); }}>
                   {t('profile.importConfirm')}
                 </Button>
                 <Button variant="ghost" onClick={() => setPreview(null)}>

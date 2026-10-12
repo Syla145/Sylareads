@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { HashRouter, Link, Route, Routes } from 'react-router-dom';
+import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom';
+import { ErrorBoundary } from './ui/ErrorBoundary';
+import { StorageBanner } from './ui/StorageBanner';
 import { CourseGate } from './features/course/CourseLayout';
 import { DashboardPage } from './features/dashboard/DashboardPage';
 import { HomePage } from './features/home/HomePage';
@@ -59,6 +61,17 @@ export function App() {
 
   return (
     <HashRouter>
+      <StorageBanner />
+      <Pages />
+    </HashRouter>
+  );
+}
+
+/** All pages; an error on one page shows a way out and is forgotten on the next page. */
+function Pages() {
+  const { pathname } = useLocation();
+  return (
+    <ErrorBoundary resetKey={pathname}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -89,6 +102,6 @@ export function App() {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </HashRouter>
+    </ErrorBoundary>
   );
 }

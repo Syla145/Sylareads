@@ -172,12 +172,22 @@ Weitere Hinweise:
 
 Beide nutzen denselben Ablauf (`src/domain/challenge.ts`, ohne Oberfläche): 10 Städte des Kurses (4 große, 3 mittlere, 3 kleinere), ausgewählt mit einem Startwert, sodass alle mit demselben Startwert dieselben Namen bekommen. Die Lesung wird eingetippt, ein Versuch pro Name. Gewertet wird erst nach Richtigen, dann nach Gesamtzeit; die Uhr läuft nur, solange ein Name zu sehen ist.
 
-- **Daily Challenge:** Startwert = Kurs + Tag. Ein Versuch pro Tag und Kurs; jede Antwort wird sofort im Fortschritt gespeichert (`courses.<kurs>.daily`, 30 Tage), auch beim Abbrechen, und folgt dem Konto auf alle Geräte. Das Ergebnis des Tages steht auf der öffentlichen Karte (Feld `tempo`), die Seite zeigt die Tagesliste aller, die ihre Karte zeigen.
+- **Daily Challenge:** Startwert = Kurs + Tag. Ein Versuch pro Tag und Kurs; jede Antwort wird sofort im Fortschritt gespeichert (`courses.<kurs>.daily`, 30 Tage) und folgt dem Konto auf alle Geräte. Wer abbricht (✕, Escape oder Zurück-Geste), **unterbricht** nur: Die Antworten bleiben (`ans`), am selben Tag geht es mit dem nächsten Namen weiter. Ein Name, der beim Abbrechen gerade zu sehen war, zählt als nicht gewusst (kein Nachschlagen und Zurückkommen). Der Tag wird beim Öffnen festgehalten, eine Runde über Mitternacht bleibt also auf ihrem Tag. Das Ergebnis des Tages steht auf der öffentlichen Karte (Feld `tempo`), die Seite zeigt die Tagesliste aller, die ihre Karte zeigen.
 - **Duell:** zufälliger Startwert; nach der Runde wird ein Link geteilt, der Startwert, Name und Ergebnis enthält (`#/<kurs>/duel?s=…&n=…&r=…&t=…`). Kein Konto und keine Firebase-Regeln nötig. Wer den Link öffnet, spielt dieselben 10 Namen und sieht den Vergleich; eigene Duell-Ergebnisse merkt sich das Gerät, damit ein zurückgeschickter Link direkt den Vergleich zeigt.
 
 ## Fortschritt und Datenschutz
 
-Ohne Anmeldung bleibt alles im Browser des Nutzers (localStorage, ca. 200 KB im Vollausbau). Es gibt keine Tracker. Safari kann Website-Daten nach 7 Tagen ohne Besuch löschen; deshalb im Profil regelmäßig **Fortschritt exportieren** oder online speichern. Der Import zeigt vorher an, was ersetzt wird, und behält den alten Stand als Sicherung.
+Ohne Anmeldung bleibt alles im Browser des Nutzers (localStorage, nach einem Jahr täglicher Nutzung ca. 500 KB). Es gibt keine Tracker. Safari kann Website-Daten nach 7 Tagen ohne Besuch löschen; deshalb im Profil regelmäßig **Fortschritt exportieren** oder online speichern.
+
+Damit nichts verloren geht (`src/store/persistence.ts`):
+
+- **Mehrere Tabs:** Bevor ein Tab speichert, führt er zusammen, was ein anderer Tab inzwischen gespeichert hat; Änderungen anderer Tabs übernimmt er sofort (`storage`-Ereignis). Zurücksetzen und Import setzen `sylareads.replacedAt`, damit andere Tabs den neuen Stand übernehmen statt den alten zurückzumischen.
+- **Kaputte Daten:** Jeder Eintrag wird beim Laden und Import einzeln geprüft (`src/store/validate.ts`) und repariert oder verworfen. Ein unlesbarer Stand bleibt 30 Tage als Kopie (`sylareads.progress.corrupt.<zeit>`), ein Hinweis bietet sie zum Herunterladen an. Stammt der Stand von einer neueren App-Version, schreibt die ältere nichts und bittet ums Neuladen.
+- **Speicher voll:** Die App räumt alte Kopien weg und versucht es noch einmal; klappt es nicht, erscheint ein Hinweis mit „Fortschritt exportieren“.
+- **Sicherung:** Zurücksetzen und Import behalten den alten Stand 30 Tage (`sylareads.backup`); im Profil lässt er sich wiederherstellen.
+- **Fehlerseite:** Kann eine Seite nicht angezeigt werden, gibt es „Neu laden“, „Zur Startseite“ und „Fortschritt sichern“ statt einer weißen Seite (`src/ui/ErrorBoundary.tsx`).
+- **Zurück-Geste:** Während Lektion, Übung, Tempo, Einstufung, Daily und Duell fragt auch die Zurück-Taste bzw. das Zurück-Wischen erst nach (`src/ui/useBackGuard.ts`).
+- **Alles auf diesem Gerät löschen** (Profil) entfernt alle `sylareads.*`-Einträge und meldet ab; online gespeicherte Daten bleiben.
 
 ## Erfolge
 
@@ -214,7 +224,9 @@ Sylareads lässt sich als App installieren (Android/Chrome/Edge: „App installi
 
 ## Online-Speicherung (optional, Firebase)
 
-Im Profil erscheint „Online speichern“, sobald eine Firebase-Konfiguration eingetragen ist. Nutzer melden sich mit Google an; der Fortschritt wird beim Öffnen, beim Zurückkehren in die App, kurz nach jeder fertigen Lektion, Übung oder Challenge, beim Verlassen der App und sonst höchstens alle zwei Minuten abgeglichen (`src/sync/timing.ts`). So bleibt Firebase im kostenlosen Tageskontingent (50.000 Lese- und 20.000 Schreibzugriffe für alle zusammen); ist es doch aufgebraucht, sagt die App das und holt ab 9 Uhr deutscher Zeit nach. Fortschritt von mehreren Geräten wird **zusammengeführt** (pro Lernobjekt gilt die zuletzt beantwortete Version, Lektionen und Achievements werden vereinigt), nichts wird überschrieben. Nur „Fortschritt zurücksetzen“ und „Importieren“ ersetzen bewusst auch die Online-Kopie. Firebase wird erst geladen, wenn jemand die Online-Speicherung nutzt.
+Im Profil erscheint „Online speichern“, sobald eine Firebase-Konfiguration eingetragen ist. Nutzer melden sich mit Google an; der Fortschritt wird beim Öffnen, beim Zurückkehren in die App, kurz nach jeder fertigen Lektion, Übung oder Challenge, beim Verlassen der App und sonst höchstens alle zwei Minuten abgeglichen (`src/sync/timing.ts`). So bleibt Firebase im kostenlosen Tageskontingent (50.000 Lese- und 20.000 Schreibzugriffe für alle zusammen); ist es doch aufgebraucht, sagt die App das und holt ab 9 Uhr deutscher Zeit nach. Fortschritt von mehreren Geräten wird **zusammengeführt** (pro Lernobjekt gilt die zuletzt beantwortete Version, Lektionen und Achievements werden vereinigt), nichts wird überschrieben. Nur „Fortschritt zurücksetzen“, „Importieren“ und „Sicherung wiederherstellen“ ersetzen bewusst auch die Online-Kopie. Firebase wird erst geladen, wenn jemand die Online-Speicherung nutzt.
+
+Ein Gerät, mehrere Konten: Das Gerät merkt sich, zu welchem Konto sein Fortschritt gehört (`sylareads.owner`). Meldet sich ein anderes Konto an, wird nichts hochgeladen, bis die Person wählt: „Zu meinem Konto hinzufügen“ oder „Nur meinen Online-Stand“ (der Gerätestand bleibt dann 30 Tage als Sicherung). Die Zustimmung zu „Wer ist da“ wandert nie in ein anderes Konto. Beim Abmelden fragt die App, ob der Fortschritt auf dem Gerät bleiben oder gelöscht werden soll. „Konto löschen“ lässt erst Google bestätigen und löscht danach; bricht man die Bestätigung ab, bleibt alles unverändert.
 
 Einrichtung (einmalig, kostenloser Spark-Tarif reicht):
 
@@ -276,11 +288,11 @@ src/
                Lektions- und Übungs-Builder, Statistik, XP/Level/Streak, Achievements
   content/     Inhalte pro Kurs (ru/, el/, th/, bn/: Leseeinheiten, Wörter, Begriffe,
                Orte, Lektionen, Transliterationsregeln) und das Kurs-Register
-  store/       Zustand-Store, localStorage, Migrationen, Import/Export
+  store/       Zustand-Store, localStorage (mehrere Tabs, Sicherung), Prüfung geladener Daten, Import/Export
   sync/        Online-Speicherung über Firebase (optional, lazy geladen)
   i18n/        Wörterbücher de/en und Übersetzungsfunktion
   features/    Seiten: home, dashboard, learn, practice, session, mistakes, placement, signs, tempo, map, script, scripts, profile
-  ui/          Bausteine: Buttons, Balken, Top-Bar, Modal
+  ui/          Bausteine: Buttons, Balken, Top-Bar, Modal, Fehlerseite, Speicher-Hinweis, Zurück-Schutz
   styles/      Design-Tokens und Styles
 ```
 

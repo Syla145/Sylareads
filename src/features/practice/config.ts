@@ -19,9 +19,10 @@ const isCategory = (c: string): c is Category => (ALL_CATEGORIES as string[]).in
 
 export function parsePracticeParams(params: URLSearchParams): PracticeRequest {
   const lesson = params.get('lesson');
-  if (lesson) return { kind: 'lesson', lessonId: lesson, count: Number(params.get('n')) || 10 };
+  // Links can be edited: counts and lists stay within what a session can hold.
+  if (lesson) return { kind: 'lesson', lessonId: lesson, count: Math.min(50, Math.max(5, Number(params.get('n')) || 10)) };
   const ids = params.get('ids');
-  if (ids) return { kind: 'ids', ids: ids.split(',').filter(Boolean) };
+  if (ids) return { kind: 'ids', ids: [...new Set(ids.split(','))].filter(Boolean).slice(0, 100) };
   const mode = params.get('mode');
   if (mode === 'confusers') return { kind: 'confusers' };
   const count = Math.min(50, Math.max(5, Number(params.get('n')) || 20));

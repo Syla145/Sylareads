@@ -1,4 +1,4 @@
-import type { ChallengeScore } from '../domain/challenge';
+import type { ChallengeScore, DailyAnswer } from '../domain/challenge';
 import { cleanName, CONSENT_VERSION } from '../domain/presence';
 import { create } from 'zustand';
 import { newlyUnlocked, SECRET_ID } from '../domain/achievements';
@@ -24,11 +24,14 @@ import {
 import type { SignView } from '../domain/signs';
 import type { TempoContent, TempoState } from '../domain/tempo';
 import type { Lang } from '../domain/types';
-import { backupCurrent, clearAll, loadRoot, saveRoot } from './persistence';
+import { backupCurrent, dropBackup, loadRoot, markReplaced, onForeignProgress, onStorageProblem, readBackup, saveRoot, type StorageProblem } from './persistence';
 import { withNote } from '../domain/notes';
+import { mergeRoots, sameProgress } from '../domain/merge';
 
 interface ProgressState {
   root: ProgressRoot;
+  /** Something is wrong with the stored progress on this device (shown as a banner). */
+  storageProblem: StorageProblem;
   /** Counts finished steps (lesson, practice, challenge, settings): online saving uploads soon after one. */
   milestones: number;
   setLang: (lang: Lang) => void;
@@ -50,8 +53,8 @@ interface ProgressState {
   setAskMeaning: (on: boolean) => void;
   /** Own note (Eselsbrücke) for an item; empty text deletes it. */
   setNote: (courseId: string, itemId: string, text: string) => void;
-  /** Daily Challenge: saved after every answer. */
-  saveDaily: (courseId: string, day: string, score: ChallengeScore, done: boolean) => void;
+  /** Daily Challenge: saved after every answer (with the answers while it can still go on). */
+  saveDaily: (courseId: string, day: string, score: ChallengeScore, done: boolean, ans?: DailyAnswer[]) => void;
   /** Opt-in public card for "Wer ist gerade da". */
   setShare: (on: boolean, name: string) => void;
   /** Easter egg; true when it was new. */
@@ -60,6 +63,8 @@ interface ProgressState {
   syncAchievements: (courseId: string, index: CourseIndex | null) => void;
   finishTempo: (courseId: string, s: TempoState, content: TempoContent, index: CourseIndex) => { unlocked: string[]; newBest: boolean; prevBest: number };
   replaceAll: (root: ProgressRoot) => void;
+  /** Brings back the state saved before the last reset or import (the current one becomes the backup). */
+  restoreBackup: () => boolean;
   /** Progress merged with the cloud copy (no backup: nothing is lost by a merge). */
   applyMerged: (root: ProgressRoot) => void;
   markExported: () => void;
@@ -67,6 +72,8 @@ interface ProgressState {
 }
 
 export const DEFAULT_TEMPO: TempoSettings = { seconds: 5, flashMs: 1000 };
+
+const loaded = loadRoot();
 
 export const useProgress = create<ProgressState>((set, get) => {
   const commit = (root: ProgressRoot, immediate = false, milestone = immediate) => {
@@ -79,7 +86,8 @@ export const useProgress = create<ProgressState>((set, get) => {
     return ids;
   };
   return {
-    root: loadRoot(),
+    root: loaded.root,
+    storageProblem: loaded.problem,
     milestones: 0,
     setLang: (uiLang) => commit({ ...get().root, settings: { ...get().root.settings, uiLang } }, true),
     setMapLabels: (which, value) => commit({ ...get().root, settings: { ...get().root.settings, [which]: value } }, true),
@@ -121,7 +129,7 @@ export const useProgress = create<ProgressState>((set, get) => {
       const now = Date.now();
       commit({ ...root, updatedAt: now, courses: { ...root.courses, [courseId]: { ...course, notes: withNote(course.notes, itemId, text, now) } } }, true);
     },
-    saveDaily: (courseId, day, score, done) => commit(recordDailyResult(get().root, courseId, day, score, done), true, done),
+    saveDaily: (courseId, day, score, done, ans) => commit(recordDailyResult(get().root, courseId, day, score, done, Date.now(), ans), true, done),
     setShare: (on, name) => {
       const root = get().root;
       const share = { on, name: cleanName(name), at: Date.now(), c: CONSENT_VERSION };
@@ -145,14 +153,46 @@ export const useProgress = create<ProgressState>((set, get) => {
     },
     replaceAll: (root) => {
       backupCurrent(get().root);
+      markReplaced();
       commit(root, true);
+    },
+    restoreBackup: () => {
+      const backup = readBackup();
+      if (!backup) return false;
+      const current = get().root;
+      dropBackup();
+      backupCurrent(current);
+      markReplaced();
+      commit({ ...backup.root, settings: current.settings }, true);
+      return true;
     },
     applyMerged: (root) => commit(root, true, false),
     markExported: () => commit({ ...get().root, lastExportAt: Date.now() }, true),
     reset: () => {
       backupCurrent(get().root);
-      clearAll();
+      markReplaced();
       commit(emptyRoot(get().root.settings.uiLang), true);
     },
   };
+});
+
+onStorageProblem((storageProblem) => {
+  if (useProgress.getState().storageProblem !== storageProblem) useProgress.setState({ storageProblem });
+});
+
+/**
+ * Another tab of this app wrote progress. A replaced document (reset, import)
+ * is adopted as it is; otherwise both are merged so nothing learned in either
+ * tab is lost. Settings: those of the tab that changed something last.
+ */
+onForeignProgress((foreign, replaced, fromOtherTab) => {
+  const current = useProgress.getState().root;
+  if (replaced) {
+    useProgress.setState({ root: foreign });
+    return foreign;
+  }
+  const merged = { ...mergeRoots(current, foreign), settings: fromOtherTab ? foreign.settings : current.settings };
+  const keep = sameProgress(merged, foreign) && JSON.stringify(merged.settings) === JSON.stringify(foreign.settings) ? foreign : merged;
+  if (!sameProgress(keep, current) || keep.settings !== current.settings) useProgress.setState({ root: keep });
+  return keep;
 });

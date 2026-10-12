@@ -22,7 +22,9 @@ export interface Cloud {
   removeCard: (uid: string) => Promise<void>;
   /** Public cards seen since `sinceMs`, newest first. */
   listCards: (sinceMs: number, limit: number) => Promise<StoredCard[]>;
-  /** Deletes the online progress, the public card and the account itself (asks Google again if the sign-in is old). */
+  /** Asks Google to confirm the account again (before deleting it). */
+  reauth?: () => Promise<void>;
+  /** Deletes the online progress, the public card and the account itself. */
   deleteAccount: (uid: string) => Promise<void>;
 }
 
@@ -55,6 +57,11 @@ export function loadCloud(config: FirebaseWebConfig): Promise<Cloud> {
         const provider = new auth.GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
         await auth.signInWithPopup(a, provider);
+      },
+      reauth: async () => {
+        const user = a.currentUser;
+        if (!user) throw Object.assign(new Error('not-signed-in'), { code: 'not-signed-in' });
+        await auth.reauthenticateWithPopup(user, new auth.GoogleAuthProvider());
       },
       deleteAccount: async (uid) => {
         const user = a.currentUser;

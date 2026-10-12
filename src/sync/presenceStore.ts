@@ -61,10 +61,10 @@ const WRITE_GAP_MS = 65_000;
 let gapTimer: ReturnType<typeof setTimeout> | null = null;
 
 const sharing = () => {
-  const { user, lastSyncAt } = useSync.getState();
+  const { user, lastSyncAt, paused } = useSync.getState();
   const share = effectiveShare(useProgress.getState().root.profile.share);
   // Only after the first merge with the cloud copy, so a choice made on another device is known.
-  return share.on && share.name && user && lastSyncAt ? { uid: user.uid, name: share.name } : null;
+  return share.on && share.name && user && lastSyncAt && !paused ? { uid: user.uid, name: share.name } : null;
 };
 
 /** Card values for every started course (language courses need their content, loaded on demand). */

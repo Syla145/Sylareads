@@ -108,30 +108,54 @@ export const compareScores = (a: ChallengeScore, b: ChallengeScore) => b.c - a.c
 
 /* ---------- Daily results in the progress document ---------- */
 
-/** One day's daily challenge of a course. `done` is false while it is being played (or was left early). */
+/** One answered name of a paused daily challenge: right (1) or not (0), time, typed text. */
+export type DailyAnswer = [ok: 0 | 1, ms: number, input: string];
+
+/** One day's daily challenge of a course. `done` is false while it is being played or paused. */
 export interface DailyResult extends ChallengeScore {
   at: number;
   done: boolean;
+  /** While paused: the answers so far, so the attempt can go on later that day. */
+  ans?: DailyAnswer[];
 }
 
 export type DailyLog = Record<string, DailyResult>;
 
+/** The answers of a running challenge in their stored form. */
+export const dailyAnswers = (s: ChallengeState): DailyAnswer[] => s.answers.map((a) => [a.correct ? 1 : 0, Math.round(a.ms), a.input.slice(0, 40)]);
+
+/** A paused attempt that can go on (older versions stored no answers: those count as finished). */
+export const canResume = (r: DailyResult | undefined, total: number): r is DailyResult & { ans: DailyAnswer[] } =>
+  !!r && !r.done && !!r.ans && r.ans.length < total;
+
+/** The state to go on with a paused attempt: the answered names in front, the next one shown right away. */
+export function resumeChallenge(ids: string[], ans: DailyAnswer[], now: number): ChallengeState {
+  const answers = ans.slice(0, ids.length).map(([ok, ms, input], i) => ({ id: ids[i], input, correct: ok === 1, ms }));
+  return nextName({ ids, answers, shownAt: null }, now);
+}
+
+/** Leaving a running challenge: a name that is visible counts as not known (no looking it up and coming back). */
+export function leaveChallenge(s: ChallengeState, index: CourseIndex, now: number): ChallengeState {
+  return s.shownAt !== null ? answerChallenge(s, index, '', now) : s;
+}
+
 /** Stores a (partial) result; the attempt keeps its start time. Old days fall out. */
-export function recordDaily(log: DailyLog | undefined, day: string, score: ChallengeScore, done: boolean, now: number): DailyLog {
+export function recordDaily(log: DailyLog | undefined, day: string, score: ChallengeScore, done: boolean, now: number, ans?: DailyAnswer[]): DailyLog {
   const prev = log?.[day];
-  const next: DailyLog = { ...log, [day]: { ...score, done, at: prev?.at ?? now } };
+  const next: DailyLog = { ...log, [day]: { ...score, done, at: prev?.at ?? now, ...(!done && ans ? { ans } : {}) } };
   const days = Object.keys(next).sort().reverse();
   for (const d of days.slice(CHALLENGE.keepDays)) delete next[d];
   return next;
 }
 
-/** Two devices: per day the attempt that started first counts; on equal start the further one. */
+/** Two devices: per day the attempt that started first counts; on equal start the finished or further one. */
 export function mergeDaily(a: DailyLog | undefined, b: DailyLog | undefined): DailyLog | undefined {
   if (!a || !b) return a ?? b;
   const out: DailyLog = { ...a };
+  const further = (r: DailyResult) => (r.done ? Infinity : (r.ans?.length ?? 0));
   for (const [day, r] of Object.entries(b)) {
     const l = out[day];
-    if (!l || r.at < l.at || (r.at === l.at && (r.done && !l.done))) out[day] = r;
+    if (!l || r.at < l.at || (r.at === l.at && further(r) > further(l))) out[day] = r;
   }
   return out;
 }
@@ -143,7 +167,14 @@ export function dailyOf(raw: unknown): DailyLog | undefined {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !v || typeof v !== 'object') continue;
     const r = v as Record<string, unknown>;
     const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
-    out[day] = { c: num(r.c), n: num(r.n) || CHALLENGE.count, ms: num(r.ms), at: num(r.at), done: r.done === true };
+    const ans = Array.isArray(r.ans)
+      ? r.ans
+          .filter((x): x is unknown[] => Array.isArray(x))
+          .slice(0, CHALLENGE.count)
+          .map((x): DailyAnswer => [x[0] === 1 ? 1 : 0, num(x[1]), typeof x[2] === 'string' ? x[2].slice(0, 40) : ''])
+      : undefined;
+    const done = r.done === true;
+    out[day] = { c: num(r.c), n: num(r.n) || CHALLENGE.count, ms: num(r.ms), at: num(r.at), done, ...(!done && ans ? { ans } : {}) };
   }
   return Object.keys(out).length ? out : undefined;
 }

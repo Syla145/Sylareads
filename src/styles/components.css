@@ -3079,3 +3079,46 @@
   margin: var(--s-2) 0 0;
   max-width: 560px;
 }
+
+/* Device data: backup, several dangerous actions under each other */
+.danger-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+}
+.danger-zone > .notice {
+  margin-top: 0;
+  align-self: stretch;
+}
+.backup-line {
+  margin-top: var(--s-4);
+}
+.backup-line p {
+  margin: 0 0 var(--s-2);
+}
+
+/* Storage problem on this device (all pages) */
+.storage-banner {
+  margin: var(--s-3) auto 0;
+  max-width: calc(960px - 2 * var(--gutter, 16px));
+  width: calc(100% - 2 * var(--gutter, 16px));
+}
+.storage-banner p {
+  margin: 0;
+}
+.storage-banner .actions {
+  margin-top: var(--s-2);
+}
+
+/* A page that could not be drawn */
+.error-screen {
+  padding-top: var(--s-7, 48px);
+}
+.error-detail {
+  margin-top: var(--s-5);
+  overflow-wrap: anywhere;
+}
+.error-screen .page-title {
+  margin-bottom: var(--s-3);
+}

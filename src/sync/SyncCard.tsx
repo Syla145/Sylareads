@@ -8,8 +8,9 @@ import { useSync } from './syncStore';
 export function SyncCard() {
   const t = useT();
   const lang = useLang();
-  const { status, user, lastSyncAt, error, signIn, signOut, syncNow, prepare, deleteAccount } = useSync();
+  const { status, user, lastSyncAt, error, signIn, signOut, syncNow, prepare, deleteAccount, resolveOwner } = useSync();
   const [confirm, setConfirm] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [deleted, setDeleted] = useState(false);
   useEffect(() => {
     if (status === 'signed-out') prepare();
@@ -41,15 +42,56 @@ export function SyncCard() {
               <span className="sync-dot" aria-hidden="true" /> {statusLine}
             </p>
           )}
-          <p className="muted small">{t('sync.howItWorks')}</p>
-          <div className="actions">
-            <Button onClick={() => void syncNow()} disabled={status === 'syncing'}>
-              {t('sync.now')}
-            </Button>
-            <Button variant="ghost" onClick={() => void signOut()}>
-              {t('sync.signOut')}
-            </Button>
-          </div>
+          {status === 'choose' ? (
+            <div className="notice notice-accent" role="alert">
+              <p>
+                <strong>{t('sync.choose.title')}</strong>
+              </p>
+              <p className="small">{t('sync.choose.body')}</p>
+              <div className="actions">
+                <Button variant="primary" onClick={() => void resolveOwner('merge')}>
+                  {t('sync.choose.merge')}
+                </Button>
+                <Button onClick={() => void resolveOwner('online')}>{t('sync.choose.online')}</Button>
+                <Button variant="ghost" onClick={() => void signOut()}>
+                  {t('sync.signOut')}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="muted small">{t('sync.howItWorks')}</p>
+              <div className="actions">
+                <Button onClick={() => void syncNow()} disabled={status === 'syncing'}>
+                  {t('sync.now')}
+                </Button>
+                <Button variant="ghost" onClick={() => setLeaving(true)}>
+                  {t('sync.signOut')}
+                </Button>
+              </div>
+              {leaving && (
+                <div className="notice">
+                  <p>{t('sync.signOutAsk')}</p>
+                  <div className="actions">
+                    <Button
+                      onClick={() => {
+                        setLeaving(false);
+                        void signOut();
+                      }}
+                    >
+                      {t('sync.signOutKeep')}
+                    </Button>
+                    <Button variant="danger" onClick={() => void signOut(true)}>
+                      {t('sync.signOutWipe')}
+                    </Button>
+                    <Button variant="ghost" onClick={() => setLeaving(false)}>
+                      {t('common.cancel')}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           <div className="danger-zone">
             {!confirm ? (
               <button type="button" className="link-danger" onClick={() => setConfirm(true)}>

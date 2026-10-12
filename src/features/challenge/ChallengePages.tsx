@@ -1,12 +1,17 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  canResume,
+  isFinished,
   compareScores,
+  dailyAnswers,
   dailySeed,
   duelQuery,
   newDuelSeed,
   parseDuel,
+  leaveChallenge,
   pickChallenge,
+  resumeChallenge,
   scoreOf,
   type ChallengeScore,
   type ChallengeState,
@@ -24,6 +29,7 @@ import { useCourse } from '../course/useCourse';
 import { Avatar, usePlayers } from '../players/PlayerParts';
 import { ResultActions } from '../session/SessionParts';
 import { ChallengeRun } from './ChallengeRun';
+import { useGoBack } from '../../ui/useBackGuard';
 import './challenge.css';
 
 export const scoreText = (s: ChallengeScore, lang: 'de' | 'en') => `${s.c}/${s.n} · ${formatSeconds(s.ms, lang)}`;
@@ -36,21 +42,31 @@ export function DailyRoute() {
   const t = useT();
   const lang = useLang();
   const navigate = useNavigate();
-  const today = dayKey();
+  // The day of this visit: an attempt started before midnight stays on its day.
+  const [today] = useState(() => dayKey());
   const ids = useMemo(() => pickChallenge(index, dailySeed(meta.id, today)), [index, meta.id, today]);
   const record = useProgress((s) => s.root.courses[meta.id]?.daily?.[today]);
   const saveDaily = useProgress((s) => s.saveDaily);
-  const [stage, setStage] = useState<'intro' | 'run' | 'done'>(record ? 'done' : 'intro');
+  const paused = canResume(record, ids.length) ? record : null;
+  const [stage, setStage] = useState<'intro' | 'run' | 'done'>(record && !paused ? 'done' : 'intro');
   const [finished, setFinished] = useState<ChallengeState | null>(null);
+  const [initial, setInitial] = useState<ChallengeState | undefined>(undefined);
   const back = () => navigate(`/${meta.slug}`);
+  const goBack = useGoBack(`/${meta.slug}`);
+  const start = () => {
+    setInitial(paused ? resumeChallenge(ids, paused.ans, Date.now()) : undefined);
+    setStage('run');
+  };
 
   if (stage === 'run') {
     return (
       <ChallengeRun
         index={index}
         ids={ids}
+        kind="daily"
+        initial={initial}
         title={t('ch.dailyTitle')}
-        onAnswer={(s) => saveDaily(meta.id, today, scoreOf(s), false)}
+        onAnswer={(s) => saveDaily(meta.id, today, scoreOf(s), false, dailyAnswers(s))}
         onDone={(s) => {
           saveDaily(meta.id, today, scoreOf(s), true);
           void reportNow();
@@ -58,9 +74,12 @@ export function DailyRoute() {
           setStage('done');
         }}
         onQuit={(s) => {
-          saveDaily(meta.id, today, scoreOf(s), true);
-          void reportNow();
-          back();
+          // Paused, not over: it can go on later today.
+          const left = leaveChallenge(s, index, Date.now());
+          const over = isFinished(left);
+          saveDaily(meta.id, today, scoreOf(left), over, dailyAnswers(left));
+          if (over) void reportNow();
+          goBack();
         }}
       />
     );
@@ -71,7 +90,7 @@ export function DailyRoute() {
       <main className="session-done challenge-intro">
         <p className="eyebrow-quiet">{meta.name[lang]}</p>
         <h1 className="complete-title">{t('ch.dailyTitle')}</h1>
-        <p className="muted">{t('ch.dailyIntro', { n: ids.length })}</p>
+        <p className="muted">{paused ? t('ch.dailyResumeIntro', { n: paused.ans.length, total: ids.length }) : t('ch.dailyIntro', { n: ids.length })}</p>
         <ul className="challenge-rules">
           <li>{t('ch.rule1')}</li>
           <li>{t('ch.rule2')}</li>
@@ -79,7 +98,7 @@ export function DailyRoute() {
         </ul>
         <ResultActions
           actions={[
-            { label: t('ch.start'), onClick: () => setStage('run') },
+            { label: paused ? t('ch.resume', { n: paused.ans.length, total: ids.length }) : t('ch.start'), onClick: start },
             { label: t('ch.back'), onClick: back, variant: 'ghost' },
           ]}
         />
@@ -214,19 +233,21 @@ export function DuelRoute() {
   const [stage, setStage] = useState<'intro' | 'run' | 'done'>(earlier ? 'done' : 'intro');
   const [finished, setFinished] = useState<ChallengeState | null>(null);
   const back = () => navigate(`/${meta.slug}`);
+  const goBack = useGoBack(`/${meta.slug}`);
 
   if (stage === 'run') {
     return (
       <ChallengeRun
         index={index}
         ids={ids}
+        kind="duel"
         title={t('ch.duelTitle')}
         onDone={(s) => {
           rememberDuel(seed, scoreOf(s));
           setFinished(s);
           setStage('done');
         }}
-        onQuit={back}
+        onQuit={goBack}
       />
     );
   }
@@ -364,6 +385,19 @@ export function DailyCard() {
   const today = dayKey();
   const record = useProgress((s) => s.root.courses[meta.id]?.daily?.[today]);
   const base = `/${meta.slug}`;
+  if (canResume(record, record?.n ?? 10)) {
+    return (
+      <Card className="daily-card">
+        <h2 className="card-label">{t('ch.dailyTitle')}</h2>
+        <p className="muted">{t('ch.dailyPaused', { n: record.ans.length, total: record.n })}</p>
+        <div className="actions">
+          <ButtonLink variant="primary" to={`${base}/daily`}>
+            {t('ch.resume', { n: record.ans.length, total: record.n })}
+          </ButtonLink>
+        </div>
+      </Card>
+    );
+  }
   return (
     <Card className="daily-card">
       <h2 className="card-label">{t('ch.dailyTitle')}</h2>

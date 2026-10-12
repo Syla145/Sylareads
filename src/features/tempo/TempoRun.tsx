@@ -39,6 +39,8 @@ import { showsSign, signFor } from '../../domain/signs';
 import { SignStage } from '../signs/Sign';
 import { useSignView } from '../signs/SignViewToggle';
 import { QuitDialog, type ResultAction, ResultActions } from '../session/SessionParts';
+import { ownsEnter, isTyping } from '../../ui/keys';
+import { useBackGuard, useGoBack } from '../../ui/useBackGuard';
 
 interface TempoRequest {
   mode: TempoMode;
@@ -106,7 +108,7 @@ function TempoSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const back = () => navigate(`${base}/tempo`);
+  const back = useGoBack(`${base}/tempo`);
 
   const onDone = useCallback(
     (state: TempoState) => {
@@ -211,6 +213,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
   const quitRef = useRef(quitOpen);
   quitRef.current = quitOpen;
   const finished = useRef(false);
+  const leave = useBackGuard(state.phase !== 'done', () => setQuitOpen(true));
   const taskLabels = useMapLabels('taskMapLabels');
   const signView = useSignView();
 
@@ -276,7 +279,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (quitRef.current) return;
+      if (quitRef.current || isTyping(e.target)) return;
       const s = stateRef.current;
       const tk = currentTempoTask(s);
       if (!tk) return;
@@ -286,7 +289,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
         return;
       }
       if (e.key === 'Enter' && s.phase === 'feedback') {
-        if (e.repeat) return;
+        if (e.repeat || ownsEnter(e.target)) return;
         e.preventDefault();
         next();
         return;
@@ -322,7 +325,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
     <div className="session tempo-session">
       <header className="session-bar">
         <h1 className="sr-only">{t('tempo.title')}</h1>
-        <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
+        <button type="button" className="icon-btn" aria-label={t('session.quit.tempo.title')} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
@@ -431,11 +434,12 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
       </main>
 
       <QuitDialog
+        kind="tempo"
         open={quitOpen}
         onStay={() => setQuitOpen(false)}
         onQuit={() => {
           finished.current = true;
-          onQuit(stateRef.current);
+          leave(() => onQuit(stateRef.current));
         }}
       />
     </div>

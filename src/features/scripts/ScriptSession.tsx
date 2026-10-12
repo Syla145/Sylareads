@@ -29,6 +29,8 @@ import { SignStage } from '../signs/Sign';
 import { useSignView } from '../signs/SignViewToggle';
 import './scripts.css';
 import { QuitDialog, type ResultAction, ResultActions } from '../session/SessionParts';
+import { ownsEnter, isTyping } from '../../ui/keys';
+import { useBackGuard, useGoBack } from '../../ui/useBackGuard';
 
 /** Route for /scripts/lesson/:lessonId and /scripts/practice (?ids=… for exactly these scripts). */
 export default function ScriptSessionRoute() {
@@ -69,7 +71,7 @@ function ScriptSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const back = () => navigate('/scripts');
+  const back = useGoBack('/scripts');
 
   const onDone = useCallback(
     (s: ScriptSessionState) => {
@@ -138,6 +140,7 @@ function ScriptRunner({
   const quitRef = useRef(quitOpen);
   quitRef.current = quitOpen;
   const task = state.tasks[state.index];
+  const leave = useBackGuard(state.phase !== 'done', () => setQuitOpen(true));
   const newIds = useMemo(() => new Set(lesson?.newIds ?? []), [lesson]);
   const signView = useSignView();
 
@@ -180,14 +183,14 @@ function ScriptRunner({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (quitRef.current) return;
+      if (quitRef.current || isTyping(e.target)) return;
       const s = stateRef.current;
       const tk = s.tasks[s.index];
       if (!tk) return;
       if (e.key === 'Escape') {
         e.preventDefault();
         setQuitOpen(true);
-      } else if (e.key === 'Enter' && !e.repeat && (tk.kind === 'intro' || s.phase === 'feedback')) {
+      } else if (e.key === 'Enter' && !e.repeat && !ownsEnter(e.target) && (tk.kind === 'intro' || s.phase === 'feedback')) {
         e.preventDefault();
         next();
       } else if (tk.kind !== 'intro' && s.phase === 'answer' && /^[1-4]$/.test(e.key)) {
@@ -213,7 +216,7 @@ function ScriptRunner({
     <div className="session">
       <header className="session-bar">
         <h1 className="sr-only">{t('scripts.title')}</h1>
-        <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
+        <button type="button" className="icon-btn" aria-label={t(lesson ? 'session.quit.lesson.title' : 'session.quit.practice.title')} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
@@ -316,7 +319,7 @@ function ScriptRunner({
         )}
       </main>
 
-      <QuitDialog open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => onQuit()} />
+      <QuitDialog kind={lesson ? 'lesson' : 'practice'} open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => leave(onQuit)} />
     </div>
   );
 }

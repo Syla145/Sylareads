@@ -13,6 +13,7 @@ import { useCourse } from '../course/useCourse';
 import { parsePracticeParams } from '../practice/config';
 import { CompleteScreen, type CompleteData } from './CompleteScreen';
 import { SessionRunner } from './SessionRunner';
+import { useGoBack } from '../../ui/useBackGuard';
 
 export function PracticeRoute() {
   const location = useLocation();
@@ -63,10 +64,7 @@ function PracticeSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const goBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate(base);
-  };
+  const goBack = useGoBack(base);
 
   if (!setup.tasks.length && setup.req.kind === 'confusers') {
     return (
@@ -127,6 +125,7 @@ function PracticeSession() {
 
   return (
     <SessionRunner
+      kind="practice"
       courseId={meta.id}
       index={index}
       tasks={setup.tasks}

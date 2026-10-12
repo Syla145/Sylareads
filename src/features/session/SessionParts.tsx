@@ -21,12 +21,15 @@ export function ResultActions({ actions }: { actions: ResultAction[] }) {
   );
 }
 
+/** What kind of round is running (decides the words of the quit dialog). */
+export type QuitKind = 'lesson' | 'practice' | 'placement' | 'tempo' | 'daily' | 'duel';
+
 /** "Really quit?" during a session. Staying is the main action. */
-export function QuitDialog({ open, onStay, onQuit }: { open: boolean; onStay: () => void; onQuit: () => void }) {
+export function QuitDialog({ open, onStay, onQuit, kind = 'practice' }: { open: boolean; onStay: () => void; onQuit: () => void; kind?: QuitKind }) {
   const t = useT();
   return (
-    <Modal open={open} onClose={onStay} title={t('session.quitTitle')}>
-      <p className="muted">{t('session.quitBody')}</p>
+    <Modal open={open} onClose={onStay} title={t(`session.quit.${kind}.title`)}>
+      <p className="muted">{t(`session.quit.${kind}.body`)}</p>
       <div className="actions">
         <Button variant="primary" onClick={onStay}>
           {t('session.quitCancel')}

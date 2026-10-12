@@ -5,6 +5,7 @@ import type { PlaceItem } from '../../domain/types';
 import { formatSeconds, placeNameLine, useLang, useT } from '../../i18n';
 import { Button } from '../../ui/primitives';
 import { QuitDialog } from '../session/SessionParts';
+import { useBackGuard } from '../../ui/useBackGuard';
 
 /**
  * One challenge: 10 names in the native script, the reading is typed, one
@@ -14,6 +15,8 @@ export function ChallengeRun({
   index,
   ids,
   title,
+  kind,
+  initial,
   onAnswer,
   onDone,
   onQuit,
@@ -21,17 +24,21 @@ export function ChallengeRun({
   index: CourseIndex;
   ids: string[];
   title: string;
+  kind: 'daily' | 'duel';
+  /** A paused attempt to go on with. */
+  initial?: ChallengeState;
   onAnswer?: (s: ChallengeState) => void;
   onDone: (s: ChallengeState) => void;
   onQuit: (s: ChallengeState) => void;
 }) {
   const t = useT();
   const lang = useLang();
-  const [state, setState] = useState<ChallengeState>(() => startChallenge(ids, Date.now()));
+  const [state, setState] = useState<ChallengeState>(() => initial ?? startChallenge(ids, Date.now()));
   const [input, setInput] = useState('');
   const [quitOpen, setQuitOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const now = useNow(state.shownAt !== null);
+  const leave = useBackGuard(true, () => setQuitOpen(true));
 
   const id = currentId(state);
   const last = state.answers[state.answers.length - 1];
@@ -63,7 +70,7 @@ export function ChallengeRun({
     <div className="session challenge">
       <header className="session-bar">
         <h1 className="sr-only">{title}</h1>
-        <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
+        <button type="button" className="icon-btn" aria-label={t(`session.quit.${kind}.title`)} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
@@ -122,7 +129,7 @@ export function ChallengeRun({
         </div>
       </main>
 
-      <QuitDialog open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => onQuit(state)} />
+      <QuitDialog kind={kind} open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => leave(() => onQuit(state))} />
     </div>
   );
 }

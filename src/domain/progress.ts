@@ -1,5 +1,5 @@
 import type { ShareSetting } from './presence';
-import { recordDaily, type ChallengeScore, type DailyLog } from './challenge';
+import { recordDaily, type ChallengeScore, type DailyAnswer, type DailyLog } from './challenge';
 import { dayKey } from './dates';
 import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } from './gamification';
 import { logAnswer, type MistakeLog } from './mistakes';
@@ -276,6 +276,6 @@ export function confusedTwiceSet(c: CourseProgress | undefined): Set<string> {
 }
 
 /** Saves the daily challenge of `day` after every answer (one attempt: leaving early keeps what was answered). */
-export function recordDailyResult(root: ProgressRoot, courseId: string, day: string, score: ChallengeScore, done: boolean, now = Date.now()): ProgressRoot {
-  return withCourse(root, courseId, now, (c) => ({ ...c, lastSessionAt: now, daily: recordDaily(c.daily, day, score, done, now) }));
+export function recordDailyResult(root: ProgressRoot, courseId: string, day: string, score: ChallengeScore, done: boolean, now = Date.now(), ans?: DailyAnswer[]): ProgressRoot {
+  return withCourse(root, courseId, now, (c) => ({ ...c, lastSessionAt: now, daily: recordDaily(c.daily, day, score, done, now, ans) }));
 }

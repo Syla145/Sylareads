@@ -12,7 +12,9 @@ import { FeedbackPanel } from './FeedbackPanel';
 import { IntroCard } from './IntroCard';
 import { TaskPrompt } from './TaskPrompt';
 import { isWideMap } from '../map/layer';
-import { QuitDialog } from './SessionParts';
+import { QuitDialog, type QuitKind } from './SessionParts';
+import { ownsEnter, isTyping } from '../../ui/keys';
+import { useBackGuard } from '../../ui/useBackGuard';
 
 interface Props {
   courseId: string;
@@ -25,6 +27,8 @@ interface Props {
   notice?: string;
   /** Ask every item once only (placement). */
   noRepeat?: boolean;
+  /** Decides the words of the quit dialog. */
+  kind: QuitKind;
   onDone: (s: SessionState) => void;
   onQuit: (s: SessionState) => void;
 }
@@ -33,7 +37,7 @@ interface Props {
  * Runs a lesson or practice session. Keyboard: Enter checks, Enter continues,
  * digits 1–4 pick a choice, Esc asks to quit. The mouse is never required.
  */
-export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds, notice, noRepeat, onDone, onQuit }: Props) {
+export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds, notice, noRepeat, kind, onDone, onQuit }: Props) {
   const t = useT();
   const recordAnswer = useProgress((s) => s.answer);
   const recordIntro = useProgress((s) => s.intro);
@@ -58,6 +62,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
   quitRef.current = quitOpen;
 
   const task = currentTask(state);
+  const leave = useBackGuard(state.phase !== 'done', () => setQuitOpen(true));
 
   /** Persist a final answer (every final answer counts for XP; only the first per item for SRS). */
   const persist = useCallback(
@@ -171,7 +176,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     const onKey = (e: KeyboardEvent) => {
       if (quitRef.current) return;
       // Writing an Eselsbrücke: keys belong to the text field.
-      if ((e.target as HTMLElement | null)?.closest?.('.note-editor')) return;
+      if ((e.target as HTMLElement | null)?.closest?.('.note-editor') || isTyping(e.target)) return;
       const s = stateRef.current;
       const tk = currentTask(s);
       if (!tk) return;
@@ -182,8 +187,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
       }
       if (e.key === 'Enter') {
         if (e.repeat) return;
-        const target = e.target as HTMLElement | null;
-        if (target?.tagName === 'BUTTON' && s.phase === 'answer' && tk.kind === 'choice') return; // native button press
+        // A focused button or link: Enter presses that one (e.g. "Übernehmen" under an Eselsbrücke).
+        if (ownsEnter(e.target)) return;
         if (s.phase === 'answer' && tk.kind === 'locate') return; // areas handle Enter themselves
         e.preventDefault();
         if (tk.kind === 'intro' || s.phase === 'feedback') next();
@@ -213,7 +218,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     <div className="session">
       <header className="session-bar">
         <h1 className="sr-only">{t('session.heading')}</h1>
-        <button type="button" className="icon-btn" aria-label={t('session.quitTitle')} onClick={() => setQuitOpen(true)}>
+        <button type="button" className="icon-btn" aria-label={t(`session.quit.${kind}.title`)} onClick={() => setQuitOpen(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
@@ -264,12 +269,12 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
             </div>
             <div className="session-actions">
               {showFeedback ? (
-                <Button variant="primary" block onClick={next} autoFocus={task.kind === 'choice' || task.kind === 'locate'}>
+                <Button key="next" variant="primary" block onClick={next} autoFocus={task.kind === 'choice' || task.kind === 'locate'}>
                   {t('session.continue')}
                   <kbd>{t('session.enterHint')}</kbd>
                 </Button>
               ) : task.kind === 'choice' || task.kind === 'locate' ? (
-                <Button variant="ghost" block onClick={dontKnow}>
+                <Button key="dont-know" variant="ghost" block onClick={dontKnow}>
                   {t('session.dontKnow')}
                 </Button>
               ) : (
@@ -288,7 +293,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
         )}
       </main>
 
-      <QuitDialog open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => onQuit(stateRef.current)} />
+      <QuitDialog kind={kind} open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => leave(() => onQuit(stateRef.current))} />
     </div>
   );
 }
