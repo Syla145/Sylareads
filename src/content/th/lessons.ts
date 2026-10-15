@@ -118,6 +118,18 @@ const core: Omit<Lesson, 'number'>[] = [
     newIds: C('thanon', 'chon', 'sakon', 'phom', 'khon', 'lop'),
   },
   {
+    id: 'th-l20', phaseId: 'rules', type: 'combos',
+    title: { de: 'Sonderfälle in Namen', en: 'Special Cases in Names' },
+    goal: { de: 'Bindesilbe (ราชบุรี = Ratchaburi), stumme Endkonsonanten (เพชร = phet) und ทร = s – drei Regeln, die viele Provinznamen erst lesbar machen.', en: 'Linking syllable (ราชบุรี = Ratchaburi), silent final consonants (เพชร = phet) and ทร = s – three rules that make many province names readable.' },
+    newIds: C('ratchaburi', 'chaiyaphum', 'phet', 'phetchaburi', 'sai', 'chachoengsao'),
+  },
+  {
+    id: 'th-l21', phaseId: 'rules', type: 'combos',
+    title: { de: 'Ziffern', en: 'Digits' },
+    goal: { de: 'Thailändische Ziffern auf älteren Schildern, Kilometersteinen und Preisen. ๓ sieht aus wie ein m und ist 3.', en: 'Thai digits on older signs, kilometre stones and prices. ๓ looks like an m and is 3.' },
+    newIds: Array.from({ length: 10 }, (_, n) => `th:combo:digit-${n}`),
+  },
+  {
     id: 'th-l15', phaseId: 'terms', type: 'vocab',
     title: { de: 'Ortsnamen-Bausteine', en: 'Place-Name Building Blocks' },
     goal: { de: 'บุรี, นคร, ธานี, เชียง, สมุทร – erkennen statt buchstabieren.', en: 'บุรี, นคร, ธานี, เชียง, สมุทร – recognise them instead of spelling them out.' },
@@ -145,7 +157,7 @@ const core: Omit<Lesson, 'number'>[] = [
     id: 'th-l19', phaseId: 'terms', type: 'vocab',
     title: { de: 'Am Straßenrand', en: 'By the Roadside' },
     goal: { de: 'Tempel, Markt, Bahnhof, Tankstelle – was man auf Street View ständig sieht.', en: 'Temple, market, station, petrol station – what you keep seeing on Street View.' },
-    newIds: T('wat', 'talat', 'sathani', 'sanam-bin', 'rong-rian', 'rong-phayaban', 'pam-nam-man', 'ran-ahan'),
+    newIds: T('wat', 'talat', 'sathani', 'sanam-bin', 'rong-rian', 'rong-phayaban', 'pam-nam-man', 'ran-ahan', 'yindi-tonrap'),
   },
 ];
 

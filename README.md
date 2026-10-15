@@ -6,7 +6,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 
 ## Was drin ist
 
-- 41 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen, 11 Städte- und 13 Regionslektionen (auf der Karte)
+- 41 Lektionen Russisch: 33 Buchstaben in didaktischer Reihenfolge (Easy Wins → False Friends → neue Formen → komplexe Zeichen), Kleinbuchstaben-Fallen, Ortsnamen-Endungen, Namensbausteine, 4 Begriffslektionen (mit „Добро пожаловать“ von Ortseingangsschildern), 11 Städte- und 13 Regionslektionen (auf der Karte)
 - 100 Städte (die größten nach Einwohnerzahl) und alle 83 international anerkannten Föderationssubjekte (ohne Krim und Sewastopol), 51 GeoGuessr-Begriffe mit Abkürzungen, 35 Übungswörter, 56 Kombinationen
 - Lernen, Üben, Freies Üben, alle neun Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed, Verwechsler), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
@@ -25,14 +25,14 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 
 ### Thai
 
-- 41 Lektionen: 42 Konsonanten, 15 Vokalzeichen und 5 Sonderzeichen (Tonzeichen, Karan, Mai Taikhu, Mai Yamok, Paiyannoi) in 11 Buchstabenlektionen, 3 Regellektionen (Silbenende, zusammengesetzte Vokale, unsichtbare Vokale), Namensbausteine, 4 Begriffslektionen, 11 Städte- und 11 Provinzlektionen (auf der Karte)
+- 43 Lektionen: 42 Konsonanten, 15 Vokalzeichen und 5 Sonderzeichen (Tonzeichen, Karan, Mai Taikhu, Mai Yamok, Paiyannoi) in 11 Buchstabenlektionen, 4 Regellektionen (Silbenende, zusammengesetzte Vokale, unsichtbare Vokale, Sonderfälle in Namen: Bindesilbe ราชบุรี = Ratchaburi, stummer Endkonsonant เพชร = phet, ทร = s), Ziffern ๐–๙, Namensbausteine, 4 Begriffslektionen, 11 Städte- und 11 Provinzlektionen (auf der Karte)
 - 100 Städte (alle 77 Provinzhauptstädte plus die 23 größten weiteren Städte wie Hat Yai, Pattaya, Ko Samui), alle 77 Provinzen (inkl. Bangkok), 36 Schilderbegriffe, 52 Übungswörter
 - Thai wird in Silben gelesen, nicht Buchstabe für Buchstabe. Deshalb gibt es keine regelbasierte Transliteration: Jedes Wort hat eine Liste erlaubter Lesungen nach RTGS (der Umschrift auf thailändischen Schildern), dazu verbreitete Varianten (Phuket, Chiang Mai, Ayutthaya). Tonhöhen werden nicht abgefragt – sie helfen beim Lesen von Schildern nicht.
 - Vokalzeichen erscheinen mit Platzhalterkreis (◌า), damit sichtbar ist, wo sie am Konsonanten sitzen.
 
 ### Bengali
 
-- 41 Lektionen: 36 Konsonanten, 11 unabhängige Vokale, 10 Vokalzeichen und 4 Sonderzeichen in 11 Buchstabenlektionen, Phala und Reph, 2 Lektionen Ligaturen (ট্ট ল্ল ক্স ঞ্জ ঙ্গ ক্ষ ষ্ট হ্ম ন্ধ ঞ্চ স্ট স্ক), Ortsnamen-Endungen (-পুর, -গঞ্জ, -বাজার, -হাট, -গ্রাম, -খালী), dann 1 Divisionslektion, 10 Distriktlektionen, die seltenen Vokale am Wortanfang (ঈ ঊ ঋ ঐ ঔ, nur für eine Stadt nötig), 11 Städtelektionen und zuletzt 4 Begriffslektionen. Reihenfolge: erst alle Zeichen, die Divisionen und Distrikte brauchen, dann Division → Distrikt → Stadt, die Begriffe (Straße, Brücke, Moschee …) am Ende; ein Test prüft, dass jede Ortslektion nur vorher gelernte Zeichen braucht. Schreibweise: Der eingebaute Vokal wird wie in den offiziellen Namen als a gelernt (রংপুর = Rangpur, -গঞ্জ = -ganj; gesprochen eher o). Beim Tippen von Namen und Wörtern gelten o und a als gleich (`looseVowels` im Kurs, nicht bei einzelnen Zeichen)
+- 42 Lektionen: 36 Konsonanten, 11 unabhängige Vokale, 10 Vokalzeichen und 4 Sonderzeichen in 11 Buchstabenlektionen, Phala und Reph, 2 Lektionen Ligaturen (ট্ট ল্ল ক্স ঞ্জ ঙ্গ ক্ষ ষ্ট হ্ম ন্ধ ঞ্চ স্ট স্ক), Ortsnamen-Endungen (-পুর, -গঞ্জ, -বাজার, -হাট, -গ্রাম, -খালী), dann 1 Divisionslektion, 10 Distriktlektionen, die seltenen Vokale am Wortanfang (ঈ ঊ ঋ ঐ ঔ, nur für eine Stadt nötig), 11 Städtelektionen und zuletzt 4 Begriffslektionen und die Ziffern ০–৯ (৪ = 4 und ৭ = 7 sehen aus wie 8 und 9). Reihenfolge: erst alle Zeichen, die Divisionen und Distrikte brauchen, dann Division → Distrikt → Stadt, die Begriffe (Straße, Brücke, Moschee …) am Ende; ein Test prüft, dass jede Ortslektion nur vorher gelernte Zeichen braucht. Schreibweise: Der eingebaute Vokal wird wie in den offiziellen Namen als a gelernt (রংপুর = Rangpur, -গঞ্জ = -ganj; gesprochen eher o). Beim Tippen von Namen und Wörtern gelten o und a als gleich (`looseVowels` im Kurs, nicht bei einzelnen Zeichen)
 - 100 Städte (alle 64 Distrikthauptstädte plus 36 große Orte wie Savar, Sreemangal, Teknaf, Benapole), alle 8 Divisionen und alle 64 Distrikte, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
 - Englische Namen nach der offiziellen Schreibweise von 2018 (Chattogram, Cumilla, Barishal, Jashore, Bogura); die älteren Formen (Chittagong, Comilla, Barisal, Jessore, Bogra) gelten ebenfalls. Ligaturen sind eigene Leseeinheiten, weil man sie als Ganzes erkennt.
 
@@ -54,25 +54,25 @@ Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungse
 
 ### Kurs „Schriften erkennen“ (`#/scripts`)
 
-Ein Blick aufs Schild verrät oft schon das Land. Der Kurs zeigt Ortsnamen in 29 Schriften und 17 Gruppen lateinischer Sonderzeichen (46 Einträge); die Antwort ist immer der Ort (Land oder Region), der Name der Schrift steht als Info dabei. Nur Länder mit Street View in GeoGuessr.
+Ein Blick aufs Schild verrät oft schon das Land. Der Kurs zeigt Ortsnamen in 31 Schriften und Schrift-Varianten und 19 Gruppen lateinischer Sonderzeichen (50 Einträge); die Antwort ist immer der Ort (Land oder Region), der Name der Schrift steht als Info dabei. Nur Länder mit Street View in GeoGuessr.
 
 | Lektion | Schriften |
 |---------|-----------|
 | 1 Erster Blick | Kyrillisch, Griechisch, Arabisch, Hebräisch, Thai, Devanagari |
 | 2 Ostasien | Japanisch, Chinesisch (Langzeichen: Taiwan, Hongkong, Macau), Koreanisch |
 | 3 Südostasien | Laotisch, Khmer (+ Thai) |
-| 4 Nordindien, Bangladesch, Bhutan | Bengalisch, Gurmukhi, Gujarati, Odia, Tibetisch (+ Devanagari) |
+| 4 Nordindien, Bangladesch, Bhutan | Bengalisch, Assamesisch (ৰ ৱ), Gurmukhi, Gujarati, Odia, Tibetisch (+ Devanagari) |
 | 5 Südindien und Sri Lanka | Tamil, Telugu, Kannada, Malayalam, Singhalesisch |
 | 6 Kyrillisch I | Russisch, Ukrainisch, Bulgarisch |
-| 7 Kyrillisch II | Serbisch, Mazedonisch, Kasachisch, Mongolisch (+ Russisch, Bulgarisch) |
+| 7 Kyrillisch II | Serbisch, Mazedonisch, Kasachisch, Kirgisisch (ң ohne қ ғ ә ұ), Mongolisch (+ Russisch, Bulgarisch) |
 | 8 Georgien | Georgisch (+ Griechisch, Kyrillisch, Singhalesisch) – Street View seit Juni 2026 |
-| 9 Lateinisch I: Mitteleuropa | Ungarisch (ő ű), Polnisch (ł ż ś ź ń), Tschechisch (ř ě ů), Slowakisch (ľ ĺ ŕ ô) |
+| 9 Lateinisch I: Mitteleuropa | Ungarisch (ő ű), Polnisch (ł ś ź ń, ż auch in Malta), Tschechisch (ř ě ů), Slowakisch (ľ ĺ ŕ ô) |
 | 10 Lateinisch II: Südosteuropa | Rumänisch (ș ț ă), Türkisch (ı İ ğ ş), Kroatisch/Bosnisch (đ ć), Albanisch (ë) (+ Tschechisch) |
 | 11 Lateinisch III: Baltikum | Litauisch (ė ų į), Lettisch (ā ē ī ķ ļ ņ ģ), Estnisch (õ) (+ Polnisch) |
-| 12 Lateinisch IV: Norden | Norwegisch/Dänisch (æ ø), Schwedisch (å mit ä/ö), Finnisch (nur ä ö), Isländisch (þ ð) (+ Estnisch) |
-| 13 Lateinisch V: Südwesten | Portugiesisch (ã), Spanisch (ñ) (+ Rumänisch, Türkisch) |
+| 12 Lateinisch IV: Norden | Norwegisch/Dänisch (æ ø), Schwedisch (å mit ä/ö), Finnisch (nur ä ö), Isländisch (þ, ð ohne ø), Färöisch (ð mit ø) (+ Estnisch) |
+| 13 Lateinisch V: Südwesten und Malta | Portugiesisch (ã), Spanisch (ñ), Maltesisch (ħ ġ ċ) (+ Rumänisch, Polnisch) |
 
-- Jede Schrift hat zwei, drei Erkennungszeichen mit Beispielzeichen und echte Ortsnamen von Schildern. Bei den Kyrillisch-Varianten enthält jedes Beispiel sein Erkennungszeichen (ы/э, ї/є/ґ, ъ, ђ/ћ/џ, ѓ/ќ/ѕ, қ/ғ/ә/ұ/һ, doppelte Vokale); ein Test prüft das. Genauso bei den lateinischen Sonderzeichen: jedes Beispiel enthält sein Zeichen und passt zu keinem anderen Land (Schweden = å zusammen mit ä/ö, Finnland = nur ä/ö). Kroatisch (lateinisch) und Serbisch (kyrillisch) werden nie gemeinsam als Antworten gezeigt, weil sich die Orte überschneiden. Kirgisistan fehlt bewusst: seine Schrift ist von Kasachisch und Mongolisch an einzelnen Buchstaben kaum sicher zu trennen.
+- Jede Schrift hat zwei, drei Erkennungszeichen mit Beispielzeichen und echte Ortsnamen von Schildern. Bei den Kyrillisch-Varianten enthält jedes Beispiel sein Erkennungszeichen (ы/э, ї/є/ґ, ъ, ђ/ћ/џ, ѓ/ќ/ѕ, қ/ғ/ә/ұ/һ, ң ohne kasachische Zeichen, doppelte Vokale); ein Test prüft das. Genauso bei den lateinischen Sonderzeichen: jedes Beispiel enthält sein Zeichen und passt zu keinem anderen Land (Schweden = å zusammen mit ä/ö, Finnland = nur ä/ö). Kroatisch (lateinisch) und Serbisch (kyrillisch) werden nie gemeinsam als Antworten gezeigt, weil sich die Orte überschneiden; dasselbe gilt für Tamil und Singhalesisch (Sri Lanka schreibt beides auf dieselben Schilder). Kirgisisch und Kasachisch teilen ң und ө: Kasachische Namen haben fast immer auch қ, ғ, ә oder ұ, kirgisische nie – eine Faustregel, kein Gesetz.
 - Aufgaben: **Wo bist du?** (ein Ortsname, vier Orte zur Wahl) und **Welcher Name steht in …?** (drei Namen, einer ist gesucht). Falsche Optionen kommen bevorzugt aus der Verwechslungsgruppe derselben Familie. Nach einem Fehler zeigt das Feedback das Erkennungszeichen; die Schrift kommt einmal wieder.
 - Fortschritt im normalen Speicher unter dem Kurs `scripts` (SRS, XP, Streak, Fehler-Review, Online-Speicherung). Seite mit allen Schriften zum Nachschlagen, Erfolge „Schriftkenner“ (10/25/alle Schriften), „Kyrillisch-Detektiv“, „Häkchen-Kenner“ (alle lateinischen Sonderzeichen) und „Indien-Kenner“.
 - Schriftarten: Noto (SIL OFL 1.1). `tools/script-fonts.mjs` kopiert nur die nötigen Teilmengen nach `src/features/scripts/fonts/` (≈ 1,5 MB, der Browser lädt nur, was er anzeigt); nach Änderungen an `src/content/scripts/data.ts` neu ausführen – ein Test meldet fehlende Zeichen. Der Kurs wird erst beim Öffnen geladen.

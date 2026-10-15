@@ -1,7 +1,7 @@
 import type { CourseContent, CourseMap } from '../../domain/types';
 import { LESSONS, PHASES } from './lessons';
 import { CITIES, DISTRICTS, DIVISIONS } from './places';
-import { CONJUNCTS, CONTRAST_SETS, ENDINGS, PHALAS, requiredUnitsBn, SYLLABLES, UNITS } from './units';
+import { CONJUNCTS, CONTRAST_SETS, ENDINGS, PHALAS, requiredUnitsBn, SYLLABLES, UNITS, DIGITS } from './units';
 import { TERMS, WORDS } from './words';
 import { withCoords } from '../coords';
 import { COORDS } from './coords';
@@ -14,7 +14,7 @@ import { NOTE_HINTS } from './noteHints';
 const content: CourseContent = {
   id: 'bn',
   letters: UNITS,
-  combos: [...SYLLABLES, ...PHALAS, ...CONJUNCTS, ...ENDINGS],
+  combos: [...SYLLABLES, ...PHALAS, ...CONJUNCTS, ...ENDINGS, ...DIGITS],
   words: [...WORDS, ...TERMS],
   places: withCoords([...CITIES, ...DIVISIONS, ...DISTRICTS], COORDS),
   contrastSets: CONTRAST_SETS,

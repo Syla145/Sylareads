@@ -140,6 +140,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
     features: [
       { text: { de: 'Von rechts nach links, aber jeder Buchstabe steht für sich', en: 'Right to left, but every letter stands alone' }, mark: 'ש ל ם' },
       { text: { de: 'Eckige Blockformen, kaum Punkte, keine Verbindungslinie', en: 'Square block shapes, hardly any dots, no joining line' }, mark: 'א ב ה' },
+      { text: { de: 'Steht Arabisch zusammen mit Hebräisch auf einem Schild, bist du in Israel', en: 'Arabic together with Hebrew on one sign means Israel' }, mark: 'ש' },
     ],
     samples: [
       { native: 'ירושלים', latin: 'Yerushalayim' },
@@ -282,14 +283,33 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
     features: [
       { text: { de: 'Linie oben wie Devanagari, aber mit Lücken', en: 'A top line like Devanagari, but with gaps' }, mark: 'ঢাকা' },
       { text: { de: 'Spitze Dreiecksformen', en: 'Pointed triangular shapes' }, mark: 'ব ক ঝ' },
+      { text: { de: 'r ist র mit Punkt unten – in Assam schreibt man ৰ', en: 'r is র with a dot below – Assam writes ৰ' }, mark: 'র' },
     ],
+    // Every sample has র: without it, Bengali and Assamese look the same.
     samples: [
-      { native: 'ঢাকা', latin: 'Dhaka' },
-      { native: 'কলকাতা', latin: 'Kolkata' },
+      { native: 'রাজশাহী', latin: 'Rajshahi' },
+      { native: 'বর্ধমান', latin: 'Bardhaman' },
       { native: 'চট্টগ্রাম', latin: 'Chattogram' },
       { native: 'আগরতলা', latin: 'Agartala' },
     ],
-    confusable: [id('devanagari'), id('gurmukhi'), id('oriya')],
+    confusable: [id('assamese'), id('devanagari'), id('gurmukhi'), id('oriya')],
+  },
+  {
+    id: id('assamese'),
+    name: { de: 'Assamesisch', en: 'Assamese' },
+    where: { de: 'Assam (Indien)', en: 'Assam (India)' },
+    font: 'bengali',
+    features: [
+      { text: { de: 'Dieselbe Schrift wie Bengalisch, aber r ist ৰ mit schrägem Strich unten (Bengalisch: র mit Punkt)', en: 'The same script as Bengali, but r is ৰ with a slanted stroke below (Bengali: র with a dot)' }, mark: 'ৰ' },
+      { text: { de: 'Dazu ৱ (w), das es im Bengalischen nicht gibt', en: 'Plus ৱ (w), which Bengali does not have' }, mark: 'ৱ' },
+    ],
+    samples: [
+      { native: 'গুৱাহাটী', latin: 'Guwahati' },
+      { native: 'ডিব্ৰুগড়', latin: 'Dibrugarh' },
+      { native: 'যোৰহাট', latin: 'Jorhat' },
+      { native: 'তেজপুৰ', latin: 'Tezpur' },
+    ],
+    confusable: [id('bengali'), id('oriya'), id('devanagari')],
   },
   {
     id: id('gurmukhi'),
@@ -363,7 +383,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
   {
     id: id('tamil'),
     name: { de: 'Tamil', en: 'Tamil' },
-    where: { de: 'Tamil Nadu (Indien), Nord- und Ostsri Lanka', en: 'Tamil Nadu (India), northern and eastern Sri Lanka' },
+    where: { de: 'Tamil Nadu (Indien), Sri Lanka', en: 'Tamil Nadu (India), Sri Lanka' },
     font: 'tamil',
     features: [
       { text: { de: 'Eckige, kastenförmige Zeichen ohne Linie oben', en: 'Angular, box-like letters without a top line' }, mark: 'க ம ப' },
@@ -376,6 +396,8 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'யாழ்ப்பாணம்', latin: 'Yazhpanam (Jaffna)' },
     ],
     confusable: [id('malayalam'), id('telugu'), id('sinhala')],
+    // Sri Lanka writes Sinhala and Tamil on the same signs: never both as answers.
+    overlaps: [id('sinhala')],
   },
   {
     id: id('telugu'),
@@ -444,6 +466,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'අනුරාධපුරය', latin: 'Anuradhapuraya' },
     ],
     confusable: [id('tamil'), id('malayalam')],
+    overlaps: [id('tamil')],
   },
 
   // ---------------------------------------------------------------- 6 Kyrillisch I
@@ -545,7 +568,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'Қызылорда', latin: 'Qyzylorda' },
       { native: 'Ақтөбе', latin: 'Aqtöbe' },
     ],
-    confusable: [id('mongolian'), id('russian'), id('ukrainian')],
+    confusable: [id('kyrgyz'), id('mongolian'), id('russian')],
   },
   {
     id: id('mongolian'),
@@ -554,7 +577,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
     font: 'latin',
     features: [
       { text: { de: 'ө und ү, aber kein қ, ғ, ә', en: 'ө and ү, but no қ, ғ, ә' }, mark: 'ө ү' },
-      { text: { de: 'Viele doppelte Vokale: аа, ээ, үү (Kirgisistan schreibt ähnlich, hat aber ң)', en: 'Many double vowels: аа, ээ, үү (Kyrgyzstan looks similar but has ң)' }, mark: 'аа ээ' },
+      { text: { de: 'Viele doppelte Vokale: аа, ээ, үү – aber kein ң wie in Kirgisistan', en: 'Many double vowels: аа, ээ, үү – but no ң as in Kyrgyzstan' }, mark: 'аа ээ' },
     ],
     samples: [
       { native: 'Улаанбаатар', latin: 'Ulaanbaatar' },
@@ -562,7 +585,24 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'Зүүнхараа', latin: 'Züünkharaa' },
       { native: 'Өндөрхаан', latin: 'Öndörkhaan' },
     ],
-    confusable: [id('kazakh'), id('russian')],
+    confusable: [id('kyrgyz'), id('kazakh'), id('russian')],
+  },
+  {
+    id: id('kyrgyz'),
+    name: { de: 'Kirgisisch', en: 'Kyrgyz' },
+    where: { de: 'Kirgisistan', en: 'Kyrgyzstan' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ң, ө und ү – aber kein қ, ғ, ә, ұ: Die hat fast jeder kasachische Name', en: 'ң, ө and ү – but no қ, ғ, ә, ұ: almost every Kazakh name has one of those' }, mark: 'ң ө ү' },
+      { text: { de: 'ң unterscheidet es von der Mongolei; viele Namen mit Bindestrich: Чоң-, Көк-, Ак-', en: 'ң sets it apart from Mongolia; many hyphenated names: Чоң-, Көк-, Ак-' }, mark: 'Чоң' },
+    ],
+    samples: [
+      { native: 'Көк-Жаңгак', latin: 'Kök-Jangak' },
+      { native: 'Жаңы-Жол', latin: 'Jangy-Jol' },
+      { native: 'Чоң-Алай', latin: 'Chong-Alay' },
+      { native: 'Чоң-Кемин', latin: 'Chong-Kemin' },
+    ],
+    confusable: [id('kazakh'), id('mongolian'), id('russian')],
   },
   // ---------------------------------------------------------------- 8 Georgien
   {
@@ -609,7 +649,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
     where: { de: 'Polen', en: 'Poland' },
     font: 'latin',
     features: [
-      { text: { de: 'ł mit Querstrich und ż mit Punkt gibt es nur im Polnischen', en: 'ł with a bar and ż with a dot exist only in Polish' }, mark: 'ł ż' },
+      { text: { de: 'ł mit Querstrich gibt es nur im Polnischen (ż mit Punkt hat auch Malta)', en: 'ł with a bar exists only in Polish (Malta has ż with a dot too)' }, mark: 'ł ż' },
       { text: { de: 'Striche nach oben: ś, ź, ń (statt Häkchen wie š, ž, ň in Tschechien)', en: 'Acute strokes: ś, ź, ń (instead of carons like š, ž, ň in Czechia)' }, mark: 'ś ź ń' },
       { text: { de: 'Dazu ą und ę mit Schwänzchen, und viele cz, sz, rz', en: 'Plus ą and ę with a tail, and many cz, sz, rz' }, mark: 'ą ę' },
     ],
@@ -685,7 +725,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
     font: 'latin',
     features: [
       { text: { de: 'ı ohne Punkt und İ mit Punkt gibt es nur im Türkischen', en: 'Dotless ı and dotted İ exist only in Turkish' }, mark: 'ı İ' },
-      { text: { de: 'ğ mit Bogen und ş mit Häkchen', en: 'ğ with a breve and ş with a cedilla' }, mark: 'ğ ş' },
+      { text: { de: 'ğ mit Bogen und ş mit Cedille (Häkchen unten)', en: 'ğ with a breve and ş with a cedilla' }, mark: 'ğ ş' },
       { text: { de: 'Dazu ç, ö, ü – aber nie ä, ă oder ț', en: 'Plus ç, ö, ü – but never ä, ă or ț' }, mark: 'ç ö ü' },
     ],
     samples: [
@@ -810,7 +850,7 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'Næstved', latin: 'Naestved' },
       { native: 'Køge', latin: 'Koge' },
     ],
-    confusable: [id('swedish'), id('icelandic'), id('finnish')],
+    confusable: [id('swedish'), id('faroese'), id('icelandic')],
   },
   {
     id: id('swedish'),
@@ -865,7 +905,24 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
       { native: 'Sauðárkrókur', latin: 'Saudarkrokur' },
       { native: 'Ísafjörður', latin: 'Isafjordur' },
     ],
-    confusable: [id('norwegian'), id('swedish'), id('finnish')],
+    confusable: [id('faroese'), id('norwegian'), id('swedish')],
+  },
+  {
+    id: id('faroese'),
+    name: { de: 'Färöisch', en: 'Faroese' },
+    where: { de: 'Färöer', en: 'Faroe Islands' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ð wie in Island und ø wie in Norwegen – beides zusammen gibt es nur auf den Färöern', en: 'ð as in Iceland and ø as in Norway – both together only on the Faroe Islands' }, mark: 'ð ø' },
+      { text: { de: 'Nie þ (das wäre Island); viele Namen enden auf -fjørður', en: 'Never þ (that would be Iceland); many names end in -fjørður' }, mark: '-fjørður' },
+    ],
+    samples: [
+      { native: 'Fuglafjørður', latin: 'Fuglafjordur' },
+      { native: 'Søldarfjørður', latin: 'Soldarfjordur' },
+      { native: 'Oyndarfjørður', latin: 'Oyndarfjordur' },
+      { native: 'Gøtueiði', latin: 'Gotueidi' },
+    ],
+    confusable: [id('icelandic'), id('norwegian')],
   },
 
   // ---------------------------------------------------------------- 13 Lateinisch V: Südwesten
@@ -904,6 +961,24 @@ export const SCRIPT_ENTRIES: ScriptEntry[] = [
     ],
     confusable: [id('portuguese'), id('romanian'), id('croatian')],
   },
+  {
+    id: id('maltese'),
+    name: { de: 'Maltesisch', en: 'Maltese' },
+    where: { de: 'Malta', en: 'Malta' },
+    font: 'latin',
+    features: [
+      { text: { de: 'ħ mit Querstrich und ġ, ċ mit Punkt gibt es nur in Malta', en: 'ħ with a bar and ġ, ċ with a dot exist only in Malta' }, mark: 'ħ ġ ċ' },
+      { text: { de: 'Typisch: għ und Namen mit Ħal-; ż teilt Malta mit Polen', en: 'Typical: għ and names with Ħal-; Malta shares ż with Poland' }, mark: 'għ' },
+    ],
+    samples: [
+      { native: 'Mellieħa', latin: 'Mellieha' },
+      { native: 'Ħamrun', latin: 'Hamrun' },
+      { native: 'Mġarr', latin: 'Mgarr' },
+      { native: 'Xagħra', latin: 'Xaghra' },
+      { native: 'Għajnsielem', latin: 'Ghajnsielem' },
+    ],
+    confusable: [id('polish'), id('croatian'), id('turkish')],
+  },
 ];
 
 export const SCRIPT_LESSONS: ScriptLesson[] = [
@@ -933,8 +1008,8 @@ export const SCRIPT_LESSONS: ScriptLesson[] = [
     id: 'scripts-l4',
     number: 4,
     title: { de: 'Nordindien, Bangladesch, Bhutan', en: 'North India, Bangladesh, Bhutan' },
-    goal: { de: 'Schriften mit und ohne Linie oben.', en: 'Scripts with and without a top line.' },
-    newIds: [id('bengali'), id('gurmukhi'), id('gujarati'), id('oriya'), id('tibetan')],
+    goal: { de: 'Schriften mit und ohne Linie oben – und ein r, das Assam verrät.', en: 'Scripts with and without a top line – and an r that gives away Assam.' },
+    newIds: [id('bengali'), id('assamese'), id('gurmukhi'), id('gujarati'), id('oriya'), id('tibetan')],
     reviewIds: [id('devanagari')],
   },
   {
@@ -954,9 +1029,9 @@ export const SCRIPT_LESSONS: ScriptLesson[] = [
   {
     id: 'scripts-l7',
     number: 7,
-    title: { de: 'Kyrillisch II: Balkan, Kasachstan, Mongolei', en: 'Cyrillic II: Balkans, Kazakhstan, Mongolia' },
+    title: { de: 'Kyrillisch II: Balkan und Zentralasien', en: 'Cyrillic II: Balkans and Central Asia' },
     goal: { de: 'Sonderbuchstaben von Serbien bis zur Mongolei.', en: 'Special letters from Serbia to Mongolia.' },
-    newIds: [id('serbian'), id('macedonian'), id('kazakh'), id('mongolian')],
+    newIds: [id('serbian'), id('macedonian'), id('kazakh'), id('kyrgyz'), id('mongolian')],
     reviewIds: [id('russian'), id('bulgarian')],
   },  {
     id: 'scripts-l8',
@@ -993,16 +1068,16 @@ export const SCRIPT_LESSONS: ScriptLesson[] = [
     id: 'scripts-l12',
     number: 12,
     title: { de: 'Lateinisch IV: Norden', en: 'Latin IV: The North' },
-    goal: { de: 'ø oder ö, å oder nicht: Skandinavien, Finnland, Island.', en: 'ø or ö, å or not: Scandinavia, Finland, Iceland.' },
-    newIds: [id('norwegian'), id('swedish'), id('finnish'), id('icelandic')],
+    goal: { de: 'ø oder ö, å oder nicht: Skandinavien, Finnland, Island, Färöer.', en: 'ø or ö, å or not: Scandinavia, Finland, Iceland, Faroe Islands.' },
+    newIds: [id('norwegian'), id('swedish'), id('finnish'), id('icelandic'), id('faroese')],
     reviewIds: [id('estonian')],
   },
   {
     id: 'scripts-l13',
     number: 13,
-    title: { de: 'Lateinisch V: Südwesten', en: 'Latin V: The Southwest' },
-    goal: { de: 'Portugal und Brasilien oder Spanien und Lateinamerika?', en: 'Portugal and Brazil or Spain and Latin America?' },
-    newIds: [id('portuguese'), id('spanish')],
-    reviewIds: [id('romanian'), id('turkish')],
+    title: { de: 'Lateinisch V: Südwesten und Malta', en: 'Latin V: The Southwest and Malta' },
+    goal: { de: 'Portugal und Brasilien, Spanien und Lateinamerika – oder Malta?', en: 'Portugal and Brazil, Spain and Latin America – or Malta?' },
+    newIds: [id('portuguese'), id('spanish'), id('maltese')],
+    reviewIds: [id('romanian'), id('polish')],
   },
 ];

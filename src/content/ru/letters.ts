@@ -100,7 +100,7 @@ export const LETTERS: LetterItem[] = [
       correct: { de: 'Kein eigener Laut – macht den Konsonanten davor weich', en: 'No sound of its own – softens the consonant before it' },
       wrong: [
         { de: 'Wird wie b gelesen', en: 'Read like b' },
-        { de: 'Kein eigener Laut – trennt Konsonant und Vokal', en: 'No sound of its own – separates consonant and vowel' },
+        { de: 'Wird wie i gelesen', en: 'Read like i' },
       ],
     } }),
   def({ slug: 'hard', upper: 'Ъ', lower: 'ъ', reading: '', accepted: [''],

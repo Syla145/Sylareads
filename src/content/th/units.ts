@@ -90,7 +90,7 @@ const CONSONANTS: LetterItem[] = [
   consonant({ slug: 'so-ruesi', ch: 'ษ', reading: 's', word: 'ฤๅษี', roman: 'ruesi', de: 'Einsiedler', en: 'hermit', final: 't' }),
   consonant({ slug: 'so-suea', ch: 'ส', reading: 's', word: 'เสือ', roman: 'suea', de: 'Tiger', en: 'tiger', final: 't' }),
   consonant({ slug: 'ho-hip', ch: 'ห', reading: 'h', word: 'หีบ', roman: 'hip', de: 'Truhe', en: 'chest',
-    confuse: { de: 'Vor น ม ย ร ล ว ง ist ห stumm (หนอง = nong).', en: 'Before น ม ย ร ล ว ง the ห is silent (หนอง = nong).' } }),
+    confuse: { de: 'Vor ง ญ น ม ย ร ล ว ist ห stumm (หนอง = nong, ใหญ่ = yai).', en: 'Before ง ญ น ม ย ร ล ว the ห is silent (หนอง = nong, ใหญ่ = yai).' } }),
   consonant({ slug: 'lo-chula', ch: 'ฬ', reading: 'l', word: 'จุฬา', roman: 'chula', de: 'Drachen', en: 'kite', final: 'n' }),
   consonant({ slug: 'o-ang', ch: 'อ', reading: 'o', word: 'อ่าง', roman: 'ang', de: 'Schüssel', en: 'basin',
     confuse: { de: 'Am Silbenanfang stumm (Träger für Vokale: อุดร = Udon), sonst o.', en: 'Silent at the start of a syllable (vowel carrier: อุดร = Udon), otherwise o.' } }),
@@ -203,7 +203,7 @@ export const SYLLABLES: ComboItem[] = [
 export const COMBOS: ComboItem[] = [
   // Final consonants
   combo('baht', 'บาท', 'bat', ['baht'], 'ท am Ende = t. Die Währung Baht.', 'ท at the end = t. The currency baht.'),
-  combo('rat', 'ราช', 'rat', ['raj', 'rach'], 'ช am Ende = t: ราชบุรี = Ratchaburi.', 'ช at the end = t: ราชบุรี = Ratchaburi.'),
+  combo('rat', 'ราช', 'rat', ['raj', 'rach'], 'ช am Ende = t: ราช = rat. In ราชบุรี kommt noch eine Bindesilbe dazu (Ratchaburi, Lektion „Sonderfälle in Namen“).', 'ช at the end = t: ราช = rat. In ราชบุรี a linking syllable is added (Ratchaburi, lesson “Special Cases in Names”).'),
   combo('thit', 'ทิศ', 'thit', ['tit'], 'ศ am Ende = t. Bedeutet „Richtung“.', 'ศ at the end = t. Means “direction”.'),
   combo('lap', 'ลาบ', 'lap', ['larb', 'laab'], 'บ am Ende = p.', 'บ at the end = p.'),
   combo('chok', 'โชค', 'chok', ['chock'], 'ค am Ende = k.', 'ค at the end = k.'),
@@ -222,6 +222,13 @@ export const COMBOS: ComboItem[] = [
   combo('phom', 'ผม', 'phom', ['pom'], 'ผ + ม mit unsichtbarem o.', 'ผ + ม with an invisible o.'),
   combo('khon', 'คน', 'khon', ['kon'], 'Bedeutet „Mensch“.', 'Means “person”.'),
   combo('lop', 'ลพ', 'lop', [], 'พ am Ende = p, unsichtbares o: ลพบุรี = Lop Buri.', 'พ at the end = p, invisible o: ลพบุรี = Lop Buri.'),
+  // Special cases in names
+  combo('ratchaburi', 'ราชบุรี', 'ratchaburi', ['ratcha buri'], 'Bindesilbe: In Namen aus Pali und Sanskrit wird der Endkonsonant noch einmal mit a gelesen – ราช (rat) + ชะ + บุรี = Rat-cha-buri.', 'Linking syllable: in names from Pali and Sanskrit the final consonant is read once more with a – ราช (rat) + ช + บุรี = Rat-cha-buri.'),
+  combo('chaiyaphum', 'ชัยภูมิ', 'chaiyaphum', ['chaiyapum'], 'Bindesilbe auch hier: ชัย (chai) + ย + ภูมิ = Chai-ya-phum.', 'A linking syllable here too: ชัย (chai) + ย + ภูมิ = Chai-ya-phum.'),
+  combo('phet', 'เพชร', 'phet', ['pet', 'petch'], 'Zwei Konsonanten am Ende: nur der erste zählt (ช = t, ร bleibt stumm). Bedeutet „Diamant“.', 'Two consonants at the end: only the first counts (ช = t, ร stays silent). Means “diamond”.'),
+  combo('phetchaburi', 'เพชรบุรี', 'phetchaburi', ['phetcha buri', 'petchaburi'], 'Beides zusammen: ร stumm, dazu die Bindesilbe – Phet-cha-buri.', 'Both together: ร silent plus the linking syllable – Phet-cha-buri.'),
+  combo('sai', 'ทราย', 'sai', ['sai'], 'ทร wird wie s gelesen: ทราย = sai (Sand), ฉะเชิงเทรา = Chachoengsao.', 'ทร is read as s: ทราย = sai (sand), ฉะเชิงเทรา = Chachoengsao.'),
+  combo('chachoengsao', 'ฉะเชิงเทรา', 'chachoengsao', ['chachoeng sao'], 'ทร = s auch hier: เทรา = sao. ฉะเชิงเทรา = Chachoengsao.', 'ทร = s here too: เทรา = sao. ฉะเชิงเทรา = Chachoengsao.'),
 ];
 
 const ids = (...s: string[]) => s.map(unitId);
@@ -237,4 +244,27 @@ export const CONTRAST_SETS: ContrastSet[] = [
   { id: 'th:cs:o-h', itemIds: ids('o-ang', 'ho-nokhuk'), note: { de: 'อ = o / stumm, ฮ = h.', en: 'อ = o / silent, ฮ = h.' } },
   { id: 'th:cs:r-th', itemIds: ids('ro', 'tho-thong'), note: { de: 'ร = r, ธ = th.', en: 'ร = r, ธ = th.' } },
   { id: 'th:cs:l-s', itemIds: ids('lo-ling', 'so-suea'), note: { de: 'ล = l, ส = s.', en: 'ล = l, ส = s.' } },
+];
+
+/** Thai digits: older signs, kilometre stones, prices. Read as the number itself. */
+const digit = (n: number, ch: string, de: string, en: string): ComboItem => ({
+  id: `th:combo:digit-${n}`,
+  kind: 'combo',
+  native: ch,
+  reading: String(n),
+  accepted: [String(n)],
+  note: { de, en },
+});
+
+export const DIGITS: ComboItem[] = [
+  digit(0, '๐', 'Ein kleiner Kreis – 0.', 'A small circle – 0.'),
+  digit(1, '๑', 'Ein Kringel mit Schwänzchen – 1.', 'A curl with a little tail – 1.'),
+  digit(2, '๒', 'Thailändische 2.', 'Thai 2.'),
+  digit(3, '๓', 'Sieht aus wie ein m – ist aber 3.', 'Looks like an m – but it is 3.'),
+  digit(4, '๔', 'Thailändische 4. ๕ (5) hat einen Haken mehr.', 'Thai 4. ๕ (5) has one more hook.'),
+  digit(5, '๕', 'Wie ๔ mit einem zusätzlichen Haken – 5.', 'Like ๔ with an extra hook – 5.'),
+  digit(6, '๖', 'Thailändische 6.', 'Thai 6.'),
+  digit(7, '๗', 'Thailändische 7.', 'Thai 7.'),
+  digit(8, '๘', 'Thailändische 8.', 'Thai 8.'),
+  digit(9, '๙', 'Thailändische 9.', 'Thai 9.'),
 ];

@@ -147,7 +147,13 @@ const core: Omit<Lesson, 'number'>[] = [
     id: 'bn-l19', phaseId: 'terms', type: 'vocab',
     title: { de: 'Am Straßenrand', en: 'By the Roadside' },
     goal: { de: 'Moschee, Tempel, Krankenhaus, Polizei – was man auf Street View ständig sieht.', en: 'Mosque, temple, hospital, police – what you keep seeing on Street View.' },
-    newIds: T('moshjid', 'mondir', 'hashpatal', 'thana', 'madrasa', 'police', 'dokan', 'pump'),
+    newIds: T('moshjid', 'mondir', 'hashpatal', 'thana', 'madrasa', 'police', 'dokan', 'pump', 'swagatam'),
+  },
+  {
+    id: 'bn-l20', phaseId: 'terms', type: 'combos',
+    title: { de: 'Ziffern', en: 'Digits' },
+    goal: { de: 'Auf Kilometersteinen, Kennzeichen und Hausnummern. Vorsicht: ৪ sieht aus wie 8 und ist 4, ৭ sieht aus wie 9 und ist 7.', en: 'On milestones, number plates and house numbers. Careful: ৪ looks like 8 and is 4, ৭ looks like 9 and is 7.' },
+    newIds: ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'].map((_, n) => `bn:combo:digit-${n}`),
   },
 ];
 

@@ -123,7 +123,7 @@ const letterLessons: Omit<Lesson, 'number'>[] = [
     id: 'ru-l17', phaseId: 'terms', type: 'vocab',
     title: { de: 'Verkehr & Alltag', en: 'Transport & Everyday' },
     goal: { de: 'Bahnhof, Flughafen, Tankstelle – und was sonst am Straßenrand steht.', en: 'Station, airport, petrol station – and what else lines the road.' },
-    newIds: T('vokzal', 'stantsiya', 'aeroport', 'avtovokzal', 'azs', 'magazin', 'apteka', 'tsentr'),
+    newIds: T('vokzal', 'stantsiya', 'aeroport', 'avtovokzal', 'azs', 'magazin', 'apteka', 'tsentr', 'dobro-pozhalovat'),
   },
 ];
 

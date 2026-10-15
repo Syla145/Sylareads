@@ -122,4 +122,5 @@ export const TERMS: WordItem[] = [
   t('police', 'পুলিশ', 'pulish', 'everyday', ['Polizei'], ['police'], ['police', 'pulis']),
   t('dokan', 'দোকান', 'dokan', 'everyday', ['Laden', 'Geschäft'], ['shop'], ['dokaan']),
   t('pump', 'পেট্রোল পাম্প', 'petrol pamp', 'transport', ['Tankstelle'], ['petrol pump', 'gas station'], ['petrol pump']),
+  t('swagatam', 'স্বাগতম', 'swagatam', 'everyday', ['Willkommen'], ['welcome'], ['shagotom', 'sagatam', 'swagotom', 'sbagatam']),
 ];

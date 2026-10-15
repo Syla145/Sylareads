@@ -154,4 +154,5 @@ export const TERMS: WordItem[] = [
   t('ran-ahan', 'ร้านอาหาร', 'ran ahan', 'everyday', ['Restaurant'], ['restaurant'], ['ran a han']),
   t('uthayan', 'อุทยานแห่งชาติ', 'uthayan haeng chat', 'nature', ['Nationalpark'], ['national park'], ['utthayan haeng chat']),
   t('tamruat', 'ตำรวจ', 'tamruat', 'everyday', ['Polizei'], ['police'], ['tamruad']),
+  t('yindi-tonrap', 'ยินดีต้อนรับ', 'yindi tonrap', 'everyday', ['Willkommen'], ['welcome'], ['yin di ton rap', 'yindee tonrap']),
 ];

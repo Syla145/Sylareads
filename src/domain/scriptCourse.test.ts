@@ -60,6 +60,11 @@ describe('scripts course data', () => {
     }
   });
 
+  it('Bengali and Assamese samples can be told apart (র or ৰ/ৱ)', () => {
+    for (const s of SCRIPT_BY_ID.get('scripts:bengali')!.samples) expect(/র/.test(s.native) && !/[ৰৱ]/.test(s.native), s.native).toBe(true);
+    for (const s of SCRIPT_BY_ID.get('scripts:assamese')!.samples) expect(/[ৰৱ]/.test(s.native) && !/র/.test(s.native), s.native).toBe(true);
+  });
+
   it('every Cyrillic variant sample contains its giveaway letter', () => {
     const giveaway: Record<string, RegExp> = {
       'scripts:russian': /[ыэ]/i,
@@ -69,6 +74,7 @@ describe('scripts course data', () => {
       'scripts:macedonian': /[ѓќѕ]/i,
       'scripts:kazakh': /[қғәұһ]/i,
       'scripts:mongolian': /(аа|ээ|үү|оо|өө)/i,
+      'scripts:kyrgyz': /^(?=.*ң)[^қғәұһ]*$/i,
     };
     for (const [id, re] of Object.entries(giveaway)) for (const s of SCRIPT_BY_ID.get(id)!.samples) expect(re.test(s.native), `${id}: ${s.native}`).toBe(true);
   });
@@ -76,7 +82,8 @@ describe('scripts course data', () => {
   // Latin special letters: every sample has its giveaway, and no sample would also pass for another country.
   const LATIN: Record<string, RegExp> = {
     'scripts:hungarian': /[őű]/iu,
-    'scripts:polish': /[łżźśń]/iu,
+    'scripts:polish': /[łźśń]/iu,
+    'scripts:maltese': /[ħġċ]/iu,
     'scripts:czech': /[řěů]/iu,
     'scripts:slovak': /[ľĺŕô]/iu,
     'scripts:romanian': /[șță]/iu,
@@ -86,10 +93,11 @@ describe('scripts course data', () => {
     'scripts:lithuanian': /[ėųį]/iu,
     'scripts:latvian': /[āēīķļņģ]/iu,
     'scripts:estonian': /õ/iu,
-    'scripts:norwegian': /[æø]/iu,
+    'scripts:norwegian': /^(?=.*[æø])[^ð]*$/iu,
     'scripts:swedish': /^(?=.*å)(?=.*[äö])[^æø]*$/iu,
     'scripts:finnish': /^[a-zäö -]*[äö][a-zäö -]*$/iu,
-    'scripts:icelandic': /[þð]/iu,
+    'scripts:icelandic': /^(?=.*[þð])[^ø]*$/iu,
+    'scripts:faroese': /^(?=.*ø)(?=.*ð)[^þ]*$/iu,
     'scripts:portuguese': /ã/iu,
     'scripts:spanish': /ñ/iu,
   };
@@ -107,8 +115,12 @@ describe('scripts course data', () => {
   it('places that overlap are never offered together', () => {
     const pool = new Set(SCRIPT_ENTRIES.map((e) => e.id));
     for (let seed = 1; seed < 40; seed++) {
-      for (const id of ['scripts:croatian', 'scripts:serbian']) {
-        const other = id === 'scripts:croatian' ? 'scripts:serbian' : 'scripts:croatian';
+      for (const [id, other] of [
+        ['scripts:croatian', 'scripts:serbian'],
+        ['scripts:serbian', 'scripts:croatian'],
+        ['scripts:tamil', 'scripts:sinhala'],
+        ['scripts:sinhala', 'scripts:tamil'],
+      ]) {
         const where = retask({ key: 'k', kind: 'where', itemId: id, sample: SCRIPT_BY_ID.get(id)!.samples[0], options: [] }, pool, seededRng(seed));
         const pick = retask({ key: 'k', kind: 'pick', itemId: id, options: [] }, pool, seededRng(seed));
         expect(where.kind === 'where' && where.options).not.toContain(other);

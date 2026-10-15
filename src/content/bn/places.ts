@@ -42,7 +42,7 @@ export const CITIES: PlaceItem[] = [
   city('cumilla', 'কুমিল্লা', 'Cumilla', 'Cumilla', 'Comilla', 'chattogram', 1, ['Comilla', 'Kumilla'], { de: 'An der Fernstraße Dhaka–Chattogram', en: 'On the Dhaka–Chattogram highway' }),
   city('gazipur', 'গাজীপুর', 'Gazipur', 'Gazipur', 'Gazipur', 'dhaka', 1, ['Gajipur']),
   city('narayanganj', 'নারায়ণগঞ্জ', 'Narayanganj', 'Narayanganj', 'Narayanganj', 'dhaka', 1, ['Narayangonj']),
-  city('coxs-bazar', 'কক্সবাজার', 'Koksbajar', 'Cox’s Bazar', 'Cox’s Bazar', 'chattogram', 1, ['Coxs Bazar', 'Cox Bazar', 'Coxsbazar', 'Koks Bazar'], { de: 'Längster Naturstrand der Welt', en: 'World’s longest natural beach' }),
+  city('coxs-bazar', 'কক্সবাজার', 'Koksbajar', 'Cox’s Bazar', 'Cox’s Bazar', 'chattogram', 1, ['Coxs Bazar', 'Cox Bazar', 'Coxsbazar', 'Koks Bazar'], { de: 'Einer der längsten Naturstrände der Welt', en: 'One of the world’s longest natural beaches' }),
   city('bogura', 'বগুড়া', 'Bogura', 'Bogura', 'Bogra', 'rajshahi', 1, ['Bogra']),
   city('jashore', 'যশোর', 'Jashore', 'Jashore', 'Jessore', 'khulna', 1, ['Jessore', 'Joshor', 'Jashor']),
   city('dinajpur', 'দিনাজপুর', 'Dinajpur', 'Dinajpur', 'Dinajpur', 'rangpur', 2),

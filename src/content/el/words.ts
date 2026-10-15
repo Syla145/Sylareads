@@ -106,6 +106,7 @@ export const TERMS: WordItem[] = [
   t('xenodocheio', 'Ξενοδοχείο', 'Xenodocheio', 'everyday', ['Hotel'], ['hotel']),
   t('taverna', 'Ταβέρνα', 'Taverna', 'everyday', ['Taverne'], ['tavern', 'taverna']),
   t('periptero', 'Περίπτερο', 'Periptero', 'everyday', ['Kiosk'], ['kiosk']),
+  t('stasi', 'Στάση', 'Stasi', 'transport', ['Haltestelle'], ['stop (bus stop)']),
   t('scholeio', 'Σχολείο', 'Scholeio', 'everyday', ['Schule'], ['school']),
   t('nosokomeio', 'Νοσοκομείο', 'Nosokomeio', 'everyday', ['Krankenhaus'], ['hospital']),
 ];

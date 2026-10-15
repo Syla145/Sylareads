@@ -282,3 +282,29 @@ export const CONTRAST_SETS: ContrastSet[] = [
   { id: 'bn:cs:kha-tha', itemIds: ids('kha', 'tha'), note: { de: 'খ = kh, থ = th.', en: 'খ = kh, থ = th.' } },
   { id: 'bn:cs:sibilants', itemIds: ids('sha', 'ssa', 'sa'), note: { de: 'শ und ষ = sh, স = s (oft auch sh).', en: 'শ and ষ = sh, স = s (often sh too).' } },
 ];
+
+/**
+ * Digits on milestones, number plates, house numbers and shop signs. Read as
+ * the number itself; two look like other Latin digits.
+ */
+const digit = (n: number, ch: string, de: string, en: string): ComboItem => ({
+  id: `bn:combo:digit-${n}`,
+  kind: 'combo',
+  native: ch,
+  reading: String(n),
+  accepted: [String(n)],
+  note: { de, en },
+});
+
+export const DIGITS: ComboItem[] = [
+  digit(0, '০', 'Ein kleiner Kreis – 0.', 'A small circle – 0.'),
+  digit(1, '১', 'Bengalische 1.', 'Bengali 1.'),
+  digit(2, '২', 'Bengalische 2.', 'Bengali 2.'),
+  digit(3, '৩', 'Bengalische 3. Die Form steckt auch in অ.', 'Bengali 3. Its shape is part of অ too.'),
+  digit(4, '৪', 'Sieht aus wie unsere 8 – ist aber 4!', 'Looks like our 8 – but it is 4!'),
+  digit(5, '৫', 'Bengalische 5.', 'Bengali 5.'),
+  digit(6, '৬', 'Bengalische 6.', 'Bengali 6.'),
+  digit(7, '৭', 'Sieht aus wie unsere 9 – ist aber 7!', 'Looks like our 9 – but it is 7!'),
+  digit(8, '৮', 'Bengalische 8 (unsere 8 sieht aus wie ৪ = 4).', 'Bengali 8 (our 8 looks like ৪ = 4).'),
+  digit(9, '৯', 'Bengalische 9 (unsere 9 sieht aus wie ৭ = 7).', 'Bengali 9 (our 9 looks like ৭ = 7).'),
+];

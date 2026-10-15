@@ -99,7 +99,7 @@ const core: Omit<Lesson, 'number'>[] = [
     id: 'el-l13', phaseId: 'terms', type: 'vocab',
     title: { de: 'Am Straßenrand', en: 'By the Roadside' },
     goal: { de: 'Flughafen, Kloster, Apotheke, Περίπτερο – was man auf Street View ständig sieht.', en: 'Airport, monastery, pharmacy, Περίπτερο – what you keep seeing on Street View.' },
-    newIds: T('aerodromio', 'stathmos', 'iera-moni', 'ekklisia', 'farmakeio', 'xenodocheio', 'taverna', 'periptero'),
+    newIds: T('aerodromio', 'stathmos', 'stasi', 'iera-moni', 'ekklisia', 'farmakeio', 'xenodocheio', 'taverna', 'periptero'),
   },
 ];
 

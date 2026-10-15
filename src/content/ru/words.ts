@@ -1,11 +1,12 @@
 import type { ComboItem, TermCategory, WordItem } from '../../domain/types';
 
-const combo = (slug: string, native: string, reading: string, note?: ComboItem['note']): ComboItem => ({
+const combo = (slug: string, native: string, reading: string, note?: ComboItem['note'], accepted?: string[]): ComboItem => ({
   id: `ru:combo:${slug}`,
   kind: 'combo',
   native,
   reading,
   note,
+  ...(accepted ? { accepted } : {}),
 });
 
 /**
@@ -32,7 +33,7 @@ export const COMBOS: ComboItem[] = [
   combo('suf-burg', '-бург', 'burg', { de: 'Aus dem Deutschen: Екатеринбург, Оренбург.', en: 'From German: Екатеринбург, Оренбург.' }),
   // Place-name endings II
   combo('suf-ovo', '-ово', 'ovo', { de: 'Typische Dorf- und Stadtendung: Кемерово.', en: 'Typical village and town ending: Кемерово.' }),
-  combo('suf-evo', '-ево', 'yevo', { de: 'Variante von -ово nach weichen Konsonanten.', en: 'Variant of -ово after soft consonants.' }),
+  combo('suf-evo', '-ево', 'evo', { de: 'Variante von -ово nach weichen Konsonanten: Медведево = Medvedevo. Nach Vokal oder ь liest man yevo: Шереметьево = Sheremetyevo.', en: 'Variant of -ово after soft consonants: Медведево = Medvedevo. After a vowel or ь it reads yevo: Шереметьево = Sheremetyevo.' }, ['yevo']),
   combo('suf-ino', '-ино', 'ino', { de: 'Sehr häufig bei Dörfern rund um Moskau.', en: 'Very common for villages around Moscow.' }),
   combo('suf-gorod', '-город', 'gorod', { de: '„Stadt“: Белгород, Новгород.', en: '“City”: Белгород, Новгород.' }),
   combo('suf-gorsk', '-горск', 'gorsk', { de: '„Berg-Stadt“: Магнитогорск, Пятигорск.', en: '“Mountain town”: Магнитогорск, Пятигорск.' }),
@@ -148,6 +149,7 @@ export const TERMS: WordItem[] = [
   t('okrug', 'округ', 'okrug', 'settlement', ['Kreis', 'Bezirk'], ['district', 'okrug']),
   t('granitsa', 'граница', 'granitsa', 'settlement', ['Grenze'], ['border']),
   t('tsentr', 'центр', 'tsentr', 'settlement', ['Zentrum'], ['center', 'centre']),
+  t('dobro-pozhalovat', 'Добро пожаловать', 'dobro pozhalovat', 'everyday', ['Willkommen'], ['welcome']),
   // Nature & directions
   t('reka', 'река', 'reka', 'nature', ['Fluss'], ['river'], ['р.']),
   t('ozero', 'озеро', 'ozero', 'nature', ['See'], ['lake'], ['оз.']),
