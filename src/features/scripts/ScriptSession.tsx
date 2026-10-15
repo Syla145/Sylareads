@@ -32,6 +32,9 @@ import { QuitDialog, type ResultAction, ResultActions } from '../session/Session
 import { ownsEnter, isTyping } from '../../ui/keys';
 import { useBackGuard, useGoBack } from '../../ui/useBackGuard';
 import { useScrollTop } from '../../ui/useScrollTop';
+import { ToneIcon } from '../session/FeedbackPanel';
+import { useSheetSpace } from '../session/useSheetSpace';
+import '../session/sheet.css';
 
 /** Route for /scripts/lesson/:lessonId and /scripts/practice (?ids=… for exactly these scripts). */
 export default function ScriptSessionRoute() {
@@ -143,6 +146,9 @@ function ScriptRunner({
   const task = state.tasks[state.index];
   const leave = useBackGuard(state.phase !== 'done', () => setQuitOpen(true));
   useScrollTop(task?.key);
+  const sessionRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  useSheetSpace(sessionRef, sheetRef, state.phase === 'feedback');
   const newIds = useMemo(() => new Set(lesson?.newIds ?? []), [lesson]);
   const signView = useSignView();
 
@@ -215,7 +221,7 @@ function ScriptRunner({
   const sign = task.kind === 'where' && !newIds.has(task.itemId) && showsSign(signView, task.key) ? sampleSignFor(task.itemId, task.sample.native, task.sample.latin, task.key) : null;
 
   return (
-    <div className="session">
+    <div className="session" ref={sessionRef}>
       <header className="session-bar">
         <h1 className="sr-only">{t('scripts.title')}</h1>
         <button type="button" className="icon-btn" aria-label={t(lesson ? 'session.quit.lesson.title' : 'session.quit.practice.title')} onClick={() => setQuitOpen(true)}>
@@ -306,17 +312,19 @@ function ScriptRunner({
               </>
             )}
 
-            <div className="session-response" aria-live="polite">
-              {feedback && last && <Feedback task={task} picked={state.lastPicked} correct={last.result === 'C'} />}
-            </div>
-            {feedback && last?.result === 'W' && (
-              <div className="session-actions">
-                <Button variant="primary" block onClick={next} autoFocus>
-                  {t('session.continue')}
-                  <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
-                </Button>
+            <div className={`session-sheet${feedback && last ? ` is-open is-${last.result === 'C' ? 'correct' : 'wrong'}` : ''}`} ref={sheetRef}>
+              <div className="session-response" aria-live="polite">
+                {feedback && last && <Feedback task={task} picked={state.lastPicked} correct={last.result === 'C'} />}
               </div>
-            )}
+              {feedback && last?.result === 'W' && (
+                <div className="session-actions">
+                  <Button variant="primary" block onClick={next} autoFocus>
+                    {t('session.continue')}
+                    <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
+                  </Button>
+                </div>
+              )}
+            </div>
           </>
         )}
       </main>
@@ -336,7 +344,10 @@ function Feedback({ task, picked, correct }: { task: GradedScriptTask; picked: s
   const sample = task.kind === 'where' ? task.sample : task.options.find((o) => o.itemId === task.itemId)!.sample;
   return (
     <div className={`script-feedback${correct ? ' is-correct' : ' is-wrong'}`}>
-      <p className="script-feedback-title">
+      <p className="feedback-title script-feedback-title">
+        <span className="fb-icon" aria-hidden="true">
+          <ToneIcon tone={correct ? 'correct' : 'wrong'} />
+        </span>
         {correct ? t('scripts.right') : t('scripts.wrong')}
       </p>
       <p className="muted">

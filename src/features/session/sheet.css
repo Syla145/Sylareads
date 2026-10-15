@@ -1,0 +1,155 @@
+/* ---------- Feedback sheet: slides up from the bottom after every answer ---------- */
+
+/* Closed: the wrapper takes no part in the layout (hints and buttons sit in the page). */
+.session-sheet {
+  display: contents;
+}
+
+.session-sheet.is-open {
+  --sheet-bg: var(--surface-1);
+  --sheet-line: var(--border-strong);
+  --sheet-title: var(--accent);
+  --sheet-soft: var(--text-secondary);
+  position: fixed;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  bottom: var(--kb-inset, 0px);
+  display: block;
+  max-height: calc((100dvh - var(--kb-inset, 0px)) * 0.72);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-5) max(var(--gutter), env(safe-area-inset-left)) 0 max(var(--gutter), env(safe-area-inset-right));
+  background: var(--sheet-bg);
+  border-top: 1px solid var(--sheet-line);
+  border-radius: 26px 26px 0 0;
+  box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.5);
+  animation: sheet-up 280ms cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.session-sheet.is-open.is-correct {
+  --sheet-bg: var(--sheet-correct);
+  --sheet-line: var(--sheet-correct-line);
+  --sheet-title: var(--sheet-correct-text);
+  --sheet-soft: var(--sheet-correct-soft);
+}
+
+.session-sheet.is-open.is-wrong {
+  --sheet-bg: var(--sheet-wrong);
+  --sheet-line: var(--sheet-wrong-line);
+  --sheet-title: var(--sheet-wrong-text);
+  --sheet-soft: var(--sheet-wrong-soft);
+}
+
+/* The content keeps the width of the task above it. */
+.session-sheet.is-open > .session-response,
+.session-sheet.is-open > .session-actions {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.session-sheet.is-open .session-response {
+  min-height: 0;
+}
+
+/* Inside the sheet the feedback is no card of its own. */
+.session-sheet.is-open :is(.feedback, .script-feedback) {
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
+}
+
+/* Correct answers in "Schriften erkennen" move on by themselves: no room for buttons. */
+.session-sheet.is-open > .session-response:last-child {
+  padding-bottom: calc(var(--s-5) + env(safe-area-inset-bottom));
+}
+
+.session-sheet.is-open .feedback-title {
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-3);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--sheet-title);
+}
+
+.session-sheet.is-open .fb-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sheet-title);
+  color: var(--sheet-bg);
+}
+
+.session-sheet.is-open :is(.fb-note, .fb-facts dt, .confusion, .script-feedback .muted, .script-feedback-hint) {
+  color: var(--sheet-soft);
+}
+
+/* Buttons stay at the bottom of the sheet, also when its content scrolls. */
+.session-sheet.is-open .session-actions {
+  position: sticky;
+  bottom: 0;
+  margin: var(--s-4) calc(-1 * var(--gutter)) 0;
+  padding: var(--s-3) var(--gutter) calc(var(--s-4) + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--sheet-bg) 78%, transparent);
+}
+
+@media (min-width: 680px) {
+  .session-sheet.is-open .session-actions {
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+}
+
+.session-sheet.is-correct .btn-primary {
+  background: var(--success);
+  color: #06140d;
+  box-shadow: 0 4px 0 var(--sheet-correct-shadow);
+}
+
+.session-sheet.is-wrong .btn-primary {
+  background: var(--error);
+  color: #1c0607;
+  box-shadow: 0 4px 0 var(--sheet-wrong-shadow);
+}
+
+@media (hover: hover) {
+  .session-sheet.is-correct .btn-primary:hover {
+    background: #5fdb98;
+  }
+  .session-sheet.is-wrong .btn-primary:hover {
+    background: #ff8f8f;
+  }
+}
+
+.session-sheet:is(.is-correct, .is-wrong) .btn-primary kbd {
+  border-color: currentColor;
+  color: inherit;
+}
+
+/* Room under the task, so the plate and the answer stay readable above the sheet. */
+.session:has(.session-sheet.is-open) .session-main {
+  padding-bottom: calc(var(--sheet-h, 45vh) + var(--s-4));
+}
+
+/* Facts as a compact two-column list, also on the phone: the sheet stays short. */
+.session-sheet.is-open .fb-facts div {
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--s-3);
+}
+
+.session-sheet.is-open .fb-place .glyph {
+  font-size: clamp(28px, 7vw, 44px);
+}

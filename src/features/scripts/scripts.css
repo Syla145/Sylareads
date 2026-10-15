@@ -284,7 +284,7 @@
 .script-feedback-hint {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--s-2);
   flex-wrap: wrap;
   color: var(--text-secondary);

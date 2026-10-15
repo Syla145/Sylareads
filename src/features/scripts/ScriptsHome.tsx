@@ -1,3 +1,4 @@
+import { LessonWay } from '../learn/LessonWay';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SCRIPT_ENTRIES, SCRIPT_LESSONS, type ScriptEntry } from '../../content/scripts/data';
@@ -62,36 +63,29 @@ export default function ScriptsHome() {
 
         <section className="scripts-lessons">
           <h2 className="section-label">{t('scripts.lessons')}</h2>
-          <ol className="lesson-list">
-            {SCRIPT_LESSONS.map((l) => {
+          <LessonWay
+            scrollToNext={false}
+            onOpen={(id) => navigate(`/scripts/lesson/${id}`)}
+            stops={SCRIPT_LESSONS.map((l) => {
               const rec = cp?.lessons[l.id];
-              const isNext = next?.id === l.id;
-              return (
-                <li key={l.id} className={`lesson-row${isNext ? ' is-next' : ''}${rec ? ' is-done' : ''}`}>
-                  <button type="button" className="lesson-row-btn" onClick={() => navigate(`/scripts/lesson/${l.id}`)}>
-                    <span className="lesson-num tabular">{l.number}</span>
-                    <span className="lesson-main">
-                      <span className="lesson-title">{l.title[lang]}</span>
-                      <span className="lesson-preview">
-                        {l.newIds.map((id) => {
-                          const e = SCRIPT_BY_ID.get(id)!;
-                          return (
-                            <ScriptText key={id} entry={e}>
-                              {e.samples[0].native}
-                            </ScriptText>
-                          );
-                        })}
-                      </span>
-                    </span>
-                    <span className="lesson-status">
-                      {isNext && <span className="badge badge-accent">{t('learn.recommended')}</span>}
-                      {rec && <span className="muted small">{t('learn.done', { c: rec.bestCorrect, t: rec.bestTotal })}</span>}
-                    </span>
-                  </button>
-                </li>
-              );
+              return {
+                id: l.id,
+                number: l.number,
+                title: l.title[lang],
+                preview: l.newIds.map((id) => {
+                  const e = SCRIPT_BY_ID.get(id)!;
+                  return (
+                    <ScriptText key={id} entry={e}>
+                      {e.samples[0].native}
+                    </ScriptText>
+                  );
+                }),
+                done: !!rec,
+                next: next?.id === l.id,
+                status: rec ? t('learn.best', { c: rec.bestCorrect, t: rec.bestTotal }) : undefined,
+              };
             })}
-          </ol>
+          />
         </section>
 
         <section>

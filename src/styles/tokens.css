@@ -53,6 +53,17 @@
   --info: #4c8dff;
   --shield: #5cc8ff;
   --flame: #ff8a3d;
+  /* Feedback sheet after an answer */
+  --sheet-correct: #11241a;
+  --sheet-correct-line: #1f4a33;
+  --sheet-correct-text: #6be3a2;
+  --sheet-correct-soft: #bfe3cd;
+  --sheet-correct-shadow: #23905a;
+  --sheet-wrong: #2a1417;
+  --sheet-wrong-line: #5a2329;
+  --sheet-wrong-text: #ff8f8f;
+  --sheet-wrong-soft: #f2cfcf;
+  --sheet-wrong-shadow: #b8434a;
   /* 3D push buttons */
   --accent-shadow: #b98f00;
   --tabbar-h: 64px;

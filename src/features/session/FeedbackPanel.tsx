@@ -20,17 +20,20 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
   const item = index.byId.get(task.itemId);
   if (!item) return null;
   const result = state.lastResult;
-  const ok = result !== 'W';
-  // A second pick out of the few choices left is close to a guess: neutral, not a success.
-  const guessed = result === 'R' && task.kind === 'choice';
+  const tone = feedbackTone(task, state);
+  const ok = tone !== 'wrong';
+  const guessed = tone === 'retry';
   const title = result === 'C' ? t('session.correct') : guessed ? t('session.correctRetryChoice') : result === 'R' ? t('session.correctRetry') : t('session.wrong');
   const typed = task.kind !== 'choice' && task.kind !== 'locate';
   const mapShown = task.kind === 'locate' || (task.kind === 'choice' && task.question === 'map');
 
   return (
-    <div className={`feedback ${guessed ? 'is-retry' : ok ? 'is-correct' : 'is-wrong'}`}>
+    <div className={`feedback is-${tone}`}>
       <p className="feedback-title">
-        <span aria-hidden="true">{guessed ? '↻' : ok ? '✓' : '✗'}</span> {title}
+        <span className="fb-icon" aria-hidden="true">
+          <ToneIcon tone={tone} />
+        </span>
+        {title}
       </p>
 
       {item.kind === 'letter' && (
@@ -91,6 +94,24 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
       {!ok && task.kind === 'locate' && state.lastInput && <ClickedLine index={index} id={state.lastInput} />}
       {!ok && task.kind === 'choice' && (task.question === 'scan' || task.question === 'map') && <ScanMiss index={index} state={state} task={task} />}
     </div>
+  );
+}
+
+/**
+ * How an answer felt: right at once (or typed right on the second try), a
+ * second pick out of the few choices left (close to a guess: neutral), or wrong.
+ */
+export function feedbackTone(task: GradedTask, state: SessionState): 'correct' | 'retry' | 'wrong' {
+  const result = state.lastResult;
+  if (result === 'W') return 'wrong';
+  return result === 'R' && task.kind === 'choice' ? 'retry' : 'correct';
+}
+
+export function ToneIcon({ tone }: { tone: 'correct' | 'retry' | 'wrong' }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      {tone === 'correct' ? <path d="M5 12.5l4.5 4.5L19 7.5" /> : tone === 'wrong' ? <path d="M7 7l10 10M17 7L7 17" /> : <path d="M19 12a7 7 0 1 1-2.05-4.95M19 4v4h-4" />}
+    </svg>
   );
 }
 

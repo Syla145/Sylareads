@@ -10,6 +10,7 @@ import { Button, ButtonLink, Modal } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { PlacementOptions } from '../placement/PlacementOptions';
 import { SubNav } from '../../ui/SubNav';
+import { LessonWay } from './LessonWay';
 
 export function LearnPage() {
   const { meta, index } = useCourse();
@@ -20,6 +21,7 @@ export function LearnPage() {
   const [ahead, setAhead] = useState<Lesson | null>(null);
   const [placing, setPlacing] = useState<PhaseDef | null>(null);
   const lessons = index.content.lessons;
+  const phases = index.content.phases.filter((p) => lessons.some((l) => l.phaseId === p.id));
   const next = lessons.find((l) => !cp?.lessons[l.id]);
   const base = `/${meta.slug}`;
 
@@ -56,59 +58,69 @@ export function LearnPage() {
         <p className="muted">{t('learn.subtitle')}</p>
       </header>
 
-      {index.content.phases.map((phase) => {
+      {phases.map((phase, pi) => {
         const list = lessons.filter((l) => l.phaseId === phase.id);
-        if (!list.length) return null;
         const canPlace = list.some((l) => !cp?.lessons[l.id]) && !!placementScope(index, phase.id);
-        const allDone = list.every((l) => cp?.lessons[l.id]);
-        const rows = (
-          <ol className="lesson-list">
-            {list.map((lesson) => {
+        const doneCount = list.filter((l) => cp?.lessons[l.id]).length;
+        const way = (
+          <LessonWay
+            scrollToNext={list.some((l) => l.id === next?.id)}
+            onOpen={(id) => open(list.find((l) => l.id === id)!)}
+            stops={list.map((lesson) => {
               const rec = cp?.lessons[lesson.id];
-              const isNext = next?.id === lesson.id;
               const glyphs = preview(lesson);
               const short = lesson.type === 'letters' || lesson.type === 'review';
-              return (
-                <li key={lesson.id} className={`lesson-row${isNext ? ' is-next' : ''}${rec ? ' is-done' : ''}`}>
-                  <button type="button" className="lesson-row-btn" onClick={() => open(lesson)}>
-                    <span className="lesson-num tabular">{lesson.number}</span>
-                    <span className="lesson-main">
-                      <span className="lesson-title">{lesson.title[lang]}</span>
-                      <span lang={short ? index.content.id : undefined} className={`lesson-preview${short ? ' is-glyphs' : ''}`}>{glyphs.join(short ? ' ' : ' · ')}</span>
-                    </span>
-                    <span className="lesson-status">
-                      {isNext && <span className="badge badge-accent">{t('learn.recommended')}</span>}
-                      {rec && <span className="muted small">{rec.placed ? t('learn.placed') : t('learn.done', { c: rec.bestCorrect, t: rec.bestTotal })}</span>}
-                    </span>
-                  </button>
-                </li>
-              );
+              return {
+                id: lesson.id,
+                number: lesson.number,
+                title: lesson.title[lang],
+                preview: glyphs.join(short ? ' ' : ' · '),
+                mark: short ? glyphs[0] : undefined,
+                lang: index.content.id,
+                done: !!rec,
+                next: next?.id === lesson.id,
+                status: rec ? (rec.placed ? t('learn.placed') : t('learn.best', { c: rec.bestCorrect, t: rec.bestTotal })) : undefined,
+              };
             })}
-          </ol>
+          />
         );
-        // Finished sections fold away, so the recommended lesson is close to the top.
-        if (allDone) {
+        // Finished sections fold into a milestone sign, so the recommended lesson is close to the top.
+        if (doneCount === list.length) {
           return (
-            <details key={phase.id} className="phase phase-done">
-              <summary className="phase-head">
-                <h2 className="phase-title">{phase.title[lang]}</h2>
-                <span className="phase-done-note small">{t('learn.phaseDone', { n: list.length })}</span>
+            <details key={phase.id} className="way-milestone">
+              <summary>
+                <span className="way-milestone-inner">
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+                    <path d="M5 21V3M5 4h12l-2.5 4 2.5 4H5" />
+                  </svg>
+                  <span className="way-milestone-text">
+                    <h2>{phase.title[lang]}</h2>
+                    <span className="way-milestone-note">{t('learn.milestone', { n: list.length })}</span>
+                  </span>
+                  <span className="way-milestone-chevron" aria-hidden="true" />
+                </span>
               </summary>
-              {rows}
+              {way}
             </details>
           );
         }
         return (
-          <section key={phase.id} className="phase">
-            <div className="phase-head">
-              <h2 className="phase-title">{phase.title[lang]}</h2>
+          <section key={phase.id} className="way-phase">
+            <div className="way-phase-head">
+              <div>
+                <div className="way-phase-kicker">{t('learn.section', { n: pi + 1, total: phases.length, d: doneCount, l: list.length })}</div>
+                <h2 className="way-phase-title">{phase.title[lang]}</h2>
+              </div>
               {canPlace && (
                 <button type="button" className="phase-place" onClick={() => { setAhead(null); setPlacing(phase); }}>
                   {t('placement.phaseButton')}
                 </button>
               )}
             </div>
-            {rows}
+            <div className="way-phase-bar" aria-hidden="true">
+              <span style={{ width: `${(doneCount / list.length) * 100}%` }} />
+            </div>
+            {way}
           </section>
         );
       })}

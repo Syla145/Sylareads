@@ -115,12 +115,12 @@ kbd {
   font-family: var(--font-ui);
 }
 
-.font-native-bengali :is(.glyph, .native, .course-card-glyphs, .glyph-chip, .lesson-preview, .choice-native, .first-run-glyphs, .retry-input) {
+.font-native-bengali :is(.glyph, .native, .course-card-glyphs, .glyph-chip, .lesson-preview, .way-preview, .way-mark, .choice-native, .first-run-glyphs, .retry-input) {
   font-family: var(--font-bengali);
   line-height: 1.5;
 }
 
-.font-native-thai :is(.glyph, .native, .course-card-glyphs, .glyph-chip, .lesson-preview, .choice-native, .first-run-glyphs, .retry-input) {
+.font-native-thai :is(.glyph, .native, .course-card-glyphs, .glyph-chip, .lesson-preview, .way-preview, .way-mark, .choice-native, .first-run-glyphs, .retry-input) {
   font-family: var(--font-thai);
   line-height: 1.6;
 }

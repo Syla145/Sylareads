@@ -3,12 +3,14 @@ import type { CourseIndex } from '../../domain/courseIndex';
 import { accepts, evaluateTyped, type Evaluation } from '../../domain/evaluate';
 import { isSecretPhrase } from '../../domain/achievements';
 import '../achievements/achievements.css';
+import './sheet.css';
 import { advance, createSession, currentTask, submit, type EngineDeps, type SessionMode, type SessionState } from '../../domain/sessionEngine';
 import type { Task } from '../../domain/tasks';
 import { useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { Button } from '../../ui/primitives';
-import { FeedbackPanel } from './FeedbackPanel';
+import { FeedbackPanel, feedbackTone } from './FeedbackPanel';
+import { useSheetSpace } from './useSheetSpace';
 import { IntroCard } from './IntroCard';
 import { TaskPrompt } from './TaskPrompt';
 import { isWideMap } from '../map/layer';
@@ -55,7 +57,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     return () => clearTimeout(id);
   }, [secret]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const responseRef = useRef<HTMLDivElement>(null);
+  const sessionRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef(state);
   stateRef.current = state;
   const inputValueRef = useRef(input);
@@ -163,12 +166,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     if (after.phase === 'done') onDone(after);
   }, [courseId, deps, onDone, recordIntro]);
 
-  // Little height (iPhone landscape): bring the feedback into view, it repeats the character anyway.
-  useEffect(() => {
-    if (state.phase !== 'feedback' || window.innerHeight >= 600) return;
-    const r = responseRef.current?.getBoundingClientRect();
-    if (r && r.top > window.innerHeight * 0.4) window.scrollBy({ top: r.top - 8, behavior: 'smooth' });
-  }, [state.phase, state.index]);
+  // The feedback slides up as a sheet; the page keeps room for it (and for the phone keyboard).
+  useSheetSpace(sessionRef, sheetRef, state.phase === 'feedback');
 
   // Clear the input when a second try starts so the learner retypes.
   useEffect(() => {
@@ -223,9 +222,10 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
 
   const showFeedback = state.phase === 'feedback';
   const showRetry = state.phase === 'answer' && state.attempt === 1;
+  const tone = showFeedback && task.kind !== 'intro' ? feedbackTone(task, state) : null;
 
   return (
-    <div className="session">
+    <div className="session" ref={sessionRef}>
       <header className="session-bar">
         <h1 className="sr-only">{t('session.heading')}</h1>
         <button type="button" className="icon-btn" aria-label={t(`session.quit.${kind}.title`)} onClick={() => setQuitOpen(true)}>
@@ -270,7 +270,8 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
               onLocate={locate}
               signs={!noRepeat && (mode === 'practice' || !deferredIds?.has(task.itemId))}
             />
-            <div className="session-response" aria-live="polite" ref={responseRef}>
+            <div className={`session-sheet${tone ? ` is-open is-${tone}` : ''}`} ref={sheetRef}>
+            <div className="session-response" aria-live="polite">
               {readOnly?.key === task.key && !showFeedback && (
                 <p className="notice notice-accent">{t('session.meaningNotReading', { r: readOnly.value })}</p>
               )}
@@ -298,6 +299,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
                   </Button>
                 </>
               )}
+            </div>
             </div>
           </>
         )}

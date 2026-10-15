@@ -1734,10 +1734,6 @@
   cursor: default;
 }
 
-.session-response {
-  min-height: 132px;
-}
-
 .session-actions {
   display: grid;
   gap: var(--s-2);
@@ -1761,9 +1757,6 @@
   .plate {
     min-height: 132px;
   }
-  .session-response {
-    min-height: 96px;
-  }
 }
 
 /* Little height (iPhone landscape, small laptop): a smaller plate, so the
@@ -1782,9 +1775,6 @@
   }
   .session-main:has(.feedback) .glyph-xl {
     font-size: clamp(3.5rem, 11vh, 5.5rem);
-  }
-  .session-response {
-    min-height: 0;
   }
 }
 
@@ -2681,8 +2671,8 @@
 }
 
 .session-main.is-wide .choices,
-.session-main.is-wide > .session-response,
-.session-main.is-wide > .session-actions {
+.session-main.is-wide .session-response,
+.session-main.is-wide .session-actions {
   max-width: 640px;
   width: 100%;
   margin-inline: auto;

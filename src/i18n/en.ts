@@ -594,6 +594,9 @@ export const en = {
   'nav.courses': 'Courses',
   'nav.players': 'Who’s here',
   'nav.path': 'Path',
+  'learn.milestone': 'Milestone: all {n} lessons done',
+  'learn.section': 'Section {n} of {total} · {d} / {l} done',
+  'learn.best': 'Best result {c} / {t}',
 } as const;
 
 export type MessageKey = keyof typeof en;

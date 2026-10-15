@@ -14,6 +14,8 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - XP, Level, Serie (Streak), Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, dunkles Design (Signalgelb, Karten im grünen Schilder-Look, Schriften Geist und Bricolage Grotesque), Desktop und Mobile, komplett per Tastatur bedienbar
 - Navigation: auf dem Handy eine Tab-Leiste unten (Start, Lernen, Üben, Karte bzw. Zeichen, Profil), ab 1024 px eine Seitenleiste links mit denselben Bereichen und allen Kursen. Lernpfad/Zeichen und Üben/Tempo wechselt man über die Umschalter oben auf der Seite. In Lektionen und Übungen ist die Navigation ausgeblendet.
+- Lernpfad als Weg: eine Station pro Lektion auf einer gewundenen Straße (fertig = gelb mit Haken, empfohlen = groß und hell, nichts gesperrt). Fertige Abschnitte klappen zu einem grünen Meilenstein-Schild zusammen. Geometrie in `src/features/learn/wayLayout.ts` (getestet).
+- Rückmeldung nach jeder Antwort als Fenster, das von unten hochfährt (grün = richtig, rot = falsch, neutral = zweiter Versuch). Es sitzt über der Handy-Tastatur (`useSheetSpace`) und lässt Platz, damit die Aufgabe darüber lesbar bleibt.
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
 - Tagesaufgabe (Daily Challenge) und Duell (`#/<kurs>/daily`, `#/<kurs>/duel`): 10 Ortsnamen, Lesung eintippen, mehr Richtige gewinnt, bei Gleichstand die kürzere Zeit (siehe unten)
 - „Wer ist da“ (`#/players`, Leiste auf der Startseite nur für Angemeldete): angemeldete Spieler, die zugestimmt haben, mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)

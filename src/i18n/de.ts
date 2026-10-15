@@ -596,4 +596,7 @@ export const de: Record<MessageKey, string> = {
   'nav.courses': 'Kurse',
   'nav.players': 'Wer ist da',
   'nav.path': 'Lernpfad',
+  'learn.milestone': 'Meilenstein: alle {n} Lektionen geschafft',
+  'learn.section': 'Abschnitt {n} von {total} · {d} / {l} erledigt',
+  'learn.best': 'Bestes Ergebnis {c} / {t}',
 };
