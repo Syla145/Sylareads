@@ -233,48 +233,13 @@ Einrichtung (einmalig, kostenloser Spark-Tarif reicht):
 1. [Firebase Console](https://console.firebase.google.com) → **Projekt hinzufügen**, z. B. `sylareads` (Google Analytics wird nicht gebraucht). Ein eigenes Projekt hält die Daten getrennt von anderen Seiten.
 2. **Build → Authentication → Jetzt starten → Sign-in method → Google** aktivieren, Support-E-Mail wählen, speichern.
 3. **Authentication → Settings → Authorized domains → Domain hinzufügen:** `<dein-name>.github.io`.
-4. **Build → Firestore Database → Datenbank erstellen**, Standort z. B. `eur3 (europe-west)`, Produktionsmodus. Dann im Tab **Regeln** einfügen und **Veröffentlichen**:
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       function isOwner(uid) {
-         return request.auth != null && request.auth.uid == uid;
-       }
-       match /sylareads/{uid} {
-         allow read, delete: if isOwner(uid);
-         allow create, update: if isOwner(uid)
-           && request.resource.data.keys().hasOnly(['data', 'updatedAt', 'schema'])
-           && request.resource.data.data is string
-           && request.resource.data.data.size() < 900000
-           && request.resource.data.updatedAt == request.time
-           && (resource == null || !('updatedAt' in resource.data)
-               || request.time > resource.data.updatedAt + duration.value(10, 's'));
-       }
-       match /players/{uid} {
-         allow read: if request.auth != null;
-         allow delete: if isOwner(uid);
-         allow create, update: if isOwner(uid)
-           && request.resource.data.keys().hasOnly(['v', 'name', 'seen', 'course', 'courses', 'streak', 'level', 'xp', 'tempo'])
-           && request.resource.data.v == 2
-           && request.resource.data.name is string
-           && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 24
-           && request.resource.data.seen == request.time
-           && (resource == null || request.time > resource.data.seen + duration.value(60, 's'))
-           && request.resource.data.course is string && request.resource.data.course.size() <= 20
-           && request.resource.data.courses is map && request.resource.data.courses.size() <= 20
-           && request.resource.data.streak is int
-           && request.resource.data.level is int
-           && request.resource.data.xp is int
-           && (!('tempo' in request.resource.data) || (request.resource.data.tempo is map && request.resource.data.tempo.size() <= 20));
-       }
-     }
-   }
-   ```
-   Jeder angemeldete Nutzer kann so nur sein eigenes Fortschritts-Dokument lesen, schreiben und löschen, höchstens alle 10 Sekunden (Schutz des Tageskontingents; die App hält den Takt ein und versucht es nach einer Ablehnung einmal neu). Die öffentlichen Karten für „Wer ist gerade da“ (`players/<uid>`) kann jeder Angemeldete lesen, aber nur der Besitzer schreiben (höchstens einmal pro Minute, nur Kartenversion 2 = nach Zustimmung) oder löschen; die Zeit „zuletzt gesehen“ setzt der Server. Anstößige Namen löschst du in der Firebase-Konsole unter Firestore → `players`.
+4. **Build → Firestore Database → Datenbank erstellen**, Standort z. B. `eur3 (europe-west)`, Produktionsmodus. Dann im Tab **Regeln** den kompletten Inhalt von [`firestore.rules`](firestore.rules) einfügen und **Veröffentlichen**. Die Datei im Repository ist die gültige Fassung; nach jeder Änderung dort neu einfügen.
+   - `sylareads/<uid>` (Fortschritt): nur der Besitzer liest, schreibt und löscht, höchstens alle 10 Sekunden, unter 900 KB (Schutz des Tageskontingents; die App hält den Takt ein und versucht es nach einer Ablehnung einmal neu).
+   - `players/<uid>` (Karten für „Wer ist da“): Angemeldete dürfen höchstens 60 Karten pro Abfrage lesen, damit niemand das Lesekontingent leerräumen kann. Schreiben nur der Besitzer, höchstens einmal pro Minute, nur Kartenversion 2 (= nach Zustimmung); die Zeit „zuletzt gesehen“ setzt der Server. Die Regeln prüfen den Namen (Zeichen und Sperrliste wie `src/domain/names.ts`), nur bekannte Kurse und Zahlen in sinnvollen Grenzen (Level 1–999 usw.). Die App prüft beim Lesen dasselbe noch einmal und zeigt unpassende Karten nicht an. Anstößige Namen trotzdem in der Firebase-Konsole unter Firestore → `players` löschen.
+   - Empfohlen: In der Google Cloud Console unter **APIs & Dienste → Anmeldedaten** den „Browser key (auto created by Firebase)“ auf Websites beschränken (`https://<dein-name>.github.io/*`, `https://<projekt>.firebaseapp.com/*`, `http://localhost:*`).
 5. **Projekteinstellungen (Zahnrad) → Allgemein → Meine Apps → Web-App hinzufügen (`</>`)**, Name `Sylareads`, kein Firebase Hosting. Die angezeigte `firebaseConfig` in `src/sync/firebaseConfig.ts` bei `FIREBASE_CONFIG` eintragen (statt `null`). Die Werte sind öffentlich und dürfen ins Repository; geschützt wird über die Regeln oben.
 
-**Wer ist da.** Nur nach Zustimmung (Profil → „Deine Karte“: Anzeigename wählen, Vorschlag „Reader 1234“, nie der Google-Name; Schalter „Ich bin mindestens 16 und möchte meine Karte zeigen“). Ältere Einstellungen ohne diese Zustimmung gelten als aus; Karten aus der Zeit, als sie standardmäßig an waren, löscht die App einmal beim Start. Namen: 2–24 Zeichen, Buchstaben jeder Schrift, Ziffern, Leerzeichen, `._-`, dazu eine kleine Sperrliste (`nameProblem` in `src/domain/presence.ts`). Die Karte wird beim Start, kurz nach jeder Änderung und alle fünf Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als zehn Minuten. Die Liste zeigt die Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist: alle fünf Minuten, beim Seitenwechsel frühestens nach zwei Minuten wieder, auf der Startseite nur die zwölf neuesten Karten („12+ Spieler“), auf der eigenen Seite bis zu 60. Jede gelesene Karte zählt als ein Firestore-Lesezugriff. Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte trägt das letzte Daily-Challenge-Ergebnis je Kurs.
+**Wer ist da.** Nur nach Zustimmung (Profil → „Deine Karte“: Anzeigename wählen, Vorschlag „Reader 1234“, nie der Google-Name; Schalter „Ich bin mindestens 16 und möchte meine Karte zeigen“). Ältere Einstellungen ohne diese Zustimmung gelten als aus; Karten aus der Zeit, als sie standardmäßig an waren, löscht die App einmal beim Start. Namen: 2–24 Zeichen, Buchstaben jeder Schrift, Ziffern, Leerzeichen, `._-`, dazu eine kleine Sperrliste (`nameProblem` in `src/domain/names.ts`, dieselben Regeln in `firestore.rules`). Die Karte wird beim Start, kurz nach jeder Änderung und alle fünf Minuten bei geöffneter App aktualisiert; „gerade aktiv“ heißt zuletzt gesehen vor weniger als zehn Minuten. Die Liste zeigt die Karten der letzten sieben Tage und wird nur gelesen, solange sie auf dem Bildschirm ist: alle fünf Minuten, beim Seitenwechsel frühestens nach zwei Minuten wieder, auf der Startseite nur die zwölf neuesten Karten („12+ Spieler“), auf der eigenen Seite bis zu 60. Jede gelesene Karte zählt als ein Firestore-Lesezugriff. Logik ohne Oberfläche in `src/domain/presence.ts`, Firebase-Anbindung in `src/sync/presenceStore.ts`. Das Feld `tempo` in der Karte trägt das letzte Daily-Challenge-Ergebnis je Kurs.
 
 Gespeichert wird pro Nutzer ein Dokument `sylareads/<uid>` mit dem Fortschritt als JSON (wie beim Export) und dem Zeitpunkt der letzten Speicherung. Angemeldete Spieler bekommen zusätzlich eine öffentliche Karte `players/<uid>` mit Anzeigename, aktuellem Kurs, Fortschritt je Kurs (Mastery in %, Lektionen, lesbare Städte), Streak, Level und XP. Die Karte ist standardmäßig aus; Ausschalten im Profil unter „Deine Karte“ löscht sie.
 
