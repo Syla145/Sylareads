@@ -36,6 +36,8 @@ function LessonSession({ lessonId }: { lessonId: string }) {
     };
   }, [lesson, index, before, meta.id]);
 
+  const back = useGoBack(`/${meta.slug}`);
+
   if (!lesson || !setup) return <Navigate to={`/${meta.slug}/learn`} replace />;
 
   const onDone = (s: SessionState) => {
@@ -49,8 +51,6 @@ function LessonSession({ lessonId }: { lessonId: string }) {
     const unlocked = finishLesson(meta.id, lesson.id, { correct, total, newItems }, index);
     setDone({ before, after: useProgress.getState().root, session: s, unlocked });
   };
-
-  const back = useGoBack(`/${meta.slug}`);
 
   if (done) {
     const cp = done.after.courses[meta.id];

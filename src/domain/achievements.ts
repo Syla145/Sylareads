@@ -1,3 +1,4 @@
+import { COURSES } from '../content/registry';
 import { SCRIPT_ENTRIES, SCRIPT_LESSONS } from '../content/scripts/data';
 import type { CourseIndex } from './courseIndex';
 import type { CourseProgress, ProgressRoot } from './progress';
@@ -140,7 +141,9 @@ const SPECIALS: Record<string, { title: L10n; description: L10n; ids: (index: Co
   },
 };
 
-const CONTENT_COURSES = ['ru', 'el', 'th', 'bn'] as const;
+// Every language course of the register gets its set; the map set only courses with a map.
+const CONTENT_COURSES = COURSES.filter((c) => c.status === 'available').map((c) => c.id);
+const hasMap = (course: string) => !!COURSES.find((c) => c.id === course)?.hasMap;
 
 function courseAchievements(course: string): AchievementDef[] {
   const cp = (root: ProgressRoot) => root.courses[course];
@@ -214,7 +217,7 @@ function courseAchievements(course: string): AchievementDef[] {
       (tier, root) => m(Object.values(cp(root)?.lessons ?? {}).filter((l) => !l.placed && l.bestTotal > 0 && l.bestCorrect === l.bestTotal).length, [1, 5, 15][tier - 1]),
     ),
   ];
-  if (course === 'ru' || course === 'th' || course === 'bn') {
+  if (hasMap(course)) {
     list.push(
       ...tiered(
         course,

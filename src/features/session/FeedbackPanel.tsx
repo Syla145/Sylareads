@@ -36,7 +36,7 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
       {item.kind === 'letter' && (
         <div className="fb-body">
           <div className="fb-native">
-            <span className="glyph glyph-m">
+            <span lang={index.content.id} className="glyph glyph-m">
               {letterGlyphs(item)}
             </span>
             <span className="fb-reading">{item.reading || t('session.noSound')}</span>
@@ -49,7 +49,7 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
       {item.kind === 'combo' && (
         <div className="fb-body">
           <div className="fb-native">
-            <span className="glyph glyph-m">{item.native}</span>
+            <span lang={index.content.id} className="glyph glyph-m">{item.native}</span>
             <span className="fb-reading">{item.reading}</span>
           </div>
           {item.note && <p className="fb-note">{item.note[lang]}</p>}
@@ -59,7 +59,7 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
       {(item.kind === 'word' || item.kind === 'term' || item.kind === 'element') && (
         <div className="fb-body">
           <div className="fb-native">
-            <span className={`glyph glyph-${item.native.length > 10 ? 's' : 'm'}`}>{item.native}</span>
+            <span lang={index.content.id} className={`glyph glyph-${item.native.length > 10 ? 's' : 'm'}`}>{item.native}</span>
             <span className="fb-reading">{readingOf(index, item)}</span>
           </div>
           <dl className="fb-facts">
@@ -70,7 +70,7 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
             {item.abbr && (
               <div>
                 <dt>{t('session.abbr')}</dt>
-                <dd className="native">{item.abbr.join('  ')}</dd>
+                <dd lang={index.content.id} className="native">{item.abbr.join('  ')}</dd>
               </div>
             )}
           </dl>
@@ -103,7 +103,7 @@ function PlaceFacts({ index, place, withMap }: { index: CourseIndex; place: Plac
   return (
     <div className={`fb-body fb-place${onMap ? ' has-map' : ''}`}>
       {onMap && <MapView index={index} label={t('map.label')} marks={{ [place.id]: 'correct' }} focus={[place.id]} minFrame={0.55} className="map-mini" />}
-      <span className={`glyph glyph-${place.native.length > 14 ? 's' : 'm'}`}>{place.native}</span>
+      <span lang={index.content.id} className={`glyph glyph-${place.native.length > 14 ? 's' : 'm'}`}>{place.native}</span>
       <p className="fb-names">{placeNameLine(place, lang)}</p>
       <dl className="fb-facts">
         <div>
@@ -139,7 +139,7 @@ function ScanMiss({ index, state, task }: { index: CourseIndex; state: SessionSt
   if (!other) return null;
   return (
     <p className="confusion">
-      <span className="native">{other.native}</span> = {other.translit} ({lang === 'de' ? other.names.de : other.names.en})
+      <span lang={index.content.id} className="native">{other.native}</span> = {other.translit} ({lang === 'de' ? other.names.de : other.names.en})
     </p>
   );
 }

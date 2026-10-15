@@ -7,10 +7,13 @@ import './styles/base.css';
 import './styles/components.css';
 import { App } from './App';
 import { installFlushHandlers } from './store/persistence';
+import { useProgress } from './store/progressStore';
 import { startSync } from './sync/syncStore';
 import { startPresence } from './sync/presenceStore';
 import { startPwa } from './pwa/pwaStore';
 
+// The page language right away (the HTML says "en" until the app knows better).
+document.documentElement.lang = useProgress.getState().root.settings.uiLang;
 installFlushHandlers();
 startSync();
 startPresence();

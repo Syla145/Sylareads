@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import type { ScriptEntry } from '../../content/scripts/data';
+import { scriptLang, type ScriptEntry } from '../../content/scripts/data';
 import { useLang, useT } from '../../i18n';
 
 /** Text in the script's own font and direction. */
 export function ScriptText({ entry, children, className = '' }: { entry: ScriptEntry; children: ReactNode; className?: string }) {
   return (
-    <span className={`sf-${entry.font} ${className}`} dir={entry.rtl ? 'rtl' : undefined}>
+    <span className={`sf-${entry.font} ${className}`} dir={entry.rtl ? 'rtl' : undefined} lang={scriptLang(entry.id)}>
       {children}
     </span>
   );

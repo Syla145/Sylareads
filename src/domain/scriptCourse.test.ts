@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { SCRIPT_ENTRIES, SCRIPT_LESSONS, type ScriptFont } from '../content/scripts/data';
+import { SCRIPT_ENTRIES, SCRIPT_LESSONS, scriptLang, type ScriptFont } from '../content/scripts/data';
 import { newlyUnlocked } from './achievements';
 import { emptyCourse, emptyRoot } from './progress';
 import {
@@ -58,6 +58,10 @@ describe('scripts course data', () => {
         }
       }
     }
+  });
+
+  it('every entry has a language tag (screen readers)', () => {
+    for (const e of SCRIPT_ENTRIES) expect(scriptLang(e.id), e.id).toBeTruthy();
   });
 
   it('Bengali and Assamese samples can be told apart (র or ৰ/ৱ)', () => {

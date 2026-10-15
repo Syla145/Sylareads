@@ -43,7 +43,7 @@ export function ScriptPage() {
       <div className="letter-grid">
         {letters.map((l) => (
           <button key={l.id} type="button" className="letter-tile" onClick={() => setOpen(l)}>
-            <span className={`glyph letter-tile-glyph${[...l.upper].length > 4 ? ' letter-tile-glyph--long' : ''}`}>
+            <span lang={index.content.id} className={`glyph letter-tile-glyph${[...l.upper].length > 4 ? ' letter-tile-glyph--long' : ''}`}>
               {l.upper}
               {l.lower !== l.upper && <span className="letter-tile-lower">{l.lower}</span>}
             </span>
@@ -65,7 +65,7 @@ export function ScriptPage() {
           <div className="ending-list">
             {pairs.map((c) => (
               <div key={c.id} className="ending-row">
-                <span className="glyph glyph-s">{c.native}</span>
+                <span lang={index.content.id} className="glyph glyph-s">{c.native}</span>
                 <span className="ending-reading">{c.reading}</span>
                 <span className="muted small">{c.note?.[lang]}</span>
               </div>
@@ -80,7 +80,7 @@ export function ScriptPage() {
           <div className="ending-list">
             {endings.map((c) => (
               <div key={c.id} className="ending-row">
-                <span className="glyph glyph-s">{c.native}</span>
+                <span lang={index.content.id} className="glyph glyph-s">{c.native}</span>
                 <span className="ending-reading">-{c.reading}</span>
                 <span className="muted small">{c.note?.[lang]}</span>
               </div>
@@ -98,7 +98,7 @@ export function ScriptPage() {
               .filter((l) => index.content.noteHints?.[l.id])
               .map((l) => (
                 <div key={l.id} className="note-review-row">
-                  <span className="glyph glyph-s note-review-glyph">
+                  <span lang={index.content.id} className="glyph glyph-s note-review-glyph">
                     {l.upper} <span className="muted small">{l.reading || '–'}</span>
                   </span>
                   <NoteEditor courseId={meta.id} itemId={l.id} suggestion={index.content.noteHints?.[l.id]?.[lang]} />
@@ -112,8 +112,8 @@ export function ScriptPage() {
         {open && (
           <div className="letter-detail">
             <div className="plate plate-intro">
-              <span className="glyph glyph-xl">{open.upper}</span>
-              {open.lower !== open.upper && <span className="glyph glyph-l intro-lower">{open.lower}</span>}
+              <span lang={index.content.id} className="glyph glyph-xl">{open.upper}</span>
+              {open.lower !== open.upper && <span lang={index.content.id} className="glyph glyph-l intro-lower">{open.lower}</span>}
             </div>
             <p className="intro-reading">
               <span className="muted">{t('session.reads')}</span> <strong>{open.reading || t('session.noSound')}</strong>
@@ -129,7 +129,7 @@ export function ScriptPage() {
                   {index.contrastOf.get(open.id)!.map((id) => {
                     const o = index.byId.get(id) as LetterItem;
                     return (
-                      <span key={id} className="glyph-chip">
+                      <span key={id} lang={index.content.id} className="glyph-chip">
                         {letterGlyphs(o)} <span className="muted">{o.reading || '–'}</span>
                       </span>
                     );
@@ -143,7 +143,7 @@ export function ScriptPage() {
                 <ul className="example-list">
                   {examples(open).map((it) => (
                     <li key={it.id}>
-                      <span className="native">{'native' in it ? it.native : ''}</span>
+                      <span lang={index.content.id} className="native">{'native' in it ? it.native : ''}</span>
                       <span className="muted">{'translit' in it ? it.translit : ''}</span>
                     </li>
                   ))}

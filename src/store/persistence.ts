@@ -1,3 +1,4 @@
+import { tallyFrom } from '../domain/tally';
 import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRoot, type TempoSettings } from '../domain/progress';
 import { clampFlash, clampSeconds } from '../domain/tempo';
 import type { Lang } from '../domain/types';
@@ -122,6 +123,7 @@ export function migrate(raw: unknown): ProgressRoot {
   const tempo = isObj(settings.tempo) ? tempoSettingsOf(settings.tempo) : undefined;
   const signView = settings.signView === 'off' || settings.signView === 'mixed' || settings.signView === 'always' ? settings.signView : undefined;
   const share = shareOf(profile.share);
+  const tally = tallyFrom(profile.tally);
   return {
     ...base,
     settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}), ...(signView ? { signView } : {}), ...(settings.askMeaning === true ? { askMeaning: true } : {}) },
@@ -137,6 +139,7 @@ export function migrate(raw: unknown): ProgressRoot {
       daily: recordOf(profile.daily, dayActivityOf),
       achievements: recordOf(profile.achievements, numberOf),
       totalAnswers: numberOf(profile.totalAnswers) ?? 0,
+      ...(tally ? { tally } : {}),
       ...(share ? { share } : {}),
     },
     courses,

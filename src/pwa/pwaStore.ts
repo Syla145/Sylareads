@@ -35,7 +35,7 @@ const isStandalone = () =>
   (window.matchMedia?.('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true);
 
 /** iPhone and iPad (iPadOS reports itself as a Mac with touch). */
-const isIos = () =>
+export const isIos = () =>
   typeof navigator !== 'undefined' && (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
 
 /** How this device can install the app. */

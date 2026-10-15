@@ -138,7 +138,7 @@ export function CompleteScreen({
           {newlyReadable.length > 0 && (
             <div className="chip-row">
               {newlyReadable.slice(0, 8).map((c) => (
-                <span key={c.id} className="glyph-chip">
+                <span key={c.id} lang={index.content.id} className="glyph-chip">
                   {glyphOf(c)}
                 </span>
               ))}

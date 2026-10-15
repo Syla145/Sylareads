@@ -72,7 +72,7 @@ export function LearnPage() {
                     <span className="lesson-num tabular">{lesson.number}</span>
                     <span className="lesson-main">
                       <span className="lesson-title">{lesson.title[lang]}</span>
-                      <span className={`lesson-preview${short ? ' is-glyphs' : ''}`}>{glyphs.join(short ? ' ' : ' · ')}</span>
+                      <span lang={short ? index.content.id : undefined} className={`lesson-preview${short ? ' is-glyphs' : ''}`}>{glyphs.join(short ? ' ' : ' · ')}</span>
                     </span>
                     <span className="lesson-status">
                       {isNext && <span className="badge badge-accent">{t('learn.recommended')}</span>}

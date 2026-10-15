@@ -5,7 +5,7 @@
  *
  * Strategy
  * - Install: every file of the build is stored once (precache), except the
- *   Firebase chunks (only signed-in players need them) and old .woff fonts
+ *   Firebase chunks (only signed-in players need them), the link preview image and old .woff fonts
  *   (every browser that runs a service worker reads .woff2). Unchanged files
  *   (same hashed name) are copied from the previous version, not downloaded.
  * - Requests: answered from the cache first; anything else from this site is
@@ -28,7 +28,7 @@ const CACHE_PREFIX = 'sylareads-';
 /** Files to download at install, sorted and without duplicates. */
 export function precacheList(files: BuiltFile[]): string[] {
   const keep = (f: BuiltFile) =>
-    !f.firebase && f.name !== SW_FILE && !f.name.endsWith('.map') && !/\.woff$/.test(f.name) && !f.name.startsWith('.');
+    !f.firebase && f.name !== SW_FILE && f.name !== 'og-image.png' && !f.name.endsWith('.map') && !/\.woff$/.test(f.name) && !f.name.startsWith('.');
   return [...new Set(['index.html', ...files.filter(keep).map((f) => f.name)])].sort();
 }
 

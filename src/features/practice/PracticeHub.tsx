@@ -20,8 +20,8 @@ export function PracticeHub() {
   const navigate = useNavigate();
   const cp = useProgress((s) => s.root.courses[meta.id]);
   const saveConfig = useProgress((s) => s.savePracticeConfig);
-  const items = cp?.items ?? {};
-  const ctx = useMemo(() => ({ items, confusedTwice: confusedTwiceSet(cp) }), [items, cp]);
+  const ctx = useMemo(() => ({ items: cp?.items ?? {}, confusedTwice: confusedTwiceSet(cp) }), [cp]);
+  const items = ctx.items;
   const base = `/${meta.slug}`;
 
   const stored = cp?.lastPracticeConfig;

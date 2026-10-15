@@ -3,6 +3,7 @@ import bn from '../content/bn';
 import ru from '../content/ru';
 import {
   answerChallenge,
+  duelPathFromLink,
   CHALLENGE,
   compareScores,
   currentId,
@@ -102,5 +103,14 @@ describe('Daily Challenge and duel', () => {
     expect(parseDuel(new URLSearchParams(duelQuery(seed)))).toEqual({ seed });
     expect(parseDuel(new URLSearchParams('s=AB!'))).toBeNull();
     expect(parseDuel(new URLSearchParams(`s=${seed}&n=Tom&r=99&t=5`))).toEqual({ seed });
+  });
+});
+
+describe('duel links pasted into the app', () => {
+  it('finds the duel path in a shared link and ignores everything else', () => {
+    expect(duelPathFromLink('Schlag mich! https://syla145.github.io/Sylareads/#/bengali/duel?s=abc123&n=Josef&r=7&t=41000')).toBe('/bengali/duel?s=abc123&n=Josef&r=7&t=41000');
+    expect(duelPathFromLink('https://syla145.github.io/Sylareads/#/bengali/learn')).toBeNull();
+    expect(duelPathFromLink('#/bengali/duel?s=!!')).toBeNull();
+    expect(duelPathFromLink('hallo')).toBeNull();
   });
 });

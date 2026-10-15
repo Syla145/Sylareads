@@ -27,6 +27,7 @@ import type { Lang } from '../domain/types';
 import { backupCurrent, dropBackup, loadRoot, markReplaced, onForeignProgress, onStorageProblem, readBackup, saveRoot, type StorageProblem } from './persistence';
 import { withNote } from '../domain/notes';
 import { mergeRoots, sameProgress } from '../domain/merge';
+import { setTallyDevice } from '../domain/tally';
 
 interface ProgressState {
   root: ProgressRoot;
@@ -74,6 +75,22 @@ interface ProgressState {
 export const DEFAULT_TEMPO: TempoSettings = { seconds: 5, flashMs: 1000 };
 
 const loaded = loadRoot();
+
+/** This browser's id for the XP counters (tally.ts); never synced. */
+function deviceId(): string {
+  const key = 'sylareads.device';
+  try {
+    let id = localStorage.getItem(key);
+    if (!id || !/^[a-z0-9]{6,20}$/.test(id)) {
+      id = Math.random().toString(36).slice(2, 12) + Date.now().toString(36).slice(-4);
+      localStorage.setItem(key, id);
+    }
+    return id;
+  } catch {
+    return 'local';
+  }
+}
+setTallyDevice(deviceId());
 
 export const useProgress = create<ProgressState>((set, get) => {
   const commit = (root: ProgressRoot, immediate = false, milestone = immediate) => {

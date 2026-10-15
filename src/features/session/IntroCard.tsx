@@ -27,8 +27,8 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
       {item.kind === 'letter' && (
         <>
           <div className="plate plate-intro">
-            <span className="glyph glyph-xl">{item.upper}</span>
-            {item.lower !== item.upper && <span className="glyph glyph-l intro-lower">{item.lower}</span>}
+            <span lang={index.content.id} className="glyph glyph-xl">{item.upper}</span>
+            {item.lower !== item.upper && <span lang={index.content.id} className="glyph glyph-l intro-lower">{item.lower}</span>}
           </div>
           <p className="intro-reading">
             <span className="muted">{t('session.reads')}</span> <strong>{item.reading || t('session.noSound')}</strong>
@@ -41,7 +41,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
       {item.kind === 'combo' && (
         <>
           <div className="plate plate-intro">
-            <span className="glyph glyph-l">{item.native}</span>
+            <span lang={index.content.id} className="glyph glyph-l">{item.native}</span>
           </div>
           <p className="intro-reading">
             <span className="muted">{t('session.reads')}</span> <strong>{item.reading}</strong>
@@ -53,7 +53,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
       {(item.kind === 'word' || item.kind === 'term' || item.kind === 'element') && (
         <>
           <div className="plate plate-intro">
-            <span className={`glyph glyph-${item.native.length > 9 ? 'm' : 'l'}`}>{item.native}</span>
+            <span lang={index.content.id} className={`glyph glyph-${item.native.length > 9 ? 'm' : 'l'}`}>{item.native}</span>
           </div>
           <p className="intro-reading">
             <span className="muted">{t('session.reads')}</span> <strong>{readingOf(index, item)}</strong>
@@ -61,7 +61,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
           <p className="intro-names">{item.meaning[lang][0]}</p>
           {item.abbr && (
             <p className="intro-text muted">
-              {t('session.abbr')}: <span className="native">{item.abbr.join('  ')}</span>
+              {t('session.abbr')}: <span lang={index.content.id} className="native">{item.abbr.join('  ')}</span>
             </p>
           )}
         </>
@@ -85,7 +85,7 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
     return (
       <>
         <div className="plate plate-intro">
-          <span className={`glyph glyph-${place.native.length > 14 ? 's' : place.native.length > 9 ? 'm' : 'l'}`}>{place.native}</span>
+          <span lang={index.content.id} className={`glyph glyph-${place.native.length > 14 ? 's' : place.native.length > 9 ? 'm' : 'l'}`}>{place.native}</span>
         </div>
         <p className="intro-reading">
           <span className="muted">{t('session.transliteration')}</span> <strong>{place.translit}</strong>

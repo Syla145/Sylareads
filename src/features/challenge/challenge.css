@@ -36,7 +36,7 @@
 }
 
 .challenge-target {
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .challenge-time {
@@ -64,7 +64,7 @@
 }
 
 .challenge-answers .native {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .challenge-answers li.is-correct .native {
@@ -116,7 +116,7 @@
   padding: var(--s-3) var(--s-4);
   border-radius: var(--r-md);
   border: 1px solid var(--border);
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .challenge-verdict.is-win {
@@ -137,4 +137,30 @@
 
 .challenge-share .card-label {
   margin-bottom: 0;
+}
+
+/* Paste a duel link received elsewhere */
+.paste-duel {
+  margin-top: var(--s-4);
+  text-align: left;
+}
+.paste-duel summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.paste-duel form {
+  display: grid;
+  gap: var(--s-2);
+}
+.paste-duel-row {
+  display: flex;
+  gap: var(--s-2);
+}
+.paste-duel-row .text-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
 }

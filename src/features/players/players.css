@@ -46,7 +46,7 @@
   height: 40px;
   border-radius: 50%;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: var(--bg);
   background: var(--avatar, var(--state-learning));
 }
@@ -54,7 +54,7 @@
 .player-avatar.is-s {
   width: 28px;
   height: 28px;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .player-who {
@@ -72,7 +72,7 @@
 
 .player-name {
   font-weight: 600;
-  font-size: 17px;
+  font-size: 1.0625rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -82,7 +82,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-tertiary);
 }
 
@@ -129,7 +129,7 @@
 }
 
 .player-other {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* Home strip */

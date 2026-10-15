@@ -2,7 +2,7 @@
 
 .legal h2 {
   margin: var(--s-6) 0 var(--s-2);
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 .legal p,
 .legal li {
@@ -24,12 +24,12 @@
   margin-top: var(--s-2);
 }
 .legal-lead {
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: var(--text-primary) !important;
 }
 .legal-small {
   margin-top: var(--s-6);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-tertiary) !important;
 }
 .legal-address {
@@ -48,7 +48,7 @@
 .legal-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .legal-table th,
 .legal-table td {
@@ -69,7 +69,7 @@
   padding: var(--s-6) var(--gutter) var(--s-8);
   border-top: 1px solid var(--border);
   color: var(--text-tertiary);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .site-footer nav {
   display: flex;

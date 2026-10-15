@@ -6,6 +6,7 @@ import {
   compareScores,
   dailyAnswers,
   dailySeed,
+  duelPathFromLink,
   duelQuery,
   newDuelSeed,
   parseDuel,
@@ -30,6 +31,7 @@ import { Avatar, usePlayers } from '../players/PlayerParts';
 import { ResultActions } from '../session/SessionParts';
 import { ChallengeRun } from './ChallengeRun';
 import { useGoBack } from '../../ui/useBackGuard';
+import { isIos, usePwa } from '../../pwa/pwaStore';
 import './challenge.css';
 
 import { scoreText } from './DailyCard';
@@ -267,6 +269,7 @@ export function DuelRoute() {
           <li>{t('ch.rule1')}</li>
           <li>{t('ch.rule2')}</li>
         </ul>
+        {offer ? <OpenInApp /> : <PasteDuel />}
         <ResultActions
           actions={[
             { label: t('ch.startDuel'), onClick: () => setStage('run') },
@@ -294,6 +297,79 @@ export function DuelRoute() {
         />
       </div>
     </main>
+  );
+}
+
+/**
+ * iPhone: links from messengers open in Safari, which has its own storage –
+ * without the player's name and progress. Who installed the app copies the
+ * link and pastes it there.
+ */
+function OpenInApp() {
+  const t = useT();
+  const standalone = usePwa((s) => s.standalone);
+  const [copied, setCopied] = useState(false);
+  if (standalone || !isIos()) return null;
+  return (
+    <div className="notice">
+      <p>{t('ch.iosAppHint')}</p>
+      <Button
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(location.href);
+            setCopied(true);
+          } catch {
+            window.prompt(t('ch.copyPrompt'), location.href);
+          }
+        }}
+      >
+        {copied ? t('ch.copiedShort') : t('ch.copyLink')}
+      </Button>
+    </div>
+  );
+}
+
+/** A duel link received elsewhere, pasted here (the way into the installed app). */
+function PasteDuel() {
+  const t = useT();
+  const navigate = useNavigate();
+  const [text, setText] = useState('');
+  const [bad, setBad] = useState(false);
+  const go = () => {
+    const path = duelPathFromLink(text);
+    if (!path) return setBad(true);
+    navigate(path, { replace: true });
+  };
+  return (
+    <details className="paste-duel">
+      <summary>{t('ch.pasteTitle')}</summary>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          go();
+        }}
+      >
+        <label className="muted small" htmlFor="duel-link">
+          {t('ch.pasteHint')}
+        </label>
+        <div className="paste-duel-row">
+          <input
+            id="duel-link"
+            className="text-input"
+            inputMode="url"
+            autoComplete="off"
+            value={text}
+            onChange={(e) => {
+              setText(e.target.value);
+              setBad(false);
+            }}
+            placeholder="https://…/#/…/duel?s=…"
+          />
+          <Button type="submit">{t('ch.pasteGo')}</Button>
+        </div>
+        {bad && <p className="notice notice-error">{t('ch.pasteBad')}</p>}
+      </form>
+    </details>
   );
 }
 
@@ -328,8 +404,10 @@ function ShareDuel({ meta, seed, score, reply }: { meta: CourseMeta; seed: strin
         await navigator.share({ title: 'Sylareads', text, url: link });
         return;
       }
-    } catch {
-      /* cancelled: fall back to copying */
+    } catch (e) {
+      // Closed the share sheet on purpose: nothing else to do.
+      if (e instanceof DOMException && e.name === 'AbortError') return;
+      /* sharing not possible: fall back to copying */
     }
     try {
       await navigator.clipboard.writeText(link);

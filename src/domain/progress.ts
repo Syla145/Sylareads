@@ -1,3 +1,4 @@
+import { bump, tallyOf, totals, type Tally } from './tally';
 import type { ShareSetting } from './presence';
 import { recordDaily, type ChallengeScore, type DailyAnswer, type DailyLog } from './challenge';
 import { dayKey } from './dates';
@@ -60,6 +61,8 @@ export interface Profile {
   daily: Record<string, DayActivity>;
   achievements: Record<string, number>;
   totalAnswers: number;
+  /** Per-device counters behind xp and totalAnswers (see tally.ts). */
+  tally?: Tally;
   /** Opt-in public card for "Wer ist gerade da" (absent = never chosen). */
   share?: ShareSetting;
 }
@@ -135,8 +138,15 @@ function addDaily(profile: Profile, today: string, delta: Partial<DayActivity>):
   return { ...profile, daily, streak };
 }
 
+/** XP and answers of this device: kept in its own counter, the totals follow (tally.ts). */
+function count(profile: Profile, xp: number, answers: number): Profile {
+  const tally = bump(tallyOf(profile.tally, profile.xp, profile.totalAnswers), xp, answers);
+  const t = totals(tally);
+  return { ...profile, tally, xp: t.xp, totalAnswers: t.answers };
+}
+
 function addXp(root: ProgressRoot, courseId: string, xp: number, today: string, extra: Partial<DayActivity> = {}): ProgressRoot {
-  const profile = addDaily({ ...root.profile, xp: root.profile.xp + xp }, today, { ...extra, xp });
+  const profile = addDaily(count(root.profile, xp, 0), today, { ...extra, xp });
   const course = root.courses[courseId];
   return { ...root, profile, courses: course ? { ...root.courses, [courseId]: { ...course, xp: course.xp + xp } } : root.courses };
 }
@@ -167,7 +177,7 @@ export function recordAnswer(root: ProgressRoot, courseId: string, a: AnswerInpu
     const mistakes = a.logMistake === false ? c.mistakes : logAnswer(c.mistakes, a.itemId, a.result === 'W', today, now);
     return { ...c, items, confusions, recent: (c.recent + a.result).slice(-200), lastSessionAt: now, ...(mistakes ? { mistakes } : {}) };
   });
-  next = { ...next, profile: { ...next.profile, totalAnswers: next.profile.totalAnswers + 1 } };
+  next = { ...next, profile: count(next.profile, 0, 1) };
   return addXp(next, courseId, xpForResult(a.result), today, { answers: 1 });
 }
 
@@ -231,7 +241,7 @@ export function recordTempo(
     }
     return { ...c, tempo, confusions, lastSessionAt: now, ...(mistakes ? { mistakes } : {}) };
   });
-  next = { ...next, profile: { ...next.profile, totalAnswers: next.profile.totalAnswers + answered } };
+  next = { ...next, profile: count(next.profile, 0, answered) };
   const correct = s.answers.filter((a) => a.correct).length;
   const xp = correct * XP.tempoCorrect + (answered >= 10 ? XP.practiceComplete : 0);
   return { root: addXp(next, courseId, xp, today, { answers: answered }), newBest, prevBest };

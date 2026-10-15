@@ -584,4 +584,11 @@ export const de: Record<MessageKey, string> = {
   'common.loadFailed': 'Der Kurs konnte nicht geladen werden.',
   'common.loadFailedOffline': 'Du bist offline, und dieser Kurs ist noch nicht auf dem Gerät gespeichert.',
   'common.retry': 'Nochmal versuchen',
+  'ch.iosAppHint': 'Du hast Sylareads als App auf dem Home-Bildschirm? Links aus Nachrichten öffnet das iPhone immer in Safari – ohne deinen Namen und Fortschritt. Kopiere den Link und füge ihn in der App unter „Freund herausfordern“ ein.',
+  'ch.copyLink': 'Link kopieren',
+  'ch.copiedShort': 'Kopiert',
+  'ch.pasteTitle': 'Duell-Link bekommen? Hier einfügen',
+  'ch.pasteHint': 'Den ganzen Link aus der Nachricht einfügen.',
+  'ch.pasteGo': 'Öffnen',
+  'ch.pasteBad': 'Das ist kein Duell-Link von Sylareads.',
 };

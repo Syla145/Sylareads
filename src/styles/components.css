@@ -43,21 +43,21 @@
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 1.75rem;
   line-height: 36px;
   font-weight: 600;
   letter-spacing: -0.015em;
 }
 
 .section-label {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 28px;
   font-weight: 600;
   margin: var(--s-6) 0 var(--s-3);
 }
 
 .card-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 20px;
   font-weight: 600;
   color: var(--text-secondary);
@@ -65,14 +65,14 @@
 }
 
 .card-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 28px;
   font-weight: 600;
   margin-bottom: var(--s-2);
 }
 
 .eyebrow-quiet {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   margin-bottom: var(--s-1);
 }
@@ -134,7 +134,7 @@
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
   letter-spacing: -0.03em;
   white-space: nowrap;
 }
@@ -155,7 +155,7 @@
 .wordmark-logo text {
   font-family: var(--font-ui);
   font-weight: 800;
-  font-size: 26px;
+  font-size: 1.625rem;
 }
 
 .course-switch {
@@ -171,7 +171,7 @@
   padding: 6px 10px;
   border-radius: var(--r-md);
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -208,7 +208,7 @@
 .course-switch-menu span {
   padding: 10px 12px;
   border-radius: var(--r-sm);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .course-switch-menu a:hover,
@@ -229,7 +229,7 @@
   border-radius: var(--r-pill);
   background: var(--surface-2);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -250,7 +250,7 @@
   height: 24px;
   padding: 0 9px;
   border-radius: var(--r-pill);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-tertiary);
   letter-spacing: 0.02em;
@@ -288,7 +288,7 @@
     display: none; /* language: in the profile */
   }
   .wordmark {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   /* The course menu spans the bar instead of running off the right edge. */
   .course-switch {
@@ -330,7 +330,7 @@
 .course-tabs a {
   position: relative;
   padding: 12px 12px 13px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -365,7 +365,7 @@
     flex: 1 0 auto;
     text-align: center;
     padding: 13px 5px 14px;
-    font-size: 14px;
+    font-size: 0.875rem;
   }
   .course-tabs a.active::after {
     left: 5px;
@@ -382,7 +382,7 @@
   min-height: 48px;
   padding: 0 20px;
   border-radius: var(--r-md);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
@@ -568,7 +568,7 @@
   border-radius: var(--r-pill);
   background: var(--surface-2);
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -597,18 +597,18 @@
   padding: 6px 12px;
   border-radius: var(--r-sm);
   background: var(--surface-2);
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1.25;
   font-weight: 500;
 }
 
 .glyph-chip .up {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--success);
 }
 
 .glyph-chip .muted {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .notice {
@@ -617,7 +617,7 @@
   border-radius: var(--r-md);
   background: var(--surface-2);
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .notice-accent {
@@ -655,7 +655,7 @@
 }
 
 .glyph-s {
-  font-size: clamp(26px, 6vw, 40px);
+  font-size: clamp(1.625rem, 6vw, 2.5rem);
   line-height: 1.3;
 }
 
@@ -697,7 +697,7 @@
 }
 
 .hero-title {
-  font-size: clamp(52px, 11vw, 104px);
+  font-size: clamp(3.25rem, 11vw, 6.5rem);
   line-height: 0.95;
   font-weight: 700;
   letter-spacing: -0.045em;
@@ -705,7 +705,7 @@
 }
 
 .hero-claim {
-  font-size: clamp(20px, 3.2vw, 26px);
+  font-size: clamp(1.25rem, 3.2vw, 1.625rem);
   line-height: 1.3;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -714,7 +714,7 @@
 
 .hero-sub {
   color: var(--text-secondary);
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .course-grid {
@@ -747,7 +747,7 @@
 }
 
 .course-card-glyphs {
-  font-size: clamp(36px, 6vw, 48px);
+  font-size: clamp(2.25rem, 6vw, 3rem);
   line-height: 1.2;
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -761,7 +761,7 @@
 }
 
 .course-card-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 28px;
   font-weight: 600;
 }
@@ -787,13 +787,13 @@
 
 .course-card-countries {
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .course-card-progress {
   display: grid;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   margin-top: var(--s-3);
 }
@@ -803,12 +803,12 @@
 }
 
 .hero-compact .hero-title {
-  font-size: clamp(36px, 7vw, 56px);
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
   margin-bottom: var(--s-2);
 }
 
 .hero-compact .hero-claim {
-  font-size: 18px;
+  font-size: 1.125rem;
   margin-bottom: 0;
 }
 
@@ -840,7 +840,7 @@
 }
 
 .continue-glyphs {
-  font-size: 28px;
+  font-size: 1.75rem;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
@@ -851,11 +851,11 @@
 .continue-pct {
   margin-left: auto;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .continue-next {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
@@ -895,7 +895,7 @@
 }
 
 .course-row-glyphs {
-  font-size: 22px;
+  font-size: 1.375rem;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -914,7 +914,7 @@
 
 .course-row-end {
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 @media (max-width: 520px) {
@@ -923,14 +923,14 @@
     gap: var(--s-3);
   }
   .course-row-glyphs {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
 }
 
 .home-note {
   margin-top: var(--s-6);
   color: var(--text-tertiary);
-  font-size: 14px;
+  font-size: 0.875rem;
   max-width: 560px;
 }
 
@@ -947,7 +947,7 @@
 }
 
 .big-number {
-  font-size: clamp(56px, 10vw, 80px);
+  font-size: clamp(3.5rem, 10vw, 5rem);
   line-height: 1;
   font-weight: 650;
   letter-spacing: -0.04em;
@@ -963,11 +963,11 @@
 
 .big-number-label {
   color: var(--text-secondary);
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .small-big {
-  font-size: 32px;
+  font-size: 2rem;
   margin-bottom: var(--s-3);
 }
 
@@ -977,7 +977,7 @@
   gap: var(--s-2) var(--s-5);
   margin-top: var(--s-3);
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 /* Two independent columns (no gaps from uneven card heights); stacked on phones in reading order. */
@@ -1014,7 +1014,7 @@
 }
 
 .rec-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   line-height: 28px;
   margin-bottom: 4px;
@@ -1039,7 +1039,7 @@
 .progress-row-head {
   display: flex;
   justify-content: space-between;
-  font-size: 15px;
+  font-size: 0.9375rem;
   margin-bottom: 6px;
 }
 
@@ -1047,7 +1047,7 @@
   display: flex;
   gap: var(--s-4);
   margin-top: var(--s-4);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
 }
 
@@ -1066,7 +1066,7 @@
 }
 
 .first-run-glyphs {
-  font-size: 56px;
+  font-size: 3.5rem;
   line-height: 1.15;
   font-weight: 500;
   max-width: 6ch;
@@ -1081,7 +1081,7 @@
   }
   .first-run-glyphs {
     max-width: none;
-    font-size: 44px;
+    font-size: 2.75rem;
   }
 }
 
@@ -1091,7 +1091,7 @@
 }
 
 .phase-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: var(--s-3);
@@ -1129,7 +1129,7 @@
 
 .lesson-num {
   color: var(--text-tertiary);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
 }
 
@@ -1152,11 +1152,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .lesson-preview.is-glyphs {
-  font-size: 20px;
+  font-size: 1.25rem;
   letter-spacing: 0.06em;
   color: var(--text-primary);
 }
@@ -1234,7 +1234,7 @@
 .mode-count {
   margin-top: auto;
   padding-top: var(--s-2);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-tertiary);
 }
 
@@ -1283,7 +1283,7 @@
   min-width: 2.5em;
   text-align: right;
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .mode-row.is-empty .mode-title,
@@ -1336,7 +1336,7 @@
 }
 
 .free-config legend {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: var(--s-2);
@@ -1354,7 +1354,7 @@
   border-radius: var(--r-pill);
   border: 1px solid var(--border-strong);
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
 }
 
@@ -1379,7 +1379,7 @@
   border-radius: 8px;
   color: var(--text-secondary);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .segmented button.is-on {
@@ -1393,7 +1393,7 @@
   align-items: center;
   gap: var(--s-3);
   cursor: pointer;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .switch input {
@@ -1477,7 +1477,7 @@
 }
 
 .session-count {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   min-width: 56px;
   text-align: right;
@@ -1487,7 +1487,7 @@
   max-width: 640px;
   margin: 0 auto;
   padding: 0 var(--gutter);
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
@@ -1517,7 +1517,7 @@
 
 .task-prompt {
   color: var(--text-secondary);
-  font-size: 16px;
+  font-size: 1rem;
   text-align: center;
 }
 
@@ -1528,7 +1528,7 @@
   background: var(--surface-2);
   border: 1px solid var(--border-strong);
   border-radius: var(--r-md);
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 500;
   line-height: 28px;
   text-align: center;
@@ -1540,7 +1540,7 @@
 .answer-input::placeholder {
   color: var(--text-tertiary);
   font-weight: 400;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .answer-input:focus {
@@ -1620,12 +1620,12 @@
 }
 
 .choice-latin {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 600;
 }
 
 .choice-native {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 500;
 }
 
@@ -1641,7 +1641,7 @@
 }
 
 .choices-sign .choice-native {
-  font-size: 26px;
+  font-size: 1.625rem;
 }
 
 .choices-text .choice {
@@ -1651,7 +1651,7 @@
 }
 
 .choice-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
 }
 
@@ -1674,7 +1674,7 @@
   position: absolute;
   right: 10px;
   top: 8px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -1746,13 +1746,13 @@
     padding: var(--s-3) var(--s-4);
   }
   .session .glyph-xl {
-    font-size: clamp(64px, 16vh, 120px);
+    font-size: clamp(4rem, 16vh, 7.5rem);
   }
   .session-main:has(.feedback) .plate {
     min-height: 0;
   }
   .session-main:has(.feedback) .glyph-xl {
-    font-size: clamp(56px, 11vh, 88px);
+    font-size: clamp(3.5rem, 11vh, 5.5rem);
   }
   .session-response {
     min-height: 0;
@@ -1765,7 +1765,7 @@
     padding: var(--s-2) var(--s-4);
   }
   .session .glyph-xl {
-    font-size: clamp(48px, 18vh, 80px);
+    font-size: clamp(3rem, 18vh, 5rem);
   }
   .session-main {
     padding-top: var(--s-2);
@@ -1800,7 +1800,7 @@
 .confusion {
   margin-top: var(--s-2);
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .feedback {
@@ -1857,18 +1857,18 @@
 }
 
 .fb-reading {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .fb-note {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--text-secondary);
 }
 
 .fb-names {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 600;
   line-height: 1.3;
 }
@@ -1876,7 +1876,7 @@
 .fb-facts {
   display: grid;
   gap: 4px;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .fb-facts div {
@@ -1909,17 +1909,17 @@
 }
 
 .intro-reading {
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .intro-reading strong {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 650;
   margin-left: 6px;
 }
 
 .intro-names {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
@@ -1943,14 +1943,14 @@
 }
 
 .complete-title {
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 40px;
   font-weight: 650;
   letter-spacing: -0.02em;
 }
 
 .complete-score {
-  font-size: clamp(40px, 9vw, 56px);
+  font-size: clamp(2.5rem, 9vw, 3.5rem);
   line-height: 1.1;
   font-weight: 650;
   letter-spacing: -0.03em;
@@ -1961,7 +1961,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-2) var(--s-5);
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: var(--text-secondary);
 }
 
@@ -2047,18 +2047,18 @@
 }
 
 .letter-tile-glyph {
-  font-size: 34px;
+  font-size: 2.125rem;
   line-height: 1.2;
 }
 
 .letter-tile-lower {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: var(--text-secondary);
   margin-left: 4px;
 }
 
 .letter-tile-reading {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -2112,7 +2112,7 @@
   display: flex;
   justify-content: space-between;
   gap: var(--s-3);
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 /* ---------- Profile ---------- */
@@ -2154,7 +2154,7 @@
   align-items: center;
   min-height: 44px;
   color: var(--error);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
 }
 
@@ -2175,14 +2175,14 @@
 }
 
 .modal-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 28px;
   font-weight: 600;
   margin-bottom: var(--s-3);
 }
 
 .letter-tile-glyph--long {
-  font-size: 20px;
+  font-size: 1.25rem;
   letter-spacing: -0.02em;
 }
 
@@ -2200,17 +2200,17 @@
     right: 6px;
   }
   .letter-tile-glyph {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
   .letter-tile-lower {
-    font-size: 18px;
+    font-size: 1.125rem;
     margin-left: 2px;
   }
   .letter-tile-glyph--long {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
   .letter-tile-reading {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
 }
 
@@ -2375,7 +2375,7 @@
   border: 1px solid var(--border-strong);
   background: var(--surface-3);
   color: var(--text-primary);
-  font: 500 18px/1 var(--font-ui);
+  font: 500 1.125rem/1 var(--font-ui);
   cursor: pointer;
 }
 
@@ -2426,7 +2426,7 @@
 
 .ltoggle-label {
   padding: 0 var(--s-2) 0 var(--s-3);
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-tertiary);
 }
 
@@ -2436,7 +2436,7 @@
   color: var(--text-secondary);
   padding: 5px 12px;
   border-radius: var(--r-pill);
-  font: 500 13px/1.2 var(--font-ui);
+  font: 500 0.8125rem/1.2 var(--font-ui);
   cursor: pointer;
 }
 
@@ -2544,7 +2544,7 @@
 }
 
 .map-info-translit {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   margin: var(--s-1) 0 0;
 }
@@ -2575,7 +2575,7 @@
   grid-template-columns: 14px auto 1fr auto;
   align-items: center;
   gap: var(--s-2);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .map-swatch {
@@ -2636,7 +2636,7 @@
 
 .task-map .ltoggle-btn {
   padding: 4px 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 @media (max-width: 640px) {
@@ -2773,7 +2773,7 @@
 .tempo-range {
   display: grid;
   gap: var(--s-2);
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
@@ -2814,7 +2814,7 @@
 }
 
 .tempo-figure-value {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1.1;
   font-weight: 650;
   letter-spacing: -0.02em;
@@ -2853,7 +2853,7 @@
 }
 
 .tempo-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   margin-top: var(--s-2);
 }
@@ -2880,7 +2880,7 @@
 }
 
 .tempo-slow .native {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 500;
   overflow-wrap: anywhere;
 }
@@ -2906,12 +2906,12 @@
 }
 
 .tempo-countdown-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 600;
 }
 
 .tempo-countdown-n {
-  font-size: clamp(96px, 26vw, 160px);
+  font-size: clamp(6rem, 26vw, 10rem);
   line-height: 1;
   font-weight: 650;
   color: var(--accent);
@@ -2965,7 +2965,7 @@
 }
 
 .tempo-clock {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 650;
   min-width: 44px;
   text-align: right;
@@ -3018,7 +3018,7 @@
 }
 
 .tempo-choices-names .choice-text {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.25;
   overflow-wrap: anywhere;
   text-align: center;
@@ -3040,7 +3040,7 @@
 
 .tempo-feedback-title {
   font-weight: 650;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .tempo-feedback.is-correct .tempo-feedback-title {
@@ -3053,7 +3053,7 @@
 
 .tempo-newbest {
   font-weight: 650;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3115,7 +3115,7 @@
   margin: -12px 0;
   border-radius: var(--r-pill);
   color: var(--accent);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
@@ -3169,7 +3169,7 @@
 }
 
 .mistakes-list .native {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 500;
   overflow-wrap: break-word;
 }
@@ -3266,7 +3266,7 @@
 .problems-tabs button {
   flex: 1 1 0;
   padding: 0 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .card-label-sub {
   margin-top: var(--s-2);

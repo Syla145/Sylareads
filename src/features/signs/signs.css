@@ -18,7 +18,7 @@
 .sign-native {
   display: block;
   max-width: 100%;
-  font-size: clamp(30px, 8vw, 50px);
+  font-size: clamp(1.875rem, 8vw, 3.125rem);
   white-space: nowrap;
   overflow: hidden;
 }
@@ -31,7 +31,7 @@
 
 .sign-latin {
   position: relative;
-  font-size: clamp(17px, 4.2vw, 26px);
+  font-size: clamp(1.0625rem, 4.2vw, 1.625rem);
   font-weight: 600;
   justify-self: start;
 }
@@ -58,11 +58,11 @@
   width: 1.6em;
   height: 1.6em;
   flex: none;
-  font-size: clamp(22px, 5vw, 32px);
+  font-size: clamp(1.375rem, 5vw, 2rem);
 }
 
 .sign-km {
-  font-size: clamp(26px, 6.5vw, 40px);
+  font-size: clamp(1.625rem, 6.5vw, 2.5rem);
   flex: none;
 }
 
@@ -247,7 +247,7 @@
   place-items: center;
   width: 44px;
   height: 48px;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   border: 3px solid var(--sign-black);
   border-radius: 6px 6px 22px 22px;
@@ -255,16 +255,16 @@
 
 .kmstone-km {
   font-family: var(--font-thai);
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .kmstone-num {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 700;
 }
 
 .kmstone-name.sign-native {
-  font-size: clamp(22px, 5.5vw, 32px);
+  font-size: clamp(1.375rem, 5.5vw, 2rem);
   width: 100%;
   text-align: center;
 }
@@ -287,7 +287,7 @@
 }
 
 .shop-name {
-  font-size: clamp(30px, 8.5vw, 50px);
+  font-size: clamp(1.875rem, 8.5vw, 3.125rem);
   font-weight: 700;
   line-height: 1.25;
   color: #ffe23a;
@@ -295,7 +295,7 @@
 }
 
 .shop-offer {
-  font-size: clamp(16px, 4vw, 22px);
+  font-size: clamp(1rem, 4vw, 1.375rem);
   color: #fff;
 }
 
@@ -307,17 +307,17 @@
 }
 
 .shop-owner {
-  font-size: clamp(15px, 3.8vw, 19px);
+  font-size: clamp(0.9375rem, 3.8vw, 1.1875rem);
 }
 
 .shop-address {
-  font-size: clamp(19px, 4.8vw, 26px);
+  font-size: clamp(1.1875rem, 4.8vw, 1.625rem);
   font-weight: 700;
   color: #fff;
 }
 
 .shop-phone {
-  font-size: clamp(15px, 3.8vw, 19px);
+  font-size: clamp(0.9375rem, 3.8vw, 1.1875rem);
   color: #ffe23a;
 }
 

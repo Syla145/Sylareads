@@ -64,7 +64,7 @@ export function MapPage() {
         <aside className="map-side">
           {place ? (
             <Card className="map-info">
-              <span className={`glyph glyph-${Array.from(place.native).length > 12 ? 's' : 'm'} native`}>{place.native}</span>
+              <span lang={index.content.id} className={`glyph glyph-${Array.from(place.native).length > 12 ? 's' : 'm'} native`}>{place.native}</span>
               <p className="map-info-translit">{place.translit}</p>
               <p className="muted">{placeNameLine(place, lang)}</p>
               <dl className="fb-facts">
@@ -72,7 +72,7 @@ export function MapPage() {
                   <div>
                     <dt>{t(`map.group.${layer}`)}</dt>
                     <dd>
-                      {group.native && <span className="native">{group.native}</span>}
+                      {group.native && <span lang={index.content.id} className="native">{group.native}</span>}
                       {group.native && group.name && ' · '}
                       {group.name?.[lang]}
                     </dd>
@@ -99,7 +99,7 @@ export function MapPage() {
               return (
                 <li key={g.id}>
                   <span className={`map-swatch map-tint-${tint % 8}`} aria-hidden="true" />
-                  <span className="native">{info?.native}</span>
+                  <span lang={index.content.id} className="native">{info?.native}</span>
                   <span className="muted">{info?.name?.[lang]}</span>
                   <span className="muted tabular">{map.shapes.filter((s) => s.group === g.id).length}</span>
                 </li>

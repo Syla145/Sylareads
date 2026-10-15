@@ -157,8 +157,8 @@ npm run preview    # Build lokal ansehen
    git push -u origin main
    ```
 3. Im Repository unter **Settings → Pages → Build and deployment → Source** die Option **GitHub Actions** wählen.
-4. Der Workflow `.github/workflows/deploy.yml` startet bei jedem Push auf `main`: Typecheck, Tests, Build, Veröffentlichung. Nach etwa einer Minute ist die App unter `https://<dein-name>.github.io/sylareads/` erreichbar. Den Fortschritt siehst du unter **Actions**.
-5. Den Link an ausgewählte Personen schicken. Es gibt keinen Login; wer den Link hat, kann die App nutzen.
+4. Der Workflow `.github/workflows/deploy.yml` startet bei jedem Push auf `main`: Typecheck, Lint (ESLint mit den React-Hooks-Regeln), Tests, Build, Veröffentlichung. Nach etwa einer Minute ist die App unter `https://<dein-name>.github.io/sylareads/` erreichbar. Den Fortschritt siehst du unter **Actions**.
+5. Den Link teilen. Ohne Anmeldung bleibt der Fortschritt im Browser; mit Google-Anmeldung wird er online gespeichert (siehe „Online-Speicherung“).
 
 Weitere Hinweise:
 
@@ -267,8 +267,12 @@ src/
 ## Einen Kurs ergänzen
 
 1. Ordner `src/content/<kurs>/` anlegen. Für Alphabetschriften dient `ru/` oder `el/` als Muster (Segmentierungsregeln in `segments`), für Abugidas `th/` oder `bn/` (`segments: () => []`, explizite Antwortlisten, Leseeinheiten über `requiredLetters`).
-2. Im Register `src/content/registry.ts` den Kurs auf `status: 'available'` setzen und `load` eintragen.
-3. Den Kurs in `src/content/content.test.ts` zur Liste `courses` hinzufügen. Die Tests prüfen Eindeutigkeit, Decodierbarkeit, Antwortlisten und Übersetzungen.
+2. Im Register `src/content/registry.ts` einen Eintrag in `COURSES` mit `status: 'available'` und `load` anlegen, dazu das Land in `COUNTRIES`. Erfolge pro Kurs entstehen daraus automatisch (`src/domain/achievements.ts`).
+3. Mit Karte: `map.json` im Kursordner (Werkzeuge in `tools/`), im Register `hasMap: true` und `loadMap`, im Kurs `loadMap`. Kartenerfolge kommen dann von selbst.
+4. Schrift: Fontsource-Paket in `src/styles/fonts.css` einbinden (nur die Teilmenge der Schrift, mit `unicode-range`) und eine Klasse `font-native-<schrift>` in `src/styles/base.css` und `fontClass` im Register. Lateinisch/Kyrillisch/Griechisch deckt Inter ab.
+5. „Wer ist da“: Kurs-ID in `CARD_COURSES` (`src/domain/presence.ts`) und in `cardCourses()` in `firestore.rules` eintragen – Regeln danach in der Firebase-Konsole neu veröffentlichen.
+6. Optional: gezeichnete Schilder in `src/domain/signs.ts`, Eselsbrücken-Vorschläge (`noteHints`).
+7. Den Kurs in `src/content/content.test.ts` zur Liste `courses` hinzufügen. Die Tests prüfen Eindeutigkeit, Decodierbarkeit, Antwortlisten und Übersetzungen.
 
 ## Antwortregeln
 

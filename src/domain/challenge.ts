@@ -211,3 +211,15 @@ export function parseDuel(params: URLSearchParams): DuelOffer | null {
   if (!typed || !Number.isInteger(c) || c < 0 || c > CHALLENGE.count || !Number.isFinite(ms) || ms <= 0 || ms > 3_600_000) return { seed };
   return { seed, from: { name, score: { c, n: CHALLENGE.count, ms } } };
 }
+
+/**
+ * A duel link pasted into the app (the iPhone opens links from messengers in
+ * Safari, not in the installed app): the app path of the duel, or null if the
+ * text is no duel link.
+ */
+export function duelPathFromLink(text: string): string | null {
+  const m = /#(\/[a-z]+\/duel\?[^\s#]*)/.exec(text.trim());
+  if (!m) return null;
+  const [path, query] = m[1].split('?');
+  return parseDuel(new URLSearchParams(query)) ? `${path}?${query}` : null;
+}

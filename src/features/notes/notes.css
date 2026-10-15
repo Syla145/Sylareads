@@ -12,7 +12,7 @@
 .note-label {
   display: block;
   margin: 0 0 var(--s-1);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--accent);
@@ -30,7 +30,7 @@
   border: 0;
   color: var(--text-secondary);
   font: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -59,7 +59,7 @@
   background: none;
   color: var(--text-secondary);
   font: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 .note-add:hover {
@@ -73,7 +73,7 @@
 }
 .note-hint {
   margin: var(--s-2) 0 0;
-  font-size: 14px;
+  font-size: 0.875rem;
   white-space: pre-wrap;
 }
 @media (pointer: coarse) {
@@ -88,7 +88,7 @@
   position: absolute;
   top: 6px;
   left: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--accent);
 }
 

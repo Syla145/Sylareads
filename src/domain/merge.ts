@@ -6,6 +6,7 @@ import { mergeTempo } from './tempo';
 import { mergeDaily } from './challenge';
 import { mergeShare, type ShareSetting } from './presence';
 import { mergeNotes } from './notes';
+import { mergeTally, tallyOf, totals } from './tally';
 
 const shareField = (s: ShareSetting | undefined) => (s ? { share: s } : {});
 
@@ -17,7 +18,8 @@ const shareField = (s: ShareSetting | undefined) => (s ? { share: s } : {});
  * - Items: the record with the most recent graded answer wins (its box and
  *   due date belong together); ties go to the record seen more often.
  * - Lessons, achievements, daily activity: union, keeping the better values.
- * - XP and counters: the larger value (both copies share their history).
+ * - XP and answers: counted per device and summed (tally.ts), so learning on
+ *   two devices between syncs adds up. Per-course XP: the larger value.
  * - Tempo: newest reading time per item, fuller day, higher best score.
  * - Mistakes: per day and item the larger counts.
  * - Settings: this device's settings stay.
@@ -29,6 +31,9 @@ export function mergeRoots(local: ProgressRoot, remote: ProgressRoot): ProgressR
     const b = remote.courses[id];
     courses[id] = a && b ? mergeCourse(a, b) : (a ?? b)!;
   }
+  // XP and answers: per device the larger counter, summed over the devices (tally.ts).
+  const tally = mergeTally(tallyOf(local.profile.tally, local.profile.xp, local.profile.totalAnswers), tallyOf(remote.profile.tally, remote.profile.xp, remote.profile.totalAnswers));
+  const t = totals(tally);
   return {
     schemaVersion: Math.max(local.schemaVersion, remote.schemaVersion),
     createdAt: Math.min(local.createdAt, remote.createdAt),
@@ -36,11 +41,12 @@ export function mergeRoots(local: ProgressRoot, remote: ProgressRoot): ProgressR
     lastExportAt: maxNullable(local.lastExportAt, remote.lastExportAt),
     settings: local.settings,
     profile: {
-      xp: Math.max(local.profile.xp, remote.profile.xp),
+      xp: t.xp,
       streak: mergeStreak(local.profile.streak, remote.profile.streak),
       daily: mergeRecords(local.profile.daily, remote.profile.daily, mergeDay),
       achievements: mergeRecords(local.profile.achievements, remote.profile.achievements, Math.min),
-      totalAnswers: Math.max(local.profile.totalAnswers, remote.profile.totalAnswers),
+      totalAnswers: t.answers,
+      tally,
       ...shareField(mergeShare(local.profile.share, remote.profile.share)),
     },
     courses,

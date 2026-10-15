@@ -582,6 +582,13 @@ export const en = {
   'common.loadFailed': 'The course could not be loaded.',
   'common.loadFailedOffline': 'You are offline and this course is not stored on this device yet.',
   'common.retry': 'Try again',
+  'ch.iosAppHint': 'Have Sylareads as an app on your home screen? The iPhone always opens links from messages in Safari – without your name and progress. Copy the link and paste it in the app under “Challenge a friend”.',
+  'ch.copyLink': 'Copy link',
+  'ch.copiedShort': 'Copied',
+  'ch.pasteTitle': 'Got a duel link? Paste it here',
+  'ch.pasteHint': 'Paste the whole link from the message.',
+  'ch.pasteGo': 'Open',
+  'ch.pasteBad': 'That is not a Sylareads duel link.',
 } as const;
 
 export type MessageKey = keyof typeof en;

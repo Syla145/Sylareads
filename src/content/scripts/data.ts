@@ -41,6 +41,17 @@ export interface ScriptEntry {
   overlaps?: string[];
 }
 
+/** Language tag per entry, so screen readers read the examples in the right voice. */
+const LANG: Record<string, string> = {
+  cyrillic: 'ru', greek: 'el', arabic: 'ar', hebrew: 'he', thai: 'th', devanagari: 'hi', japanese: 'ja', chinese: 'zh-Hant', korean: 'ko',
+  lao: 'lo', khmer: 'km', bengali: 'bn', assamese: 'as', gurmukhi: 'pa', gujarati: 'gu', oriya: 'or', tibetan: 'bo', tamil: 'ta',
+  telugu: 'te', kannada: 'kn', malayalam: 'ml', sinhala: 'si', russian: 'ru', ukrainian: 'uk', bulgarian: 'bg', serbian: 'sr',
+  macedonian: 'mk', kazakh: 'kk', mongolian: 'mn', kyrgyz: 'ky', georgian: 'ka', hungarian: 'hu', polish: 'pl', czech: 'cs',
+  slovak: 'sk', romanian: 'ro', turkish: 'tr', croatian: 'hr', albanian: 'sq', lithuanian: 'lt', latvian: 'lv', estonian: 'et',
+  norwegian: 'no', swedish: 'sv', finnish: 'fi', icelandic: 'is', faroese: 'fo', portuguese: 'pt', spanish: 'es', maltese: 'mt',
+};
+export const scriptLang = (entryId: string): string | undefined => LANG[entryId.replace(/^scripts:/, '')];
+
 export type ScriptFont =
   | 'latin'
   | 'arabic'
