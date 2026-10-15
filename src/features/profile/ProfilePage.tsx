@@ -12,7 +12,7 @@ import { SyncCard } from '../../sync/SyncCard';
 import { ShareCard } from '../players/PlayerParts';
 import { useSync } from '../../sync/syncStore';
 import { AppCard } from '../../pwa/PwaParts';
-import { SiteFooter } from '../legal/LegalPages';
+import { SiteFooter } from '../legal/SiteFooter';
 
 export function ProfilePage() {
   const t = useT();

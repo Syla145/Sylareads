@@ -38,7 +38,6 @@ export function ChallengeRun({
   const [input, setInput] = useState('');
   const [quitOpen, setQuitOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const now = useNow(state.shownAt !== null);
   const leave = useBackGuard(true, () => setQuitOpen(true));
 
   const id = currentId(state);
@@ -46,7 +45,7 @@ export function ChallengeRun({
   const last = state.answers[state.answers.length - 1];
   const showing = id ? (index.byId.get(id) as PlaceItem) : null;
   const shownLast = !id && last ? (index.byId.get(last.id) as PlaceItem) : null;
-  const elapsed = state.answers.reduce((s, a) => s + a.ms, 0) + (state.shownAt !== null ? Math.max(0, now - state.shownAt) : 0);
+  const doneMs = state.answers.reduce((s, a) => s + a.ms, 0);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -80,7 +79,7 @@ export function ChallengeRun({
         <div className="session-progress" role="progressbar" aria-label={t('session.progress')} aria-valuemin={0} aria-valuemax={ids.length} aria-valuenow={state.answers.length}>
           <div className="session-progress-fill" style={{ width: `${(state.answers.length / ids.length) * 100}%` }} />
         </div>
-        <span className="session-count tabular">{formatSeconds(elapsed, lang)}</span>
+        <Clock doneMs={doneMs} shownAt={state.shownAt} lang={lang} />
       </header>
 
       <main className="session-main">
@@ -134,6 +133,13 @@ export function ChallengeRun({
       <QuitDialog kind={kind} open={quitOpen} onStay={() => setQuitOpen(false)} onQuit={() => leave(() => onQuit(state))} />
     </div>
   );
+}
+
+/** The running time on its own: only this small part redraws ten times a second. */
+function Clock({ doneMs, shownAt, lang }: { doneMs: number; shownAt: number | null; lang: 'de' | 'en' }) {
+  const now = useNow(shownAt !== null);
+  const elapsed = doneMs + (shownAt !== null ? Math.max(0, now - shownAt) : 0);
+  return <span className="session-count tabular">{formatSeconds(elapsed, lang)}</span>;
 }
 
 /** The current time, updated a few times per second while `running`. */

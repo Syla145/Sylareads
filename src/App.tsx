@@ -9,23 +9,32 @@ import { HomePage } from './features/home/HomePage';
 import { LearnPage } from './features/learn/LearnPage';
 import { MapPage } from './features/map/MapPage';
 import { PracticeHub } from './features/practice/PracticeHub';
-import { ProfilePage } from './features/profile/ProfilePage';
 import { ScriptPage } from './features/script/ScriptPage';
 import { LessonRoute } from './features/session/LessonRoute';
 import { PracticeRoute } from './features/session/PracticeRoute';
 import { useLang, useT } from './i18n';
 import { TopBar } from './ui/TopBar';
-import { TempoPage } from './features/tempo/TempoPage';
-import { TempoRoute } from './features/tempo/TempoRun';
-import { PlacementRoute } from './features/placement/PlacementRoute';
-import PlayersPage from './features/players/PlayersPage';
-import { DailyRoute, DuelRoute } from './features/challenge/ChallengePages';
-import { AboutPage, CreditsPage, ImpressumPage, PrivacyPage, SiteFooter } from './features/legal/LegalPages';
+import { SiteFooter } from './features/legal/SiteFooter';
 
 // The scripts course brings its own fonts; load it only when it is opened.
 const ScriptsHome = lazy(() => import('./features/scripts/ScriptsHome'));
 const ScriptSession = lazy(() => import('./features/scripts/ScriptSession'));
 const SignsPreview = lazy(() => import('./features/signs/SignsPreview'));
+// Pages that are opened less often load on demand, so the first visit stays small.
+const named = <K extends string>(load: () => Promise<Record<K, React.ComponentType>>, name: K) => lazy(() => load().then((m) => ({ default: m[name] })));
+const legal = () => import('./features/legal/LegalPages');
+const AboutPage = named(legal, 'AboutPage');
+const PrivacyPage = named(legal, 'PrivacyPage');
+const ImpressumPage = named(legal, 'ImpressumPage');
+const CreditsPage = named(legal, 'CreditsPage');
+const ProfilePage = named(() => import('./features/profile/ProfilePage'), 'ProfilePage');
+const PlayersPage = lazy(() => import('./features/players/PlayersPage'));
+const TempoPage = named(() => import('./features/tempo/TempoPage'), 'TempoPage');
+const TempoRoute = named(() => import('./features/tempo/TempoRun'), 'TempoRoute');
+const PlacementRoute = named(() => import('./features/placement/PlacementRoute'), 'PlacementRoute');
+const challenge = () => import('./features/challenge/ChallengePages');
+const DailyRoute = named(challenge, 'DailyRoute');
+const DuelRoute = named(challenge, 'DuelRoute');
 
 function Loading() {
   const t = useT();
@@ -76,12 +85,12 @@ function Pages() {
     <ErrorBoundary resetKey={pathname}>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/players" element={<PlayersPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/impressum" element={<ImpressumPage />} />
-        <Route path="/credits" element={<CreditsPage />} />
+        <Route path="/profile" element={lazyPage(<ProfilePage />)} />
+        <Route path="/players" element={lazyPage(<PlayersPage />)} />
+        <Route path="/about" element={lazyPage(<AboutPage />)} />
+        <Route path="/privacy" element={lazyPage(<PrivacyPage />)} />
+        <Route path="/impressum" element={lazyPage(<ImpressumPage />)} />
+        <Route path="/credits" element={lazyPage(<CreditsPage />)} />
         <Route path="/scripts" element={lazyPage(<ScriptsHome />)} />
         <Route path="/schilder" element={lazyPage(<SignsPreview />)} />
         <Route path="/scripts/lesson/:lessonId" element={lazyPage(<div className="focus-shell"><ScriptSession /></div>)} />
@@ -90,17 +99,17 @@ function Pages() {
           <Route index element={<DashboardPage />} />
           <Route path="learn" element={<LearnPage />} />
           <Route path="practice" element={<PracticeHub />} />
-          <Route path="tempo" element={<TempoPage />} />
+          <Route path="tempo" element={lazyPage(<TempoPage />)} />
           <Route path="script" element={<ScriptPage />} />
           <Route path="map" element={<MapPage />} />
         </Route>
         <Route path="/:slug" element={<CourseGate focus />}>
           <Route path="lesson/:lessonId" element={<LessonRoute />} />
           <Route path="practice/run" element={<PracticeRoute />} />
-          <Route path="tempo/run" element={<TempoRoute />} />
-          <Route path="placement" element={<PlacementRoute />} />
-          <Route path="daily" element={<DailyRoute />} />
-          <Route path="duel" element={<DuelRoute />} />
+          <Route path="tempo/run" element={lazyPage(<TempoRoute />)} />
+          <Route path="placement" element={lazyPage(<PlacementRoute />)} />
+          <Route path="daily" element={lazyPage(<DailyRoute />)} />
+          <Route path="duel" element={lazyPage(<DuelRoute />)} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

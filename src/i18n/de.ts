@@ -581,4 +581,7 @@ export const de: Record<MessageKey, string> = {
   'signs.settingTitle': 'Ortsnamen auf Schildern',
   'signs.settingHint': 'Zeigt Ortsnamen auf nachgezeichneten Straßenschildern im Stil des Landes, wie du sie in GeoGuessr siehst. Gemischt: etwa jede zweite Aufgabe.',
   'practice.itemCount': '{n} dabei',
+  'common.loadFailed': 'Der Kurs konnte nicht geladen werden.',
+  'common.loadFailedOffline': 'Du bist offline, und dieser Kurs ist noch nicht auf dem Gerät gespeichert.',
+  'common.retry': 'Nochmal versuchen',
 };

@@ -1,10 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@fontsource-variable/inter';
-import '@fontsource/noto-sans-bengali/400.css';
-import '@fontsource/noto-sans-bengali/500.css';
-import '@fontsource/noto-sans-thai-looped/400.css';
-import '@fontsource/noto-sans-thai-looped/500.css';
+import './styles/fonts.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
@@ -31,7 +28,8 @@ window.addEventListener('vite:preloadError', (event) => {
   } catch {
     /* storage blocked: reload anyway */
   }
-  if (Date.now() - last > 10000) {
+  // Offline the reload would only show the browser's error page: the app shows "Nochmal versuchen" instead.
+  if (navigator.onLine !== false && Date.now() - last > 10000) {
     event.preventDefault();
     window.location.reload();
   }

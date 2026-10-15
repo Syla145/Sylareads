@@ -215,6 +215,8 @@ export interface CourseMeta {
   fontClass: 'font-native-latin' | 'font-native-bengali' | 'font-native-thai';
   status: 'available' | 'soon';
   load?: () => Promise<CourseContent>;
+  /** Loads the map in parallel with the content (same file as `CourseContent.loadMap`). */
+  loadMap?: () => Promise<CourseMap>;
   /** The course has a clickable map (shows the Map tab). */
   hasMap?: boolean;
 }

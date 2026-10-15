@@ -4,9 +4,10 @@
  * Node dependencies so the build and the tests can both use it.
  *
  * Strategy
- * - Install: every file of the build is downloaded once (precache), except the
+ * - Install: every file of the build is stored once (precache), except the
  *   Firebase chunks (only signed-in players need them) and old .woff fonts
- *   (every browser that runs a service worker reads .woff2).
+ *   (every browser that runs a service worker reads .woff2). Unchanged files
+ *   (same hashed name) are copied from the previous version, not downloaded.
  * - Requests: answered from the cache first; anything else from this site is
  *   fetched and kept (that is how the Firebase chunks become available offline).
  * - Page loads always get the cached index.html of the active version, so page
@@ -50,9 +51,33 @@ const RUNTIME = ${JSON.stringify(CACHE_PREFIX + 'runtime')};
 const FILES = ${JSON.stringify(list)};
 const INDEX = new URL('index.html', self.registration.scope).href;
 
+// Files under assets/ carry a content hash in their name: the same name is the
+// same file, so an update copies them from the old cache and only downloads
+// what changed. Each file is stored on its own, so a broken connection keeps
+// what already arrived and the next try goes on from there.
+const absolute = (f) => new URL(f, self.registration.scope).href;
+
+async function fill(cache, file) {
+  const url = absolute(file);
+  if (await cache.match(url, { ignoreVary: true })) return;
+  if (file.startsWith('assets/')) {
+    const old = await caches.match(url, { ignoreVary: true });
+    if (old) return cache.put(url, old);
+  }
+  const res = await fetch(new Request(url, { cache: 'reload' }));
+  if (!res.ok) throw new Error(file + ': ' + res.status);
+  await cache.put(url, res);
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(PRECACHE).then((cache) => cache.addAll(FILES.map((f) => new Request(new URL(f, self.registration.scope).href, { cache: 'reload' })))),
+    caches.open(PRECACHE).then(async (cache) => {
+      const queue = [...FILES];
+      const worker = async () => {
+        while (queue.length) await fill(cache, queue.shift());
+      };
+      await Promise.all(Array.from({ length: 6 }, worker));
+    }),
   );
 });
 
@@ -81,11 +106,11 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin || !url.href.startsWith(self.registration.scope)) return;
   if (url.pathname.endsWith('/${SW_FILE}')) return;
   if (req.mode === 'navigate' && (url.pathname.endsWith('/') || url.pathname.endsWith('/index.html'))) {
-    event.respondWith(caches.match(INDEX, { cacheName: PRECACHE }).then((hit) => hit || fetch(req)));
+    event.respondWith(caches.match(INDEX, { cacheName: PRECACHE, ignoreVary: true }).then((hit) => hit || fetch(req)));
     return;
   }
   event.respondWith(
-    caches.match(req).then(
+    caches.match(req, { ignoreVary: true }).then(
       (hit) =>
         hit ||
         fetch(req).then((res) => {

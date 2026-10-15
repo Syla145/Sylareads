@@ -12,7 +12,7 @@ import { NextGoals } from '../achievements/AchievementParts';
 import { ScriptCard, ScriptText } from './ScriptParts';
 import './scripts.css';
 import { SignViewSetting } from '../signs/SignViewToggle';
-import { SiteFooter } from '../legal/LegalPages';
+import { SiteFooter } from '../legal/SiteFooter';
 
 const NO_ITEMS = {};
 

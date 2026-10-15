@@ -18,6 +18,12 @@
 }
 
 .loading {
+  /* Holds the place of the page while it loads, so nothing jumps when it arrives. */
+  min-height: 70vh;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: var(--s-4);
   padding: var(--s-8) var(--gutter);
   text-align: center;
   color: var(--text-secondary);

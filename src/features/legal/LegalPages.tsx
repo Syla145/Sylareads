@@ -4,6 +4,7 @@ import { FEEDBACK_URL, LEGAL_AS_OF, OPERATOR, REPO_URL } from '../../content/leg
 import { useLang, useT } from '../../i18n';
 import { TopBar } from '../../ui/TopBar';
 import './legal.css';
+import { SiteFooter } from './SiteFooter';
 
 /** About, privacy policy, legal notice and credits: plain pages, German and English. */
 
@@ -273,20 +274,3 @@ export function CreditsPage() {
 // ---------------------------------------------------------------- Footer
 
 /** Links to the legal pages and the GeoGuessr note, at the bottom of every page with a top bar. */
-export function SiteFooter() {
-  const t = useT();
-  return (
-    <footer className="site-footer">
-      <nav aria-label={t('legal.footer')}>
-        <Link to="/about">{t('legal.about')}</Link>
-        <Link to="/privacy">{t('legal.privacy')}</Link>
-        <Link to="/impressum">{t('legal.impressum')}</Link>
-        <Link to="/credits">{t('legal.credits')}</Link>
-        <a href={FEEDBACK_URL} target="_blank" rel="noreferrer">
-          {t('legal.feedback')}
-        </a>
-      </nav>
-      <p>{t('legal.notAffiliated')}</p>
-    </footer>
-  );
-}

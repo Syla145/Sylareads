@@ -28,7 +28,8 @@ export function RouteFocus() {
       raf = requestAnimationFrame(() => {
         const head = document.querySelector('h1')?.textContent?.trim();
         const parts = [head, area].filter((x, i, all): x is string => !!x && x !== 'Sylareads' && all.indexOf(x) === i);
-        const title = parts.length ? `${parts.join(' · ')} – Sylareads` : 'Sylareads';
+        const text = parts.join(' · ');
+        const title = !text ? 'Sylareads' : text.includes('Sylareads') ? text : `${text} – Sylareads`;
         if (document.title !== title) document.title = title;
       });
     };

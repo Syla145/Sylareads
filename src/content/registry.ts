@@ -1,4 +1,4 @@
-import type { CountryDef, CourseMeta } from '../domain/types';
+import type { CountryDef, CourseMeta, CourseMap } from '../domain/types';
 
 export const COUNTRIES: Record<string, CountryDef> = {
   RU: { id: 'RU', name: { de: 'Russland', en: 'Russia' } },
@@ -22,6 +22,7 @@ export const COURSES: CourseMeta[] = [
     status: 'available',
     hasMap: true,
     load: () => import('./ru').then((m) => m.default),
+    loadMap: () => import('./ru/map.json').then((m) => m.default as unknown as CourseMap),
   },
   {
     id: 'el',
@@ -47,6 +48,7 @@ export const COURSES: CourseMeta[] = [
     status: 'available',
     hasMap: true,
     load: () => import('./bn').then((m) => m.default),
+    loadMap: () => import('./bn/map.json').then((m) => m.default as unknown as CourseMap),
   },
   {
     id: 'th',
@@ -60,6 +62,7 @@ export const COURSES: CourseMeta[] = [
     status: 'available',
     hasMap: true,
     load: () => import('./th').then((m) => m.default),
+    loadMap: () => import('./th/map.json').then((m) => m.default as unknown as CourseMap),
   },
 ];
 

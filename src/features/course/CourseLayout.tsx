@@ -5,13 +5,14 @@ import { useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
 import { CourseTabs, TopBar } from '../../ui/TopBar';
 import { CourseContext, useCourseIndex } from './useCourse';
-import { SiteFooter } from '../legal/LegalPages';
+import { SiteFooter } from '../legal/SiteFooter';
+import { Button } from '../../ui/primitives';
 
 /** Resolves the course from the URL and provides its content index. `focus` hides navigation (sessions). */
 export function CourseGate({ focus = false }: { focus?: boolean }) {
   const { slug } = useParams();
   const meta = courseBySlug(slug);
-  const index = useCourseIndex(meta);
+  const { index, failed, retry } = useCourseIndex(meta);
   const t = useT();
   const location = useLocation();
 
@@ -31,6 +32,13 @@ export function CourseGate({ focus = false }: { focus?: boolean }) {
     <CourseContext.Provider value={{ meta, index }}>
       <Outlet />
     </CourseContext.Provider>
+  ) : failed ? (
+    <div className="loading" role="alert">
+      <p>{navigator.onLine === false ? t('common.loadFailedOffline') : t('common.loadFailed')}</p>
+      <Button variant="primary" onClick={retry}>
+        {t('common.retry')}
+      </Button>
+    </div>
   ) : (
     <div className="loading" role="status">
       {t('common.loading')}
@@ -43,7 +51,7 @@ export function CourseGate({ focus = false }: { focus?: boolean }) {
       <TopBar course={meta} />
       <CourseTabs course={meta} />
       <main className="page">{body}</main>
-      <SiteFooter />
+      {index && <SiteFooter />}
     </div>
   );
 }

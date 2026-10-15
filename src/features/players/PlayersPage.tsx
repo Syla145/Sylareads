@@ -7,7 +7,7 @@ import { useSync } from '../../sync/syncStore';
 import { Button, Card } from '../../ui/primitives';
 import { TopBar } from '../../ui/TopBar';
 import { Avatar, groupOf, PlayerCard, ShareCard, usePlayers } from './PlayerParts';
-import { SiteFooter } from '../legal/LegalPages';
+import { SiteFooter } from '../legal/SiteFooter';
 
 const GROUPS: { id: Activity; label: TKey }[] = [
   { id: 'now', label: 'who.now' },

@@ -12,7 +12,7 @@ import { ProblemsCard } from '../mistakes/MistakesCard';
 import { NextGoals } from '../achievements/AchievementParts';
 import { recommendedPath } from './recommend';
 import { confuserPairs } from '../../domain/confusers';
-import { DailyCard } from '../challenge/ChallengePages';
+import { DailyCard } from '../challenge/DailyCard';
 
 const BAR_ORDER: Category[] = ['letters', 'combos', 'words', 'terms', 'cities', 'regions'];
 

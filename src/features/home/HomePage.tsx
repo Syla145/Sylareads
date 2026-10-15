@@ -17,7 +17,7 @@ import { PlayersStrip } from '../players/PlayersPage';
 import { InstallHint } from '../../pwa/PwaParts';
 import { nextScriptLesson, SCRIPTS_COURSE_ID, scriptsKnown, scriptsStarted } from '../../domain/scriptCourse';
 import type { CourseProgress } from '../../domain/progress';
-import { SiteFooter } from '../legal/LegalPages';
+import { SiteFooter } from '../legal/SiteFooter';
 
 /** The cross-script course: which script, which country. */
 function ScriptsCourseCard() {

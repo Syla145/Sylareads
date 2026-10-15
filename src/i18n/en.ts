@@ -579,6 +579,9 @@ export const en = {
   'signs.settingTitle': 'Place names on signs',
   'signs.settingHint': 'Shows place names on drawn road signs in the style of the country, as you see them in GeoGuessr. Mixed: about every second task.',
   'practice.itemCount': '{n} items',
+  'common.loadFailed': 'The course could not be loaded.',
+  'common.loadFailedOffline': 'You are offline and this course is not stored on this device yet.',
+  'common.retry': 'Try again',
 } as const;
 
 export type MessageKey = keyof typeof en;
