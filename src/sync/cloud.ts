@@ -22,6 +22,8 @@ export interface Cloud {
   removeCard: (uid: string) => Promise<void>;
   /** Public cards seen since `sinceMs`, newest first. */
   listCards: (sinceMs: number, limit: number) => Promise<StoredCard[]>;
+  /** Deletes up to `limit` cards not updated since `beforeMs` (allowed by the rules for everyone). */
+  pruneCards?: (beforeMs: number, limit: number) => Promise<number>;
   /** Asks Google to confirm the account again (before deleting it). */
   reauth?: () => Promise<void>;
   /** Deletes the online progress, the public card and the account itself. */
@@ -100,6 +102,20 @@ export function loadCloud(config: FirebaseWebConfig): Promise<Cloud> {
           const seen = data.seen instanceof fs.Timestamp ? data.seen.toMillis() : 0;
           return { uid: d.id, data, seen };
         });
+      },
+      pruneCards: async (beforeMs, limit) => {
+        const q = fs.query(fs.collection(db, PLAYERS), fs.where('seen', '<', fs.Timestamp.fromMillis(beforeMs)), fs.orderBy('seen', 'asc'), fs.limit(limit));
+        const snap = await fs.getDocs(q);
+        let n = 0;
+        for (const d of snap.docs) {
+          try {
+            await fs.deleteDoc(d.ref);
+            n += 1;
+          } catch {
+            /* someone else was faster, or the rules say no: fine */
+          }
+        }
+        return n;
       },
     };
   })();

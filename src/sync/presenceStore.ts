@@ -5,6 +5,7 @@ import {
   cardOf,
   effectiveShare,
   HEARTBEAT_MS,
+  CARD_KEEP_DAYS,
   LIST_DAYS,
   publicCourse,
   publicSnapshot,
@@ -177,11 +178,33 @@ export const usePresence = create<PresenceState>((set, get) => ({
       const stored = await cloud.listCards(now - LIST_DAYS * 86_400_000, limit);
       const cards = stored.map((c) => cardOf(c.uid, c.data, c.seen)).filter((c): c is PlayerCard => !!c);
       set({ cards: sortPlayers(cards, user.uid, now), status: 'ready', loadedAt: now, loadedLimit: limit });
+      void pruneOldCards(now);
     } catch {
       set({ status: 'error' });
     }
   },
 }));
+
+/**
+ * Cards of players who have not been here for CARD_KEEP_DAYS are deleted, so
+ * nothing stays online for ever (privacy). Any signed-in app does a little of
+ * it, at most once a day: one query of up to 10 old cards.
+ */
+async function pruneOldCards(now: number) {
+  const key = 'sylareads.pruneDay';
+  const today = new Date(now).toISOString().slice(0, 10);
+  try {
+    if (localStorage.getItem(key) === today) return;
+    localStorage.setItem(key, today);
+  } catch {
+    return;
+  }
+  try {
+    await currentCloud()?.pruneCards?.(now - CARD_KEEP_DAYS * 86_400_000, 10);
+  } catch {
+    /* not allowed (older rules) or offline: next day again */
+  }
+}
 
 /** Keeps the list fresh while a component that shows it is mounted (and the app is visible). */
 export function watchPlayers(limit = STRIP_LIMIT): () => void {

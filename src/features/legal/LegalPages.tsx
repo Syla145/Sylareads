@@ -127,19 +127,19 @@ function PrivacyDe() {
       <p>Sylareads liegt bei GitHub Pages (GitHub, Inc., USA). Beim Aufruf verarbeitet GitHub technisch nötige Daten wie deine IP-Adresse, um die Seite auszuliefern und vor Angriffen zu schützen (Art. 6 Abs. 1 lit. f DSGVO). Ich bekomme diese Daten nicht zu sehen. Mehr in der <Ext href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement">Datenschutzerklärung von GitHub</Ext>.</p>
 
       <h2>Speicher in deinem Browser</h2>
-      <p>Fortschritt, Einstellungen und die Namen für Duelle speichert Sylareads im Speicher deines Browsers (localStorage). Damit die App offline läuft, legt der Browser die Programmdateien in einen eigenen Speicher (Service Worker). Diese Daten verlassen dein Gerät nicht und sind für die Funktion nötig, die du nutzt (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst sie jederzeit im Profil zurücksetzen oder über die Browser-Einstellungen löschen.</p>
+      <p>Fortschritt, eigene Eselsbrücken, Einstellungen und die Namen für Duelle speichert Sylareads im Speicher deines Browsers (localStorage), dazu eine zufällige Gerätekennung, damit XP von mehreren Geräten richtig zusammengezählt werden. Nach „Zurücksetzen“ oder „Importieren“ bleibt der alte Stand 30 Tage als Sicherung im Browser. Damit die App offline läuft, legt der Browser die Programmdateien in einen eigenen Speicher (Service Worker). Wenn du dich anmeldest, speichert Firebase die Anmeldung im Browser (IndexedDB), damit du angemeldet bleibst. Diese Daten sind für die Funktion nötig, die du nutzt (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst sie jederzeit im Profil löschen („Alles auf diesem Gerät löschen“) oder über die Browser-Einstellungen.</p>
 
       <h2>Online speichern mit Google (freiwillig)</h2>
       <p>Wenn du dich anmeldest, nutzt Sylareads Firebase von Google:</p>
       <ul>
         <li><strong>Firebase Authentication</strong> für die Google-Anmeldung: Konto-ID, Name, E-Mail-Adresse, IP-Adresse und Gerätedaten. Firebase Authentication läuft in Rechenzentren in den USA.</li>
-        <li><strong>Cloud Firestore</strong> für deinen Lernstand (ein Dokument mit Fortschritt und Zeitpunkt der letzten Speicherung), gespeichert in der EU.</li>
+        <li><strong>Cloud Firestore</strong> für deinen Lernstand: ein Dokument mit Fortschritt, eigenen Eselsbrücken, Einstellungen und dem Zeitpunkt der letzten Speicherung, gespeichert in der EU (Standort eur3: Rechenzentren in Belgien und den Niederlanden).</li>
       </ul>
       <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO: Du möchtest deinen Fortschritt auf mehreren Geräten nutzen. Google verarbeitet die Daten als Auftragsverarbeiter nach den <Ext href="https://firebase.google.com/terms/data-processing-terms">Firebase-Datenverarbeitungsbedingungen</Ext>. Für Übermittlungen in die USA ist Google nach dem EU-US Data Privacy Framework zertifiziert, zusätzlich gelten Standardvertragsklauseln (<Ext href="https://firebase.google.com/support/privacy">Firebase und Datenschutz</Ext>).</p>
-      <p>Die Daten bleiben gespeichert, bis du im Profil „Konto und Online-Daten löschen“ wählst. Google löscht Protokolldaten nach einigen Wochen.</p>
+      <p>Die Daten bleiben gespeichert, bis du im Profil „Konto und Online-Daten löschen“ wählst – das löscht Lernstand, Karte und Konto auf einmal. Nutzt du Sylareads nicht mehr und kommst nicht mehr an dein Konto, schreib mir, dann lösche ich es. Google löscht Protokolldaten nach einigen Wochen.</p>
 
       <h2>„Wer ist da“ (freiwillig, mit Einwilligung)</h2>
-      <p>Nur wenn du deine Karte einschaltest (ab 16 Jahren), sehen andere angemeldete Spieler deinen selbst gewählten Anzeigenamen, deinen aktuellen Kurs, deinen Fortschritt je Kurs, Serie, Level, dein letztes Ergebnis der Tagesaufgabe und wann du zuletzt da warst. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen, indem du die Karte ausschaltest; sie wird dann sofort gelöscht.</p>
+      <p>Nur wenn du deine Karte einschaltest (ab 16 Jahren), sehen andere angemeldete Spieler deinen selbst gewählten Anzeigenamen, deinen aktuellen Kurs, deinen Fortschritt je Kurs, Serie, Level und XP, dein letztes Ergebnis der Tagesaufgabe und wann du zuletzt da warst. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen, indem du die Karte ausschaltest; sie wird dann sofort gelöscht. Angezeigt werden nur Karten der letzten 7 Tage; eine Karte, die 30 Tage nicht aktualisiert wurde (weil du nicht mehr da warst), wird automatisch gelöscht.</p>
 
       <h2>Duell-Links und Tagesaufgabe</h2>
       <p>Bei einem Duell stehen der Name, den du eingibst, und dein Ergebnis im Link selbst. Nur wer den Link von dir bekommt, sieht sie; auf keinem Server wird etwas gespeichert. Ergebnisse der Tagesaufgabe bleiben in deinem Browser und erscheinen nur auf deiner Karte, wenn du sie zeigst.</p>
@@ -165,19 +165,19 @@ function PrivacyEn() {
       <p>Sylareads is hosted on GitHub Pages (GitHub, Inc., USA). When you visit, GitHub processes technically necessary data such as your IP address to deliver the site and protect it from attacks (Art. 6(1)(f) GDPR). I don’t get to see this data. More in <Ext href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s privacy statement</Ext>.</p>
 
       <h2>Storage in your browser</h2>
-      <p>Sylareads keeps your progress, settings and duel names in your browser’s storage (localStorage). So the app works offline, the browser keeps the program files in a separate store (service worker). This data stays on your device and is needed for the feature you use (§ 25(2) no. 2 TDDDG). You can reset it in your profile or delete it in your browser settings at any time.</p>
+      <p>Sylareads keeps your progress, your own memory hooks, settings and duel names in your browser’s storage (localStorage), plus a random device id so XP from several devices adds up correctly. After “Reset” or “Import” the previous state stays in the browser as a backup for 30 days. So the app works offline, the browser keeps the program files in a separate store (service worker). If you sign in, Firebase keeps the sign-in in the browser (IndexedDB) so you stay signed in. This data is needed for the feature you use (§ 25(2) no. 2 TDDDG). You can delete it in your profile at any time (“Delete everything on this device”) or in your browser settings.</p>
 
       <h2>Saving online with Google (optional)</h2>
       <p>If you sign in, Sylareads uses Google Firebase:</p>
       <ul>
         <li><strong>Firebase Authentication</strong> for Google sign-in: account ID, name, email address, IP address and device data. Firebase Authentication runs in data centres in the USA.</li>
-        <li><strong>Cloud Firestore</strong> for your progress (one document with your progress and the time of the last save), stored in the EU.</li>
+        <li><strong>Cloud Firestore</strong> for your progress: one document with your progress, your own memory hooks, settings and the time of the last save, stored in the EU (location eur3: data centres in Belgium and the Netherlands).</li>
       </ul>
       <p>The legal basis is Art. 6(1)(b) GDPR: you want to use your progress on several devices. Google processes the data as a processor under the <Ext href="https://firebase.google.com/terms/data-processing-terms">Firebase Data Processing and Security Terms</Ext>. For transfers to the USA, Google is certified under the EU-US Data Privacy Framework; standard contractual clauses apply as well (<Ext href="https://firebase.google.com/support/privacy">Privacy and Security in Firebase</Ext>).</p>
-      <p>The data is kept until you choose “Delete account and online data” in your profile. Google deletes log data after a few weeks.</p>
+      <p>The data is kept until you choose “Delete account and online data” in your profile – that deletes progress, card and account at once. If you no longer use Sylareads and cannot get into your account, write to me and I will delete it. Google deletes log data after a few weeks.</p>
 
       <h2>“Who’s here” (optional, with consent)</h2>
-      <p>Only if you turn on your card (16 or older) do other signed-in players see your chosen display name, your current course, your progress per course, streak, level, your latest Daily Challenge result and when you were last here. The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time by turning the card off; it is then deleted right away.</p>
+      <p>Only if you turn on your card (16 or older) do other signed-in players see your chosen display name, your current course, your progress per course, streak, level and XP, your latest Daily Challenge result and when you were last here. The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time by turning the card off; it is then deleted right away. Only cards from the last 7 days are shown; a card that has not been updated for 30 days (because you have not been here) is deleted automatically.</p>
 
       <h2>Duel links and Daily Challenge</h2>
       <p>In a duel, the name you enter and your result are part of the link itself. Only people you send the link to can see them; nothing is stored on a server. Daily Challenge results stay in your browser and only appear on your card if you show it.</p>

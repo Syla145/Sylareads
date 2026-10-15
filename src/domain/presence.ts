@@ -74,6 +74,8 @@ const ACTIVE_MS = 10 * 60_000;
 export const HEARTBEAT_MS = 5 * 60_000;
 /** Cards older than this are not listed. */
 export const LIST_DAYS = 7;
+/** Cards not updated for this long are deleted (by any signed-in app, once a day; the rules allow it). */
+export const CARD_KEEP_DAYS = 30;
 
 /** A neutral suggestion such as "Reader 4821", the same for one account on every device. */
 export function pseudonym(uid: string): string {

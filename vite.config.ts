@@ -6,6 +6,8 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import { cacheVersion, precacheList, serviceWorkerSource, SW_FILE, type BuiltFile } from './src/pwa/serviceWorker';
+import { contentSecurityPolicy } from './src/security/csp';
+import { FIREBASE_CONFIG } from './src/sync/firebaseConfig';
 
 /** Files in public/ (copied as they are), relative to it. */
 function publicFiles(dir: string, base = ''): string[] {
@@ -33,12 +35,24 @@ function sylareadsPwa(): Plugin {
   };
 }
 
+/** Security headers as <meta> (GitHub Pages sets no own headers); only for the normal build. */
+function sylareadsSecurity(): Plugin {
+  return {
+    name: 'sylareads-security',
+    apply: 'build',
+    transformIndexHtml: () => [
+      { tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: contentSecurityPolicy(FIREBASE_CONFIG?.authDomain) }, injectTo: 'head-prepend' },
+      { tag: 'meta', attrs: { name: 'referrer', content: 'strict-origin-when-cross-origin' }, injectTo: 'head-prepend' },
+    ],
+  };
+}
+
 // `base: './'` keeps every asset path relative, so the build works on
 // GitHub Pages under any repository name (https://user.github.io/<repo>/).
 // Routing uses the URL hash, so no server-side fallback is needed.
 export default defineConfig(({ mode }) => ({
   base: './',
-  plugins: mode === 'single' ? [react(), viteSingleFile()] : [react(), sylareadsPwa()],
+  plugins: mode === 'single' ? [react(), viteSingleFile()] : [react(), sylareadsPwa(), sylareadsSecurity()],
   build: {
     outDir: mode === 'single' ? 'dist-single' : 'dist',
     target: 'es2020',

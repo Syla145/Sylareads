@@ -43,9 +43,12 @@ service cloud.firestore {
 
     // „Wer ist da“: Angemeldete lesen höchstens 60 Karten pro Abfrage,
     // jeder schreibt nur die eigene Karte, höchstens einmal pro Minute.
+    // Karten, die 30 Tage nicht aktualisiert wurden, darf jede angemeldete App löschen
+    // (Aufräumen, CARD_KEEP_DAYS in src/domain/presence.ts).
     match /players/{uid} {
       allow list: if request.auth != null && request.query.limit <= 60;
-      allow delete: if isOwner(uid);
+      allow delete: if isOwner(uid)
+        || (request.auth != null && resource.data.seen < request.time - duration.value(30, 'd'));
       allow create, update: if isOwner(uid)
         && request.resource.data.keys().hasOnly(['v', 'name', 'seen', 'course', 'courses', 'streak', 'level', 'xp', 'tempo'])
         && request.resource.data.v == 2
