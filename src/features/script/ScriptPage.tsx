@@ -7,6 +7,7 @@ import { useProgress } from '../../store/progressStore';
 import { MasteryLegend, Modal, StateDot } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { NoteEditor } from '../notes/NoteParts';
+import { SubNav } from '../../ui/SubNav';
 
 /** Stable fallback: a fresh `{}` inside the selector would re-render forever. */
 const NO_ITEMS = {};
@@ -35,6 +36,7 @@ export function ScriptPage() {
 
   return (
     <div className="script-page">
+      <SubNav label={t('nav.learn')} items={[{ to: `/${meta.slug}/learn`, label: t('nav.path') }, { to: `/${meta.slug}/script`, label: t('nav.script') }]} />
       <header className="section-head">
         <h1 className="page-title">{t('script.title')}</h1>
         <p className="muted">{t('script.subtitle')}</p>

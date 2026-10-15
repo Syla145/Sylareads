@@ -589,6 +589,11 @@ export const en = {
   'ch.pasteHint': 'Paste the whole link from the message.',
   'ch.pasteGo': 'Open',
   'ch.pasteBad': 'That is not a Sylareads duel link.',
+  'nav.start': 'Home',
+  'nav.main': 'Main navigation',
+  'nav.courses': 'Courses',
+  'nav.players': 'Who’s here',
+  'nav.path': 'Path',
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -591,4 +591,9 @@ export const de: Record<MessageKey, string> = {
   'ch.pasteHint': 'Den ganzen Link aus der Nachricht einfügen.',
   'ch.pasteGo': 'Öffnen',
   'ch.pasteBad': 'Das ist kein Duell-Link von Sylareads.',
+  'nav.start': 'Start',
+  'nav.main': 'Hauptnavigation',
+  'nav.courses': 'Kurse',
+  'nav.players': 'Wer ist da',
+  'nav.path': 'Lernpfad',
 };

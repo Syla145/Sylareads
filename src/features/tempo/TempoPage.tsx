@@ -9,6 +9,7 @@ import { Button, Card } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { itemAnswer } from './labels';
 import { SignViewSetting } from '../signs/SignViewToggle';
+import { SubNav } from '../../ui/SubNav';
 
 const NO_ITEMS: Record<string, ItemProgress> = {};
 
@@ -51,6 +52,7 @@ export function TempoPage() {
 
   return (
     <div className="tempo-page">
+      <SubNav label={t('nav.practice')} items={[{ to: `/${meta.slug}/practice`, label: t('nav.practice') }, { to: `/${meta.slug}/tempo`, label: t('nav.tempo') }]} />
       <header className="section-head">
         <h1 className="page-title">{t('tempo.title')}</h1>
         <p className="muted">{t('tempo.subtitle')}</p>

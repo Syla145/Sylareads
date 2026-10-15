@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { courseBySlug } from '../../content/registry';
 import { useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { CourseTabs, TopBar } from '../../ui/TopBar';
+import { TopBar } from '../../ui/TopBar';
 import { CourseContext, useCourseIndex } from './useCourse';
 import { SiteFooter } from '../legal/SiteFooter';
 import { Button } from '../../ui/primitives';
@@ -49,7 +49,6 @@ export function CourseGate({ focus = false }: { focus?: boolean }) {
   return (
     <div className={`app-shell ${meta.fontClass}`}>
       <TopBar course={meta} />
-      <CourseTabs course={meta} />
       <main className="page">{body}</main>
       {index && <SiteFooter />}
     </div>

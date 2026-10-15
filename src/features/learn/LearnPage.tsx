@@ -9,6 +9,7 @@ import { useProgress } from '../../store/progressStore';
 import { Button, ButtonLink, Modal } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { PlacementOptions } from '../placement/PlacementOptions';
+import { SubNav } from '../../ui/SubNav';
 
 export function LearnPage() {
   const { meta, index } = useCourse();
@@ -49,6 +50,7 @@ export function LearnPage() {
 
   return (
     <div className="learn">
+      <SubNav label={t('nav.learn')} items={[{ to: `/${meta.slug}/learn`, label: t('nav.path') }, { to: `/${meta.slug}/script`, label: t('nav.script') }]} />
       <header className="section-head">
         <h1 className="page-title">{t('learn.title')}</h1>
         <p className="muted">{t('learn.subtitle')}</p>

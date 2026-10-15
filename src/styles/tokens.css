@@ -1,33 +1,33 @@
-/* Sylareads design tokens (spec section 12). Dark mode only in V1;
-   a light mode later is a second token set. */
+/* Sylareads design tokens. Dark only: near-black ground, signal yellow as the
+   one accent, road-sign green for the cards that matter. */
 :root {
   color-scheme: dark;
 
-  --bg: #121417;
-  --surface-1: #1a1d21;
-  --surface-2: #22262b;
-  --surface-3: #2b3036;
-  --border: #2e3338;
-  --border-strong: #41474f;
-  --track: #262a2f;
+  --bg: #0a0d12;
+  --surface-1: #12161d;
+  --surface-2: #1a1f29;
+  --surface-3: #242a36;
+  --border: #1f2530;
+  --border-strong: #323a48;
+  --track: #262c38;
 
-  --text-primary: #eceae4;
-  --text-secondary: #a3a7ad;
-  --text-tertiary: #8f949b;
+  --text-primary: #f2efe6;
+  --text-secondary: #a7adb8;
+  --text-tertiary: #8d94a0;
 
-  --accent: #e3a857;
-  --accent-hover: #edb96f;
-  --accent-pressed: #c98f40;
-  --accent-subtle: rgba(227, 168, 87, 0.12);
-  --accent-ring: rgba(227, 168, 87, 0.25);
-  --on-accent: #1a1408;
+  --accent: #ffd23f;
+  --accent-hover: #ffe27a;
+  --accent-pressed: #e6b800;
+  --accent-subtle: rgba(255, 210, 63, 0.12);
+  --accent-ring: rgba(255, 210, 63, 0.3);
+  --on-accent: #14110a;
 
-  --success: #4fb286;
-  --success-subtle: rgba(79, 178, 134, 0.12);
-  --success-border: rgba(79, 178, 134, 0.45);
-  --error: #e06c6c;
-  --error-subtle: rgba(224, 108, 108, 0.12);
-  --error-border: rgba(224, 108, 108, 0.45);
+  --success: #3ccb7f;
+  --success-subtle: rgba(60, 203, 127, 0.13);
+  --success-border: rgba(60, 203, 127, 0.5);
+  --error: #ff6b6b;
+  --error-subtle: rgba(255, 107, 107, 0.12);
+  --error-border: rgba(255, 107, 107, 0.5);
 
   --state-new: #6e737a;
   --state-learning: #8aa0bd;
@@ -35,13 +35,28 @@
   --state-mastered: #4fb286;
   --state-expert: #9b87f5;
 
-  --font-ui: 'Inter Variable', 'Inter', 'Noto Sans Bengali', 'Noto Sans Thai Looped', 'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-ui: 'Geist Variable', 'Inter Variable', 'Inter', 'Noto Sans Bengali', 'Noto Sans Thai Looped', 'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-bengali: 'Noto Sans Bengali', 'Hind Siliguri', 'Vrinda', sans-serif;
   --font-thai: 'Noto Sans Thai Looped', 'Noto Sans Thai', 'Leelawadee UI', 'Tahoma', sans-serif;
 
   --glyph-xl: clamp(96px, 24vw, 168px);
   --glyph-l: clamp(48px, 12vw, 88px);
   --glyph-m: clamp(32px, 8vw, 56px);
+
+  /* Display type: headings, big numbers (Bricolage Grotesque, OFL) */
+  --font-display: 'Bricolage Grotesque Variable', 'Geist Variable', 'Inter Variable', system-ui, sans-serif;
+  /* Road-sign look for the cards that matter (recommendation, the learning plate) */
+  --sign: #0e6b47;
+  --sign-deep: #0a5537;
+  --sign-line: #e8f5ee;
+  --sign-text-2: #cfebdd;
+  --info: #4c8dff;
+  --shield: #5cc8ff;
+  --flame: #ff8a3d;
+  /* 3D push buttons */
+  --accent-shadow: #b98f00;
+  --tabbar-h: 64px;
+  --sidebar-w: 240px;
 
   --s-1: 4px;
   --s-2: 8px;
@@ -53,11 +68,11 @@
   --s-8: 64px;
 
   --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 16px;
+  --r-md: 14px;
+  --r-lg: 20px;
   --r-pill: 999px;
 
-  --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.5);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --t-fast: 150ms;
   --t: 200ms;

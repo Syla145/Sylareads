@@ -11,6 +11,7 @@ import { useCourse } from '../course/useCourse';
 import { practiceQuery } from './config';
 import { MistakesCard } from '../mistakes/MistakesCard';
 import { SignViewSetting } from '../signs/SignViewToggle';
+import { SubNav } from '../../ui/SubNav';
 
 const COUNTS = [10, 20, 30, 50];
 
@@ -67,6 +68,7 @@ export function PracticeHub() {
 
   return (
     <div className="practice-hub">
+      <SubNav label={t('nav.practice')} items={[{ to: `/${meta.slug}/practice`, label: t('nav.practice') }, { to: `/${meta.slug}/tempo`, label: t('nav.tempo') }]} />
       <header className="section-head">
         <h1 className="page-title">{t('practice.title')}</h1>
       </header>

@@ -6,7 +6,7 @@
   padding: var(--s-3) var(--s-4);
   border-radius: var(--r-md);
   background: var(--accent-subtle);
-  border: 1px solid rgba(227, 168, 87, 0.3);
+  border: 1px solid rgba(255, 210, 63, 0.3);
   text-align: left;
 }
 .note-label {
@@ -68,7 +68,7 @@
 }
 .note-add.is-nudge {
   border-style: solid;
-  border-color: rgba(227, 168, 87, 0.45);
+  border-color: rgba(255, 210, 63, 0.45);
   color: var(--text-primary);
 }
 .note-hint {
@@ -96,7 +96,7 @@
   margin-top: var(--s-3);
   padding: var(--s-3) var(--s-4);
   border-radius: var(--r-md);
-  border: 1px dashed rgba(227, 168, 87, 0.45);
+  border: 1px dashed rgba(255, 210, 63, 0.45);
   text-align: left;
 }
 .note-suggestion .note-text {

@@ -43,16 +43,19 @@
 }
 
 .page-title {
-  font-size: 1.75rem;
-  line-height: 36px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-family: var(--font-display);
+  font-size: 2.125rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
 .section-label {
-  font-size: 1.25rem;
-  line-height: 28px;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  line-height: 1.2;
+  font-weight: 750;
+  letter-spacing: -0.01em;
   margin: var(--s-6) 0 var(--s-3);
 }
 
@@ -65,9 +68,11 @@
 }
 
 .card-title {
-  font-size: 1.25rem;
-  line-height: 28px;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: -0.01em;
   margin-bottom: var(--s-2);
 }
 
@@ -96,14 +101,12 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(18, 20, 23, 0.9);
+  background: rgba(10, 13, 18, 0.9);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
 
-.topbar-inner,
-.course-tabs-inner {
+.topbar-inner {
   max-width: var(--content);
   margin: 0 auto;
   padding: 0 var(--gutter);
@@ -305,71 +308,53 @@
 /* iPhone SE: the logo alone, so the course name has room. */
 @media (max-width: 374px) {
   .wordmark-text {
-    display: none;
+    /* Hidden but still the link's name for screen readers. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 
-/* ---------- Course tabs ---------- */
-.course-tabs {
-  position: sticky;
-  top: 56px;
-  z-index: 19;
-  background: rgba(18, 20, 23, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
+/* ---------- Views inside a tab: segmented control at the top of the page ---------- */
+.sub-nav {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: var(--s-5);
+  border-radius: var(--r-pill);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
 }
 
-.course-tabs-inner {
-  display: flex;
-  gap: var(--s-1);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.course-tabs a {
-  position: relative;
-  padding: 12px 12px 13px;
+.sub-nav-item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
   font-size: 0.9375rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
-  white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 
-.course-tabs a.active {
+.sub-nav-item.is-active {
   color: var(--text-primary);
+  background: var(--surface-3);
 }
 
-.course-tabs a.active::after {
-  content: '';
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--accent);
+@media (hover: hover) {
+  .sub-nav-item:not(.is-active):hover {
+    color: var(--text-primary);
+  }
 }
 
-@media (max-width: 520px) {
-  .course-tabs-inner {
-    padding: 0 4px;
-    gap: 0;
-  }
-  /* More tabs than room (iPhone SE): the edge fades out to show there is more. */
-  .course-tabs-inner.is-scrollable {
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
-  }
-  .course-tabs a {
-    flex: 1 0 auto;
-    text-align: center;
-    padding: 13px 5px 14px;
-    font-size: 0.875rem;
-  }
-  .course-tabs a.active::after {
-    left: 5px;
-    right: 5px;
+@media (pointer: coarse) {
+  .sub-nav-item {
+    min-height: 40px;
   }
 }
 
@@ -380,10 +365,10 @@
   justify-content: center;
   gap: 10px;
   min-height: 48px;
-  padding: 0 20px;
+  padding: 0 22px;
   border-radius: var(--r-md);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   text-align: center;
   border: 1px solid transparent;
@@ -405,9 +390,17 @@
   width: 100%;
 }
 
+/* The main button is a 3D key: it sits on its own shadow and goes down when pressed. */
 .btn-primary {
   background: var(--accent);
   color: var(--on-accent);
+  box-shadow: 0 4px 0 var(--accent-shadow);
+  margin-bottom: 4px;
+}
+
+.btn-primary:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--accent-shadow);
 }
 
 .btn-primary:disabled {
@@ -415,12 +408,15 @@
   background: var(--surface-2);
   border-color: var(--border);
   color: var(--text-tertiary);
+  box-shadow: 0 4px 0 var(--surface-1);
 }
 
 .btn-secondary {
   background: var(--surface-2);
   border-color: var(--border-strong);
   color: var(--text-primary);
+  box-shadow: 0 3px 0 var(--surface-1);
+  margin-bottom: 3px;
 }
 
 .btn-ghost {
@@ -446,7 +442,7 @@
 }
 
 .btn-primary:not(:disabled):active {
-  background: var(--accent-pressed);
+  background: var(--accent-hover);
 }
 
 @media (max-width: 640px) {
@@ -623,7 +619,7 @@
 .notice-accent {
   background: var(--accent-subtle);
   color: var(--text-primary);
-  border: 1px solid rgba(227, 168, 87, 0.35);
+  border: 1px solid rgba(255, 210, 63, 0.35);
 }
 
 .notice-error {
@@ -667,10 +663,12 @@
   gap: 0.3em;
   min-height: clamp(150px, 30vw, 220px);
   padding: var(--s-5) var(--s-5);
-  background: var(--surface-1);
-  border: 1px solid var(--border-strong);
-  border-radius: 18px;
-  box-shadow: inset 0 0 0 6px var(--surface-1), inset 0 0 0 7px var(--border);
+  /* A road sign: green, white line inside the edge, lifted off the page. */
+  background: var(--sign);
+  color: var(--sign-line);
+  border: 0;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 7px var(--sign), inset 0 0 0 10px var(--sign-line), 0 16px 36px rgba(0, 0, 0, 0.4);
   text-align: center;
 }
 
@@ -822,7 +820,7 @@
   display: grid;
   gap: var(--s-3);
   background: linear-gradient(180deg, var(--accent-subtle), transparent 75%), var(--surface-1);
-  border: 1px solid rgba(227, 168, 87, 0.45);
+  border: 1px solid rgba(255, 210, 63, 0.45);
   border-radius: var(--r-lg);
   padding: var(--s-5);
   margin-bottom: var(--s-2);
@@ -947,9 +945,10 @@
 }
 
 .big-number {
+  font-family: var(--font-display);
   font-size: clamp(3.5rem, 10vw, 5rem);
   line-height: 1;
-  font-weight: 650;
+  font-weight: 800;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
 }
@@ -1004,19 +1003,49 @@
   }
 }
 
+/* The recommendation is a road sign: green, with a white line inside the edge. */
 .card-recommended {
-  border-color: rgba(227, 168, 87, 0.45);
-  background: linear-gradient(180deg, var(--accent-subtle), transparent 70%), var(--surface-1);
+  position: relative;
+  background: var(--sign);
+  border: 0;
+  padding: 24px 24px 22px;
+  color: var(--sign-line);
+}
+
+.card-recommended::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 2px solid var(--sign-line);
+  border-radius: calc(var(--r-lg) - 5px);
+  pointer-events: none;
 }
 
 .card-recommended .card-label {
   margin-bottom: var(--s-2);
+  color: var(--sign-text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+
+.card-recommended .muted {
+  color: var(--sign-text-2);
+}
+
+.card-recommended .btn-secondary {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: rgba(232, 245, 238, 0.35);
+  color: var(--sign-line);
+  box-shadow: 0 3px 0 var(--sign-deep);
 }
 
 .rec-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 28px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   margin-bottom: 4px;
 }
 
@@ -1185,7 +1214,7 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--s-5);
-  border-color: rgba(227, 168, 87, 0.45);
+  border-color: rgba(255, 210, 63, 0.45);
 }
 
 @media (max-width: 560px) {
@@ -1725,7 +1754,7 @@
   z-index: 2;
   margin: 0 calc(-1 * var(--gutter));
   padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, var(--bg) 75%, rgba(18, 20, 23, 0));
+  background: linear-gradient(to top, var(--bg) 75%, rgba(10, 13, 18, 0));
 }
 
 @media (max-width: 640px) {
@@ -1943,16 +1972,18 @@
 }
 
 .complete-title {
-  font-size: 2rem;
-  line-height: 40px;
-  font-weight: 650;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  line-height: 1.1;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .complete-score {
+  font-family: var(--font-display);
   font-size: clamp(2.5rem, 9vw, 3.5rem);
   line-height: 1.1;
-  font-weight: 650;
+  font-weight: 800;
   letter-spacing: -0.03em;
   margin-top: var(--s-3);
 }
@@ -2343,7 +2374,7 @@
 
 .map-label {
   fill: var(--text-primary);
-  stroke: rgba(18, 20, 23, 0.85);
+  stroke: rgba(10, 13, 18, 0.85);
   paint-order: stroke;
   text-anchor: middle;
   dominant-baseline: central;
@@ -2466,12 +2497,6 @@
   .icon-btn {
     width: 44px;
     height: 44px;
-  }
-  .course-tabs a {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
   }
   .course-switch summary {
     min-height: 44px;

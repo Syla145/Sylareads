@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useRef, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { COURSES } from '../content/registry';
 import { dayKey } from '../domain/dates';
 import { displayedStreak, levelFromXp } from '../domain/gamification';
@@ -7,6 +7,7 @@ import type { CourseMeta } from '../domain/types';
 import { useLang, useT } from '../i18n';
 import { useProgress } from '../store/progressStore';
 import { OfflineChip, UpdateBanner } from '../pwa/PwaParts';
+import { AppNav } from './AppNav';
 
 /** The globe with the Я (same drawing as the app icon, see tools/ and public/icons/). */
 export function LogoMark() {
@@ -50,14 +51,6 @@ export function FlameIcon() {
   );
 }
 
-function ProfileIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="8.5" r="3.75" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M4.5 20c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 /** The course menu closes with Escape, when the focus leaves it and after a choice. */
 function CourseSwitch({ children }: { children: ReactNode }) {
@@ -98,10 +91,11 @@ export function TopBar({ course }: { course?: CourseMeta }) {
   const level = levelFromXp(profile.xp);
 
   return (
+    <>
     <header className="topbar">
       <div className="topbar-inner">
         <div className="topbar-left">
-          <Link to="/" className="wordmark" aria-label={t('nav.home')}>
+          <Link to="/" className="wordmark">
             <LogoMark />
             <span className="wordmark-text">Sylareads</span>
           </Link>
@@ -142,50 +136,11 @@ export function TopBar({ course }: { course?: CourseMeta }) {
             <span className="sr-only">{t('chip.level', { n: level })}</span>
           </span>
           <LangToggle />
-          <NavLink to="/profile" className="icon-btn" aria-label={t('nav.profile')} title={t('nav.profile')}>
-            <ProfileIcon />
-          </NavLink>
         </div>
       </div>
       <UpdateBanner />
     </header>
-  );
-}
-
-export function CourseTabs({ course }: { course: CourseMeta }) {
-  const t = useT();
-  const base = `/${course.slug}`;
-  const lang = useLang();
-  const { pathname } = useLocation();
-  const inner = useRef<HTMLDivElement>(null);
-  const [scrollable, setScrollable] = useState(false);
-  // Narrow phones: the active tab is always scrolled into view.
-  useEffect(() => {
-    const el = inner.current;
-    if (!el) return;
-    const check = () => setScrollable(el.scrollWidth > el.clientWidth + 1);
-    check();
-    const active = el.querySelector('a.active') as HTMLElement | null;
-    if (active && el.scrollWidth > el.clientWidth) el.scrollLeft = Math.max(0, active.offsetLeft - (el.clientWidth - active.offsetWidth) / 2);
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, [pathname]);
-  return (
-    <nav className="course-tabs" aria-label={t('nav.courseSections', { course: course.name[lang] })}>
-      <div className={`course-tabs-inner${scrollable ? ' is-scrollable' : ''}`} ref={inner}>
-        <NavLink end to={base}>
-          {t('nav.overview')}
-        </NavLink>
-        <NavLink to={`${base}/learn`}>{t('nav.learn')}</NavLink>
-        <NavLink end to={`${base}/practice`}>
-          {t('nav.practice')}
-        </NavLink>
-        <NavLink end to={`${base}/tempo`}>
-          {t('nav.tempo')}
-        </NavLink>
-        <NavLink to={`${base}/script`}>{t('nav.script')}</NavLink>
-        {course.hasMap && <NavLink to={`${base}/map`}>{t('nav.map')}</NavLink>}
-      </div>
-    </nav>
+    <AppNav />
+    </>
   );
 }
