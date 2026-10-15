@@ -109,14 +109,14 @@ const core: Omit<Lesson, 'number'>[] = [
   },
   {
     id: 'bn-l13', phaseId: 'clusters', type: 'combos',
-    title: { de: 'Konjunkte I', en: 'Conjuncts I' },
+    title: { de: 'Ligaturen I', en: 'Ligatures I' },
     goal: { de: 'Zwei Konsonanten verschmelzen zu einem Zeichen: চট্টগ্রাম, কুমিল্লা, কক্সবাজার.', en: 'Two consonants merge into one sign: চট্টগ্রাম, কুমিল্লা, কক্সবাজার.' },
     newIds: C('tt', 'll', 'ks', 'nj', 'ngg', 'kkh'),
   },
   {
     id: 'bn-l14', phaseId: 'clusters', type: 'combos',
-    title: { de: 'Konjunkte II', en: 'Conjuncts II' },
-    goal: { de: 'Die übrigen Konjunkte aus den Ortsnamen dieses Kurses.', en: 'The remaining conjuncts from this course’s place names.' },
+    title: { de: 'Ligaturen II', en: 'Ligatures II' },
+    goal: { de: 'Die übrigen Ligaturen aus den Ortsnamen dieses Kurses.', en: 'The remaining ligatures from this course’s place names.' },
     newIds: C('sht', 'hm', 'ndh', 'nch', 'st', 'sk'),
   },
   {

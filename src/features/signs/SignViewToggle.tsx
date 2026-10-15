@@ -24,3 +24,17 @@ export function SignViewToggle() {
     </div>
   );
 }
+
+/** The setting with its explanation, at the end of a page (it is a setting, not the main thing). */
+export function SignViewSetting() {
+  const t = useT();
+  return (
+    <section className="setting-block" aria-labelledby="sign-view-title">
+      <h2 id="sign-view-title" className="section-label">
+        {t('signs.settingTitle')}
+      </h2>
+      <p className="muted small">{t('signs.settingHint')}</p>
+      <SignViewToggle />
+    </section>
+  );
+}

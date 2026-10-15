@@ -19,7 +19,7 @@ export function NoteEditor({
 }: {
   courseId: string;
   itemId: string;
-  invite?: 'plain' | 'mistake' | 'none';
+  invite?: 'plain' | 'mistake' | 'hard' | 'none';
   /** A suggested Eselsbrücke from the course, offered while there is no own note. */
   suggestion?: string;
 }) {
@@ -27,6 +27,9 @@ export function NoteEditor({
   const note = useNote(courseId, itemId);
   const setNote = useProgress((s) => s.setNote);
   const [editing, setEditing] = useState(false);
+  // Until the first own note in this course, a suggestion is just shown; the choices open on request.
+  const firstTime = useProgress((s) => !Object.values(s.root.courses[courseId]?.notes ?? {}).some((n) => n.t));
+  const [expanded, setExpanded] = useState(false);
   const [draft, setDraft] = useState(note);
   const area = useRef<HTMLTextAreaElement>(null);
 
@@ -107,10 +110,22 @@ export function NoteEditor({
   }
 
   if (invite === 'none') return null;
+  const label = invite === 'mistake' ? t('notes.suggestionAfterMistake') : invite === 'hard' ? t('notes.suggestionHard') : t('notes.suggestion');
+  if (suggestion && invite === 'plain' && firstTime && !expanded) {
+    return (
+      <div className="note-suggestion is-quiet">
+        <p className="note-label">{label}</p>
+        <p className="note-text">{suggestion}</p>
+        <button type="button" className="note-link" onClick={() => setExpanded(true)}>
+          <span aria-hidden="true">✎</span> {t('notes.keepOpen')}
+        </button>
+      </div>
+    );
+  }
   if (suggestion) {
     return (
       <div className="note-suggestion">
-        <p className="note-label">{invite === 'mistake' ? t('notes.suggestionAfterMistake') : t('notes.suggestion')}</p>
+        <p className="note-label">{label}</p>
         <p className="note-text">{suggestion}</p>
         <div className="note-actions">
           <button type="button" className="btn btn-secondary" onClick={() => setNote(courseId, itemId, suggestion)}>
@@ -127,8 +142,8 @@ export function NoteEditor({
     );
   }
   return (
-    <button type="button" className={`note-add${invite === 'mistake' ? ' is-nudge' : ''}`} onClick={() => open()}>
-      <span aria-hidden="true">✎</span> {invite === 'mistake' ? t('notes.addAfterMistake') : t('notes.add')}
+    <button type="button" className={`note-add${invite === 'mistake' || invite === 'hard' ? ' is-nudge' : ''}`} onClick={() => open()}>
+      <span aria-hidden="true">✎</span> {invite === 'mistake' ? t('notes.addAfterMistake') : invite === 'hard' ? t('notes.addHard') : t('notes.add')}
     </button>
   );
 }

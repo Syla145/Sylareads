@@ -80,7 +80,8 @@ export function courseStats(index: CourseIndex, cp: CourseProgress | undefined, 
   return {
     started: !!cp && (Object.keys(cp.items).length > 0 || Object.keys(cp.lessons).length > 0),
     mastery,
-    lettersLearned: index.byKind.letter.filter((l) => (items[l.id]?.box ?? 0) >= 2).length,
+    // Introduced once = known (box ≥ 1): a mistake never lowers this number.
+    lettersLearned: index.byKind.letter.filter((l) => (items[l.id]?.box ?? 0) >= 1).length,
     lettersTotal: index.byKind.letter.length,
     accuracy,
     citiesRecognized: index.byKind.city.filter((c) => (items[c.id]?.box ?? 0) >= 3).length,

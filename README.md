@@ -11,10 +11,10 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - Lernen, Üben, Freies Üben, alle neun Modi (Letters, Combinations, Words, Cities, Regions, GeoGuessr Terms, Weak Items, Mixed, Verwechsler), Smart Practice, Scan-Aufgabe
 - Exaktes Answer Matching ohne Fuzzy-Logik: deutscher Name, englischer Name und Transliteration gleichwertig
 - Leitner-SRS mit 8 Boxen, Mastery (New / Learning / Familiar / Mastered), Weak Items inklusive Verwechslungspaaren
-- XP, Level, Streak, Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
+- XP, Level, Serie (Streak), Erfolge pro Kurs in Bronze/Silber/Gold (siehe unten), Lesbarkeits-Meilenstein („31 / 100 cities readable“)
 - DE/EN-Oberfläche, Dark Mode, Desktop und Mobile, komplett per Tastatur bedienbar
 - Fortschritt in localStorage, Export/Import als `sylareads-progress.json`
-- Daily Challenge und Duell (`#/<kurs>/daily`, `#/<kurs>/duel`): 10 Ortsnamen, Lesung eintippen, mehr Richtige gewinnt, bei Gleichstand die kürzere Zeit (siehe unten)
+- Tagesaufgabe (Daily Challenge) und Duell (`#/<kurs>/daily`, `#/<kurs>/duel`): 10 Ortsnamen, Lesung eintippen, mehr Richtige gewinnt, bei Gleichstand die kürzere Zeit (siehe unten)
 - „Wer ist da“ (`#/players`, Leiste auf der Startseite nur für Angemeldete): angemeldete Spieler, die zugestimmt haben, mit aktuellem Kurs, Fortschritt, Streak und Level; auf der Startseite als kurze Leiste (siehe „Online-Speicherung“)
 
 ### Greek
@@ -94,7 +94,9 @@ Ortsnamen erscheinen in Übungen, Tempo-Runden, im Fehler-Review und im Kurs „
 
 ### Fehler-Review („Heute falsch“)
 
-Auf der Übersicht und unter „Üben“ steht eine Liste aller Elemente, die heute falsch beantwortet wurden (am Morgen die von gestern, bis heute etwas falsch läuft). Pro Element: Originalschrift, Name, wie oft falsch und ob es inzwischen wieder richtig war. „Genau diese üben“ startet eine Übung mit genau diesen Elementen, „Nur die … offenen“ lässt die schon wieder richtigen weg.
+**Stufen** eines Elements nach seiner Lernbox: Neu → Anfänger (Box 1–2) → Vertraut (3–4) → Sicher (5–6) → Meister (7). „Kennengelernt“ zählt alles ab Box 1 und sinkt nie; „vertraut“ (Städte, Kartengebiete, Schriften) heißt ab Box 3. Der Abschluss einer Lektion zeigt „x von y auf Anhieb richtig“ (erster Versuch je Element), „Fortschritt verbessert“ nur für vorher bekannte Elemente und getrennt „Noch unsicher“ für alles, was am Ende noch falsch war. Auswahlaufgaben haben vier Antworten; ein richtiger zweiter Versuch wird neutral gezeigt, nicht als Erfolg.
+
+Auf der Übersicht fasst „Deine Problemstellen“ beides zusammen: „Heute falsch“ (Fehler-Review) und „Oft schwer“ (Schwachstellen), dazu „Verwechsler üben“. Nur die Empfehlung ist ein orangefarbener Knopf. Unter „Üben“ steht eine Liste aller Elemente, die heute falsch beantwortet wurden (am Morgen die von gestern, bis heute etwas falsch läuft). Pro Element: Originalschrift, Name, wie oft falsch und ob es inzwischen wieder richtig war. „Genau diese üben“ startet eine Übung mit genau diesen Elementen, „Nur die … offenen“ lässt die schon wieder richtigen weg.
 
 - Fehler zählen aus Lektionen, Übungen und Tempo-Runden. Antworten der Einstufung („kann ich noch nicht“) und abgelaufene Tempo-Zeit (zu langsam, nicht falsch) zählen nicht.
 - Gespeichert pro Kurs und Tag für eine Woche (`mistakes`), auch bei der Online-Speicherung zusammengeführt. Logik in `src/domain/mistakes.ts`, Karte in `src/features/mistakes/`.
@@ -168,11 +170,11 @@ Weitere Hinweise:
 
 Übt ähnliche Zeichen gegeneinander (`src/domain/confusers.ts`, Üben → „Verwechsler“, `?mode=confusers`). Die Paare kommen aus zwei Quellen: Zeichen, die du tatsächlich verwechselt hast (jede Antwort, die für ein anderes Zeichen richtig gewesen wäre, wird gezählt), und die festen Ähnlichkeits-Paare des Kurses (z. B. ব/র, ড/ড়), sobald beide Zeichen eingeführt sind. Paare mit gleicher Lesung (শ/ষ) fallen weg. Pro Runde bis zu 6 Paare, jedes dreimal: beide Zeichen nach Lesung, eins umgekehrt (Lesung → Zeichen); dasselbe Paar kommt nie zweimal hintereinander.
 
-## Daily Challenge und Duell
+## Tagesaufgabe (Daily Challenge) und Duell
 
 Beide nutzen denselben Ablauf (`src/domain/challenge.ts`, ohne Oberfläche): 10 Städte des Kurses (4 große, 3 mittlere, 3 kleinere), ausgewählt mit einem Startwert, sodass alle mit demselben Startwert dieselben Namen bekommen. Die Lesung wird eingetippt, ein Versuch pro Name. Gewertet wird erst nach Richtigen, dann nach Gesamtzeit; die Uhr läuft nur, solange ein Name zu sehen ist.
 
-- **Daily Challenge:** Startwert = Kurs + Tag. Ein Versuch pro Tag und Kurs; jede Antwort wird sofort im Fortschritt gespeichert (`courses.<kurs>.daily`, 30 Tage) und folgt dem Konto auf alle Geräte. Wer abbricht (✕, Escape oder Zurück-Geste), **unterbricht** nur: Die Antworten bleiben (`ans`), am selben Tag geht es mit dem nächsten Namen weiter. Ein Name, der beim Abbrechen gerade zu sehen war, zählt als nicht gewusst (kein Nachschlagen und Zurückkommen). Der Tag wird beim Öffnen festgehalten, eine Runde über Mitternacht bleibt also auf ihrem Tag. Das Ergebnis des Tages steht auf der öffentlichen Karte (Feld `tempo`), die Seite zeigt die Tagesliste aller, die ihre Karte zeigen.
+- **Tagesaufgabe:** Erscheint auf der Übersicht, sobald 30 % der Städte lesbar sind (oder schon einmal gespielt wurde). Startwert = Kurs + Tag. Ein Versuch pro Tag und Kurs; jede Antwort wird sofort im Fortschritt gespeichert (`courses.<kurs>.daily`, 30 Tage) und folgt dem Konto auf alle Geräte. Wer abbricht (✕, Escape oder Zurück-Geste), **unterbricht** nur: Die Antworten bleiben (`ans`), am selben Tag geht es mit dem nächsten Namen weiter. Ein Name, der beim Abbrechen gerade zu sehen war, zählt als nicht gewusst (kein Nachschlagen und Zurückkommen). Der Tag wird beim Öffnen festgehalten, eine Runde über Mitternacht bleibt also auf ihrem Tag. Das Ergebnis des Tages steht auf der öffentlichen Karte (Feld `tempo`), die Seite zeigt die Tagesliste aller, die ihre Karte zeigen.
 - **Duell:** zufälliger Startwert; nach der Runde wird ein Link geteilt, der Startwert, Name und Ergebnis enthält (`#/<kurs>/duel?s=…&n=…&r=…&t=…`). Kein Konto und keine Firebase-Regeln nötig. Wer den Link öffnet, spielt dieselben 10 Namen und sieht den Vergleich; eigene Duell-Ergebnisse merkt sich das Gerät, damit ein zurückgeschickter Link direkt den Vergleich zeigt.
 
 ## Fortschritt und Datenschutz
@@ -194,7 +196,7 @@ Damit nichts verloren geht (`src/store/persistence.ts`):
 Erfolge sind nach Kursen gruppiert; die meisten haben drei Stufen (Bronze, Silber, Gold). Alle Messungen stehen ohne Oberfläche in `src/domain/achievements.ts` (jeder Erfolg hat eine Funktion `measure`, die Wert und Ziel liefert).
 
 - **Allgemein:** Erste Schritte, Dranbleiben (Streak 7/30/100 Tage), Vielleser (1.000/5.000/10.000 Antworten).
-- **Pro Sprachkurs:** Alphabet (alle Buchstaben kennengelernt / Moderate / Pro), Stadtleser (10/50/100 Städte auf Pro), Lernpfad (10 Lektionen / Hälfte / alle; nur gespielte, nicht eingestufte), Blitz (15/25/35 richtige in einer Blitzrunde), Fehlerfrei (1/5/15 Lektionen ohne Fehler), Kartenkenner (Hälfte auf Pro / alle auf Pro / alle auf Expert; nur Kurse mit Karte) und ein Sonder-Erfolg je Sprache (False Friends, Buchstabenpaare, Vokalzeichen, Ligaturen).
+- **Pro Sprachkurs:** Alphabet (alle Buchstaben kennengelernt / „Vertraut“ / „Sicher“), Stadtleser (10/50/100 Städte auf „Sicher“), Lernpfad (10 Lektionen / Hälfte / alle; nur gespielte, nicht eingestufte), Blitz (15/25/35 richtige in einer Blitzrunde), Fehlerfrei (1/5/15 Lektionen ohne Fehler), Kartenkenner (Hälfte auf „Sicher“ / alle auf „Sicher“ / alle auf „Meister“; nur Kurse mit Karte) und ein Sonder-Erfolg je Sprache (False Friends, Buchstabenpaare, Vokalzeichen, Ligaturen).
 - **Schriften erkennen:** Schriftkenner, Kyrillisch-Detektiv, Häkchen-Kenner, Indien-Kenner.
 - **Geheim:** ein Erfolg, der nur als „?“ erscheint.
 

@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { UnlockedList } from '../achievements/AchievementParts';
 import type { CourseIndex } from '../../domain/courseIndex';
 import { levelFromXp } from '../../domain/gamification';
-import { confusedTwiceSet, type ProgressRoot } from '../../domain/progress';
+import type { ProgressRoot } from '../../domain/progress';
 import type { SessionState } from '../../domain/sessionEngine';
-import { isWeak } from '../../domain/srs';
 import { knownLetters, readableCities } from '../../domain/stats';
 import type { Item, Lesson } from '../../domain/types';
 import { useLang, useT, type TKey } from '../../i18n';
@@ -64,18 +63,24 @@ export function CompleteScreen({
   const cb = before.courses[courseId];
   const ca = after.courses[courseId];
 
-  const correct = session.outcomes.filter((o) => o.result === 'C').length;
-  const total = session.outcomes.length;
+  // Scored on the first try per item; repeats after a mistake are practice, not extra questions.
+  const firstResults = Object.values(session.first);
+  const correct = firstResults.filter((r) => r === 'C').length;
+  const total = firstResults.length;
   const xp = after.profile.xp - before.profile.xp;
   const xpShown = useCountUp(xp);
 
   const seenIds = [...new Set([...session.outcomes.map((o) => o.itemId), ...session.introduced])];
+  // Still wrong at the end of the session: shown as "noch unsicher", never as progress.
+  const lastResult = new Map(session.outcomes.map((o) => [o.itemId, o.result]));
+  const shaky = seenIds.filter((id) => lastResult.get(id) === 'W' || (session.first[id] === 'W' && lastResult.get(id) !== 'C'));
+  const shakySet = new Set(shaky);
+  // Progress only for items known before: new ones are counted as "neu" above.
   const improved = seenIds
-    .filter((id) => (ca?.items[id]?.box ?? 0) > (cb?.items[id]?.box ?? 0))
+    .filter((id) => (cb?.items[id]?.box ?? 0) >= 1 && (ca?.items[id]?.box ?? 0) > (cb?.items[id]?.box ?? 0) && !shakySet.has(id))
     .map((id) => index.byId.get(id)!)
     .filter(Boolean);
-  const confused = confusedTwiceSet(ca);
-  const weak = seenIds.filter((id) => isWeak(ca?.items[id], confused.has(id)));
+  const shakyItems = shaky.map((id) => index.byId.get(id)!).filter(Boolean);
   const newCount = lesson ? lesson.newIds.filter((id) => session.introduced.includes(id)).length : 0;
   const isPairs = !!lesson && lesson.type === 'combos' && lesson.newIds.some((id) => index.units.has(id));
   const newKey = lesson ? (isPairs ? 'complete.new.pairs' : NEW_KEY[lesson.type]) : null;
@@ -92,12 +97,11 @@ export function CompleteScreen({
     <div className="complete">
       <h1 className="complete-title">{lesson ? t('complete.lesson') : t('complete.practice')}</h1>
       {lesson && <p className="muted">{t('learn.lesson', { n: lesson.number })} · {lesson.title[lang]}</p>}
-      <p className="complete-score tabular">{t('complete.correct', { c: correct, t: total })}</p>
+      <p className="complete-score tabular">{t('complete.firstTry', { c: correct, t: total })}</p>
 
       <ul className="complete-facts">
         <li className="accent tabular">{t('complete.xp', { n: xpShown })}</li>
         {newKey && newCount > 0 && <li>{t(newKey, { n: newCount })}</li>}
-        {weak.length > 0 && <li>{t('complete.weak', { n: weak.length })}</li>}
         {levelAfter > levelBefore && <li className="accent">{t('complete.levelUp', { n: levelAfter })}</li>}
       </ul>
 
@@ -106,10 +110,24 @@ export function CompleteScreen({
           <h2 className="card-label">{t('complete.masteryImproved')}</h2>
           <div className="chip-row">
             {improved.slice(0, 10).map((it) => (
-              <span key={it.id} className="glyph-chip">
+              <span key={it.id} className="glyph-chip" lang={index.content.id}>
                 {glyphOf(it)} <span className="up" aria-hidden="true">↑</span>
               </span>
             ))}
+          </div>
+        </section>
+      )}
+
+      {shakyItems.length > 0 && (
+        <section className="complete-block">
+          <h2 className="card-label">{t('complete.shaky')}</h2>
+          <div className="chip-row">
+            {shakyItems.slice(0, 10).map((it) => (
+              <span key={it.id} className="glyph-chip" lang={index.content.id}>
+                {glyphOf(it)}
+              </span>
+            ))}
+            {shakyItems.length > 10 && <span className="muted small">+{shakyItems.length - 10}</span>}
           </div>
         </section>
       )}

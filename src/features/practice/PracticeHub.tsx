@@ -10,7 +10,7 @@ import { Button, Card } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { practiceQuery } from './config';
 import { MistakesCard } from '../mistakes/MistakesCard';
-import { SignViewToggle } from '../signs/SignViewToggle';
+import { SignViewSetting } from '../signs/SignViewToggle';
 
 const COUNTS = [10, 20, 30, 50];
 
@@ -69,7 +69,6 @@ export function PracticeHub() {
     <div className="practice-hub">
       <header className="section-head">
         <h1 className="page-title">{t('practice.title')}</h1>
-        <SignViewToggle />
       </header>
 
       <Card className="smart-card">
@@ -94,7 +93,7 @@ export function PracticeHub() {
                 <span className="mode-title">{t(`cat.${m.key}`)}</span>
                 <span className="muted small">{t(`practice.desc.${m.key}`)}</span>
               </span>
-              <span className="mode-row-count tabular">{m.key === 'confusers' ? t('practice.pairCount', { n: m.count }) : t('practice.learnedCount', { n: m.count })}</span>
+              <span className="mode-row-count tabular">{m.key === 'confusers' ? t('practice.pairCount', { n: m.count }) : m.key === 'weak' ? t('practice.itemCount', { n: m.count }) : t('practice.learnedCount', { n: m.count })}</span>
             </button>
           </li>
         ))}
@@ -160,6 +159,7 @@ export function PracticeHub() {
       </details>
 
       <MeaningSwitch />
+      <SignViewSetting />
     </div>
   );
 }

@@ -11,7 +11,7 @@ import { MistakesList } from './ScriptMistakes';
 import { NextGoals } from '../achievements/AchievementParts';
 import { ScriptCard, ScriptText } from './ScriptParts';
 import './scripts.css';
-import { SignViewToggle } from '../signs/SignViewToggle';
+import { SignViewSetting } from '../signs/SignViewToggle';
 import { SiteFooter } from '../legal/LegalPages';
 
 const NO_ITEMS = {};
@@ -38,7 +38,6 @@ export default function ScriptsHome() {
         <header className="section-head">
           <h1 className="page-title">{t('scripts.title')}</h1>
           <p className="muted">{t('scripts.subtitle')}</p>
-          <SignViewToggle />
         </header>
 
         <Card className="scripts-summary">
@@ -113,6 +112,7 @@ export default function ScriptsHome() {
             ))}
           </div>
         </section>
+        <SignViewSetting />
       </main>
       <SiteFooter />
 

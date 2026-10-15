@@ -21,14 +21,16 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
   if (!item) return null;
   const result = state.lastResult;
   const ok = result !== 'W';
-  const title = result === 'C' ? t('session.correct') : result === 'R' ? t('session.correctRetry') : t('session.wrong');
+  // A second pick out of the few choices left is close to a guess: neutral, not a success.
+  const guessed = result === 'R' && task.kind === 'choice';
+  const title = result === 'C' ? t('session.correct') : guessed ? t('session.correctRetryChoice') : result === 'R' ? t('session.correctRetry') : t('session.wrong');
   const typed = task.kind !== 'choice' && task.kind !== 'locate';
   const mapShown = task.kind === 'locate' || (task.kind === 'choice' && task.question === 'map');
 
   return (
-    <div className={`feedback ${ok ? 'is-correct' : 'is-wrong'}`}>
+    <div className={`feedback ${guessed ? 'is-retry' : ok ? 'is-correct' : 'is-wrong'}`}>
       <p className="feedback-title">
-        <span aria-hidden="true">{ok ? '✓' : '✗'}</span> {title}
+        <span aria-hidden="true">{guessed ? '↻' : ok ? '✓' : '✗'}</span> {title}
       </p>
 
       {item.kind === 'letter' && (
@@ -77,7 +79,12 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
 
       {(item.kind === 'city' || item.kind === 'region') && <PlaceFacts index={index} place={item} withMap={!mapShown} />}
 
-      <NoteEditor courseId={index.content.id} itemId={item.id} invite={ok ? 'none' : 'mistake'} suggestion={index.content.noteHints?.[item.id]?.[lang]} />
+      <NoteEditor
+        courseId={index.content.id}
+        itemId={item.id}
+        invite={ok ? 'none' : state.evaluation?.confusedWith ? 'mistake' : 'hard'}
+        suggestion={index.content.noteHints?.[item.id]?.[lang]}
+      />
 
       {!ok && typed && state.evaluation?.confusedWith && <ConfusionLine index={index} input={state.lastInput} otherId={state.evaluation.confusedWith} />}
       {!ok && state.evaluation?.confusedWith && <NoteHint courseId={index.content.id} itemId={state.evaluation.confusedWith} label={t('notes.otherLabel')} />}

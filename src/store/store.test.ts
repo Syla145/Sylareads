@@ -10,8 +10,8 @@ describe('i18n', () => {
     expect(Object.keys(de).sort()).toEqual(Object.keys(en).sort());
   });
   it('fills placeholders and plurals', () => {
-    expect(translate('de', 'complete.weak', { n: 1 })).toBe('1 Schwachstelle');
-    expect(translate('en', 'complete.weak', { n: 3 })).toBe('3 weak items');
+    expect(translate('de', 'complete.new.letters', { n: 1 })).toBe('1 neuer Buchstabe');
+    expect(translate('en', 'complete.new.letters', { n: 3 })).toBe('3 new letters');
     expect(translate('en', 'dash.lettersLearned', { n: 28, total: 33 })).toBe('28 / 33 letters learned');
   });
 });

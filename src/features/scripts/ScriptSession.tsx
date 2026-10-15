@@ -340,7 +340,7 @@ function Feedback({ task, picked, correct }: { task: GradedScriptTask; picked: s
         {correct ? t('scripts.right') : t('scripts.wrong')}
       </p>
       <p className="muted">
-        <ScriptText entry={target}>{sample.native}</ScriptText> = {sample.latin} · {target.where[lang]} ({target.name[lang]})
+        <ScriptText entry={target}>{sample.native}</ScriptText> = {sample.latin} · {target.where[lang]} · {target.name[lang]}
       </p>
       {!correct && (
         <>

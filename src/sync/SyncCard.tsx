@@ -157,5 +157,12 @@ function errorText(t: ReturnType<typeof useT>, code: string): string {
     'resource-exhausted': 'sync.err.quota',
     'newer-version': 'sync.err.newer',
   };
+  // For the operator: what to fix in the Firebase console (players only see a plain message).
+  const fix: Record<string, string> = {
+    'auth/unauthorized-domain': 'Firebase: add this domain under Authentication → Settings → Authorized domains.',
+    'auth/operation-not-allowed': 'Firebase: enable Google under Authentication → Sign-in method.',
+    'permission-denied': 'Firestore refused access: compare the published rules with firestore.rules.',
+  };
+  if (fix[code]) console.warn(fix[code]);
   return known[code] ? t(known[code]) : t('sync.err.other', { code });
 }

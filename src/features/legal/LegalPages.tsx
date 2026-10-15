@@ -138,10 +138,10 @@ function PrivacyDe() {
       <p>Die Daten bleiben gespeichert, bis du im Profil „Konto und Online-Daten löschen“ wählst. Google löscht Protokolldaten nach einigen Wochen.</p>
 
       <h2>„Wer ist da“ (freiwillig, mit Einwilligung)</h2>
-      <p>Nur wenn du deine Karte einschaltest (ab 16 Jahren), sehen andere angemeldete Spieler deinen selbst gewählten Anzeigenamen, deinen aktuellen Kurs, deinen Fortschritt je Kurs, Streak, Level, dein letztes Daily-Challenge-Ergebnis und wann du zuletzt da warst. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen, indem du die Karte ausschaltest; sie wird dann sofort gelöscht.</p>
+      <p>Nur wenn du deine Karte einschaltest (ab 16 Jahren), sehen andere angemeldete Spieler deinen selbst gewählten Anzeigenamen, deinen aktuellen Kurs, deinen Fortschritt je Kurs, Serie, Level, dein letztes Ergebnis der Tagesaufgabe und wann du zuletzt da warst. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen, indem du die Karte ausschaltest; sie wird dann sofort gelöscht.</p>
 
-      <h2>Duell-Links und Daily Challenge</h2>
-      <p>Bei einem Duell stehen der Name, den du eingibst, und dein Ergebnis im Link selbst. Nur wer den Link von dir bekommt, sieht sie; auf keinem Server wird etwas gespeichert. Daily-Challenge-Ergebnisse bleiben in deinem Browser und erscheinen nur auf deiner Karte, wenn du sie zeigst.</p>
+      <h2>Duell-Links und Tagesaufgabe</h2>
+      <p>Bei einem Duell stehen der Name, den du eingibst, und dein Ergebnis im Link selbst. Nur wer den Link von dir bekommt, sieht sie; auf keinem Server wird etwas gespeichert. Ergebnisse der Tagesaufgabe bleiben in deinem Browser und erscheinen nur auf deiner Karte, wenn du sie zeigst.</p>
 
       <h2>Feedback</h2>
       <p>Issues auf GitHub sind öffentlich und brauchen ein GitHub-Konto; es gilt die Datenschutzerklärung von GitHub. E-Mails nutze ich nur, um zu antworten.</p>

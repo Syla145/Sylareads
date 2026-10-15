@@ -1572,6 +1572,16 @@
   gap: var(--s-3);
 }
 
+/* Four short options: 2 × 2 on the phone, one row on larger screens. */
+.choices:not(.choices-text):not(.choices-sign):has(> .choice:nth-child(4)) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 641px) {
+  .choices:not(.choices-text):not(.choices-sign):has(> .choice:nth-child(4)) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .choices-text,
 .choices-sign {
   grid-template-columns: 1fr;
@@ -1819,11 +1829,14 @@
   color: var(--error);
 }
 
-.feedback-input {
-  margin-left: auto;
-  color: var(--text-tertiary);
-  font-weight: 400;
+.feedback.is-retry {
+  border-left-color: var(--accent);
 }
+
+.feedback.is-retry .feedback-title {
+  color: var(--accent);
+}
+
 
 .fb-body {
   display: grid;
@@ -3237,4 +3250,35 @@
 }
 .error-screen .page-title {
   margin-bottom: var(--s-3);
+}
+
+/* One card for today's mistakes and long-term trouble spots */
+.problems-tabs {
+  display: flex;
+  margin: var(--s-2) 0 var(--s-3);
+}
+.problems-tabs button {
+  flex: 1 1 0;
+  padding: 0 10px;
+  font-size: 14px;
+}
+.card-label-sub {
+  margin-top: var(--s-2);
+  font-weight: 600;
+}
+.problems-card .mistakes-head:empty {
+  display: none;
+}
+
+/* A setting at the end of a page: title, one line of explanation, the control */
+.setting-block {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: start;
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border);
+}
+.setting-block .section-label {
+  margin: 0;
 }

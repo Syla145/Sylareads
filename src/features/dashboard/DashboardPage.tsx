@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { letterGlyphs, nativeOf } from '../../domain/courseIndex';
+import { nativeOf } from '../../domain/courseIndex';
 import { courseStats } from '../../domain/stats';
 import type { Category } from '../../domain/types';
 import { formatPercent, useLang, useT } from '../../i18n';
@@ -8,7 +8,7 @@ import { Button, ButtonLink, Card, MasteryBar, MasteryLegend } from '../../ui/pr
 import { useCourse } from '../course/useCourse';
 import { MapGoal } from '../map/MapPage';
 import { PlacementCard } from '../placement/PlacementOptions';
-import { MistakesCard } from '../mistakes/MistakesCard';
+import { ProblemsCard } from '../mistakes/MistakesCard';
 import { NextGoals } from '../achievements/AchievementParts';
 import { recommendedPath } from './recommend';
 import { confuserPairs } from '../../domain/confusers';
@@ -51,16 +51,18 @@ export function DashboardPage() {
           </div>
         </Card>
         <PlacementCard />
-        <MapGoal />
       </div>
     );
   }
 
   const rec = stats.recommendation;
+  // City names (Daily Challenge, map goal) only once some of them can be read.
+  const readyForCities = stats.citiesTotal > 0 && stats.citiesReadable >= stats.citiesTotal * 0.3;
+  // The map goal comes as soon as the first map area was learned (Bengali: districts before cities).
+  const mapStarted = [...index.mapShapes.keys()].some((id) => cp?.items[id]);
   const recLesson = rec.kind === 'lesson' ? index.content.lessons.find((l) => l.id === rec.lessonId) : undefined;
   const nextLesson = index.content.lessons.find((l) => !cp?.lessons[l.id]);
   const confusers = confuserPairs(index, cp).length;
-  const weakItems = stats.weakIds.slice(0, 8).map((id) => index.byId.get(id)!);
   const recPath = recommendedPath(meta, index, cp);
   const recTitle = recLesson
     ? `${t('learn.lesson', { n: recLesson.number })} · ${recLesson.title[lang]}`
@@ -109,32 +111,12 @@ export function DashboardPage() {
               <ButtonLink to={second.to}>{second.label}</ButtonLink>
             </div>
           </Card>
-          <DailyCard />
-          <MistakesCard />
-          <MapGoal />
+          <ProblemsCard weakIds={stats.weakIds} confusers={confusers} />
+          <DailyCard ready={readyForCities} />
+          {(readyForCities || mapStarted) && <MapGoal />}
         </div>
         <div className="dash-col">
           <NextGoals courseId={meta.id} index={index} />
-          <Card>
-            <h2 className="card-label">{t('dash.weak')}</h2>
-            {weakItems.length ? (
-              <>
-                <div className="chip-row">
-                  {weakItems.map((it) => (
-                    <span key={it.id} className="glyph-chip">
-                      {it.kind === 'letter' ? letterGlyphs(it) : nativeOf(it)}
-                    </span>
-                  ))}
-                </div>
-                <div className="actions">
-                  <ButtonLink to={`${base}/practice/run?mode=weak`}>{t('dash.trainWeak')}</ButtonLink>
-                  {confusers >= 2 && <ButtonLink to={`${base}/practice/run?mode=confusers`}>{t('dash.trainConfusers')}</ButtonLink>}
-                </div>
-              </>
-            ) : (
-              <p className="muted">{t('dash.weakEmpty')}</p>
-            )}
-          </Card>
         </div>
 
         <Card className="card-progress">

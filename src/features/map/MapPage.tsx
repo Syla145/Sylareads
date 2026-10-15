@@ -154,7 +154,7 @@ export function MapGoal() {
       </div>
       <p className="muted small">{t('map.goalBody', { sure, seen })}</p>
       <div className="actions">
-        <ButtonLink variant="primary" to={`${base}/practice/run?${mapPracticeQuery()}`}>
+        <ButtonLink to={`${base}/practice/run?${mapPracticeQuery()}`}>
           {t(`map.practice.${layer}`)}
         </ButtonLink>
         <ButtonLink to={`${base}/map`}>{t('map.open')}</ButtonLink>

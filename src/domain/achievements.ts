@@ -33,7 +33,7 @@ const TIER_NAMES: Record<Tier, L10n> = {
   3: { de: 'Gold', en: 'Gold' },
 };
 
-/** Review boxes of the level names: Moderate from box 3, Pro from box 5, Expert at box 7. */
+/** Review boxes of the level names: Vertraut (familiar) from box 3, Sicher (solid) from box 5, Meister (master) at box 7. */
 const MODERATE = 3;
 const PRO = 5;
 const EXPERT = 7;
@@ -116,26 +116,26 @@ const SECRET: AchievementDef = {
 
 // ---------------------------------------------------------------- per course
 
-/** Course-specific special: a group of reading units, all on Pro. */
+/** Course-specific special: a group of reading units, all on “Solid”. */
 const SPECIALS: Record<string, { title: L10n; description: L10n; ids: (index: CourseIndex) => string[] }> = {
   ru: {
     title: { de: 'False Friends gezähmt', en: 'False Friends Tamed' },
-    description: { de: 'Alle False Friends auf Pro', en: 'All false friends on Pro' },
+    description: { de: 'Alle False Friends auf „Sicher“', en: 'All false friends on “Solid”' },
     ids: (i) => i.content.letters.filter((l) => l.falseFriend).map((l) => l.id),
   },
   el: {
     title: { de: 'Buchstabenpaare', en: 'Letter Pairs' },
-    description: { de: 'Alle Buchstabenpaare (ου, μπ …) auf Pro', en: 'All letter pairs (ου, μπ …) on Pro' },
+    description: { de: 'Alle Buchstabenpaare (ου, μπ …) auf „Sicher“', en: 'All letter pairs (ου, μπ …) on “Solid”' },
     ids: (i) => i.content.combos.filter((c) => c.unit).map((c) => c.id),
   },
   th: {
     title: { de: 'Vokalzeichen', en: 'Vowel Signs' },
-    description: { de: 'Alle Vokalzeichen auf Pro', en: 'All vowel signs on Pro' },
+    description: { de: 'Alle Vokalzeichen auf „Sicher“', en: 'All vowel signs on “Solid”' },
     ids: (i) => i.content.letters.filter((l) => l.id.startsWith('th:letter:v-')).map((l) => l.id),
   },
   bn: {
     title: { de: 'Ligaturen', en: 'Ligatures' },
-    description: { de: 'Alle Ligaturen und Verbindungen auf Pro', en: 'All ligatures and clusters on Pro' },
+    description: { de: 'Alle Ligaturen und Verbindungen auf „Sicher“', en: 'All ligatures and clusters on “Solid”' },
     ids: (i) => i.content.lessons.filter((l) => l.phaseId === 'clusters').flatMap((l) => l.newIds),
   },
 };
@@ -151,8 +151,8 @@ function courseAchievements(course: string): AchievementDef[] {
       { de: 'Alphabet', en: 'Alphabet' },
       [
         { de: 'Alle Buchstaben kennengelernt', en: 'Met every letter' },
-        { de: 'Alle Buchstaben auf Moderate', en: 'All letters on Moderate' },
-        { de: 'Alle Buchstaben auf Pro', en: 'All letters on Pro' },
+        { de: 'Alle Buchstaben auf „Vertraut“', en: 'All letters on “Familiar”' },
+        { de: 'Alle Buchstaben auf „Sicher“', en: 'All letters on “Solid”' },
       ],
       (tier, root, index) => {
         if (!index) return null;
@@ -165,9 +165,9 @@ function courseAchievements(course: string): AchievementDef[] {
       'cities',
       { de: 'Stadtleser', en: 'City Reader' },
       [
-        { de: '10 Städte auf Pro', en: '10 cities on Pro' },
-        { de: '50 Städte auf Pro', en: '50 cities on Pro' },
-        { de: 'Alle 100 Städte auf Pro', en: 'All 100 cities on Pro' },
+        { de: '10 Städte auf „Sicher“', en: '10 cities on “Solid”' },
+        { de: '50 Städte auf „Sicher“', en: '50 cities on “Solid”' },
+        { de: 'Alle 100 Städte auf „Sicher“', en: 'All 100 cities on “Solid”' },
       ],
       (tier, root, index) => {
         if (!index) return null;
@@ -221,9 +221,9 @@ function courseAchievements(course: string): AchievementDef[] {
         'map',
         { de: 'Kartenkenner', en: 'Map Master' },
         [
-          { de: 'Die Hälfte aller Kartengebiete auf Pro', en: 'Half of all map areas on Pro' },
-          { de: 'Alle Kartengebiete auf Pro', en: 'All map areas on Pro' },
-          { de: 'Alle Kartengebiete auf Expert', en: 'All map areas on Expert' },
+          { de: 'Die Hälfte aller Kartengebiete auf „Sicher“', en: 'Half of all map areas on “Solid”' },
+          { de: 'Alle Kartengebiete auf „Sicher“', en: 'All map areas on “Solid”' },
+          { de: 'Alle Kartengebiete auf „Meister“', en: 'All map areas on “Master”' },
         ],
         (tier, root, index) => {
           if (!index || !index.mapShapes.size) return null;
@@ -255,21 +255,21 @@ const SCRIPTS: AchievementDef[] = [
     'spotter',
     { de: 'Schriftkenner', en: 'Script Spotter' },
     [
-      { de: '10 Schriften auf Pro', en: '10 scripts on Pro' },
-      { de: '25 Schriften auf Pro', en: '25 scripts on Pro' },
-      { de: `Alle ${SCRIPT_ENTRIES.length} Schriften auf Pro`, en: `All ${SCRIPT_ENTRIES.length} scripts on Pro` },
+      { de: '10 Schriften auf „Sicher“', en: '10 scripts on “Solid”' },
+      { de: '25 Schriften auf „Sicher“', en: '25 scripts on “Solid”' },
+      { de: `Alle ${SCRIPT_ENTRIES.length} Schriften auf „Sicher“`, en: `All ${SCRIPT_ENTRIES.length} scripts on “Solid”` },
     ],
     (tier, root) => m(countAt(root.courses.scripts, SCRIPT_ENTRIES.map((e) => e.id), PRO), [10, 25, SCRIPT_ENTRIES.length][tier - 1]),
   ),
-  single('scripts', 'cyrillic', { de: 'Kyrillisch-Detektiv', en: 'Cyrillic Detective' }, { de: 'Alle Kyrillisch-Varianten auf Pro', en: 'All Cyrillic variants on Pro' }, (root) => {
+  single('scripts', 'cyrillic', { de: 'Kyrillisch-Detektiv', en: 'Cyrillic Detective' }, { de: 'Alle Kyrillisch-Varianten auf „Sicher“', en: 'All Cyrillic variants on “Solid”' }, (root) => {
     const ids = lessonIds(6, 7);
     return m(countAt(root.courses.scripts, ids, PRO), ids.length);
   }),
-  single('scripts', 'latin', { de: 'Häkchen-Kenner', en: 'Diacritics Detective' }, { de: 'Alle lateinischen Sonderzeichen auf Pro', en: 'All Latin special letters on Pro' }, (root) => {
+  single('scripts', 'latin', { de: 'Häkchen-Kenner', en: 'Diacritics Detective' }, { de: 'Alle lateinischen Sonderzeichen auf „Sicher“', en: 'All Latin special letters on “Solid”' }, (root) => {
     const ids = lessonIds(9, 10, 11, 12, 13);
     return m(countAt(root.courses.scripts, ids, PRO), ids.length);
   }),
-  single('scripts', 'india', { de: 'Indien-Kenner', en: 'India Expert' }, { de: 'Alle Schriften Indiens und Sri Lankas auf Pro', en: 'All scripts of India and Sri Lanka on Pro' }, (root) => {
+  single('scripts', 'india', { de: 'Indien-Kenner', en: 'India Expert' }, { de: 'Alle Schriften Indiens und Sri Lankas auf „Sicher“', en: 'All scripts of India and Sri Lanka on “Solid”' }, (root) => {
     const ids = [...lessonIds(4, 5), 'scripts:devanagari'].filter((id) => id !== 'scripts:tibetan');
     return m(countAt(root.courses.scripts, ids, PRO), ids.length);
   }),

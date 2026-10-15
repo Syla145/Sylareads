@@ -378,13 +378,17 @@ function saveLocalName(name: string) {
 /* ---------- Course overview card ---------- */
 
 /** Dashboard: today's challenge (open or played) and the duel button. */
-export function DailyCard() {
+export function DailyCard({ ready = true }: { ready?: boolean }) {
   const { meta } = useCourse();
   const t = useT();
   const lang = useLang();
   const today = dayKey();
   const record = useProgress((s) => s.root.courses[meta.id]?.daily?.[today]);
+  const played = useProgress((s) => Object.keys(s.root.courses[meta.id]?.daily ?? {}).length > 0);
   const base = `/${meta.slug}`;
+  // Ten city names are no fun before one can read some: shown once enough cities are readable
+  // (or after the first one was played).
+  if (!ready && !record && !played) return null;
   if (canResume(record, record?.n ?? 10)) {
     return (
       <Card className="daily-card">
@@ -409,7 +413,7 @@ export function DailyCard() {
         <p className="muted">{t('ch.dailyTeaser')}</p>
       )}
       <div className="actions">
-        <ButtonLink variant={record ? 'secondary' : 'primary'} to={`${base}/daily`}>
+        <ButtonLink to={`${base}/daily`}>
           {record ? t('ch.seeBoard') : t('ch.start')}
         </ButtonLink>
         <ButtonLink to={`${base}/duel`}>{t('ch.challengeFriend')}</ButtonLink>

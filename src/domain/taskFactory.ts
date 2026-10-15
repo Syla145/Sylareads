@@ -85,7 +85,7 @@ function distractorLetters(index: CourseIndex, letter: LetterItem, rng: Rng, poo
   const out: LetterItem[] = [];
   const readings = new Set([letter.reading]);
   for (const l of [...preferred, ...known, ...rest]) {
-    if (out.length >= 2) break;
+    if (out.length >= 3) break; // four options: a second try after a mistake is no coin flip
     if (out.includes(l) || readings.has(l.reading)) continue;
     readings.add(l.reading);
     out.push(l);
@@ -93,7 +93,7 @@ function distractorLetters(index: CourseIndex, letter: LetterItem, rng: Rng, poo
   return out;
 }
 
-/** First contact: glyph shown, choose its reading out of three. */
+/** First contact: glyph shown, choose its reading out of four. */
 export function readingChoiceTask(index: CourseIndex, letter: LetterItem, rng: Rng, known?: Set<string>): Task {
   if (letter.functionChoice) return functionTask(letter, rng);
   const others = distractorLetters(index, letter, rng, known);

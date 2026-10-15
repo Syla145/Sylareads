@@ -44,7 +44,7 @@ const CONSONANTS: LetterItem[] = [
   consonant('cha', 'ছ', 'chh', 'মাছ', 'machh', ['ch']),
   consonant('ja', 'জ', 'j', 'জামালপুর', 'Jamalpur', ['z']),
   consonant('jha', 'ঝ', 'jh', 'ঝিনাইদহ', 'Jhenaidah'),
-  consonant('nya', 'ঞ', 'n', '-গঞ্জ', '-ganj', ['ny'], { de: 'Fast nur in Konjunkten wie ঞ্জ (nj) und ঞ্চ (nch).', en: 'Almost only inside conjuncts like ঞ্জ (nj) and ঞ্চ (nch).' }),
+  consonant('nya', 'ঞ', 'n', '-গঞ্জ', '-ganj', ['ny'], { de: 'Fast nur in Ligaturen wie ঞ্জ (nj) und ঞ্চ (nch).', en: 'Almost only inside ligatures like ঞ্জ (nj) and ঞ্চ (nch).' }),
   consonant('tta', 'ট', 't', 'টাঙ্গাইল', 'Tangail', [], { de: 'Retroflexes t; in Ortsnamen einfach t, wie ত.', en: 'Retroflex t; in place names simply t, like ত.' }),
   consonant('ttha', 'ঠ', 'th', 'ঠাকুরগাঁও', 'Thakurgaon'),
   consonant('dda', 'ড', 'd', 'ডাক', 'dak', [], { de: 'Mit Punkt darunter wird es ড় (r).', en: 'With a dot below it becomes ড় (r).' }),
@@ -133,7 +133,7 @@ const MARKS: LetterItem[] = [
     mnemonic: { de: 'Chandrabindu (Mondpunkt): nasaler Vokal. চাঁদপুর = Chandpur.', en: 'Chandrabindu (moon dot): nasal vowel. চাঁদপুর = Chandpur.' },
     functionChoice: { correct: NASAL, wrong: [NO_VOWEL, LONG] } },
   { id: unitId('hasanta'), kind: 'letter', upper: '◌্', lower: '◌্', reading: '', accepted: [''],
-    mnemonic: { de: 'Hasanta: kein Vokal nach dem Konsonanten. Meist unsichtbar in Konjunkten verbaut.', en: 'Hasanta: no vowel after the consonant. Usually hidden inside conjuncts.' },
+    mnemonic: { de: 'Hasanta: kein Vokal nach dem Konsonanten. Meist unsichtbar in Ligaturen verbaut.', en: 'Hasanta: no vowel after the consonant. Usually hidden inside ligatures.' },
     functionChoice: { correct: NO_VOWEL, wrong: [NASAL, LONG] } },
 ];
 
