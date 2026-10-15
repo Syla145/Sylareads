@@ -569,4 +569,7 @@ export const de: Record<MessageKey, string> = {
   'notes.ownInstead': 'Eigene schreiben',
   'notes.reviewTitle': 'Eselsbrücken-Vorschläge',
   'notes.reviewIntro': 'Zu jedem Zeichen ein Vorschlag. Übernimm, was für dich funktioniert, pass es an oder schreib deine eigene. Übernommene erscheinen auf Lernkarten und nach Fehlern.',
+  'nav.home': 'Sylareads – Startseite',
+  'home.coursesLabel': 'Kurse',
+  'nav.courseSections': 'Bereiche des Kurses {course}',
 };

@@ -567,6 +567,9 @@ export const en = {
   'notes.ownInstead': 'Write my own',
   'notes.reviewTitle': 'Suggested memory hooks',
   'notes.reviewIntro': 'A suggestion for every character. Use what works for you, edit it or write your own. The ones you keep show up on learning cards and after mistakes.',
+  'nav.home': 'Sylareads – Home',
+  'home.coursesLabel': 'Courses',
+  'nav.courseSections': 'Sections of the {course} course',
 } as const;
 
 export type MessageKey = keyof typeof en;

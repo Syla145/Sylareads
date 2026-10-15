@@ -15,6 +15,7 @@ import { isWideMap } from '../map/layer';
 import { QuitDialog, type QuitKind } from './SessionParts';
 import { ownsEnter, isTyping } from '../../ui/keys';
 import { useBackGuard } from '../../ui/useBackGuard';
+import { useScrollTop } from '../../ui/useScrollTop';
 
 interface Props {
   courseId: string;
@@ -54,6 +55,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     return () => clearTimeout(id);
   }, [secret]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const responseRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef(state);
   stateRef.current = state;
   const inputValueRef = useRef(input);
@@ -63,6 +65,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
 
   const task = currentTask(state);
   const leave = useBackGuard(state.phase !== 'done', () => setQuitOpen(true));
+  useScrollTop(task?.key);
 
   /** Persist a final answer (every final answer counts for XP; only the first per item for SRS). */
   const persist = useCallback(
@@ -159,6 +162,13 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
     setState(after);
     if (after.phase === 'done') onDone(after);
   }, [courseId, deps, onDone, recordIntro]);
+
+  // Little height (iPhone landscape): bring the feedback into view, it repeats the character anyway.
+  useEffect(() => {
+    if (state.phase !== 'feedback' || window.innerHeight >= 600) return;
+    const r = responseRef.current?.getBoundingClientRect();
+    if (r && r.top > window.innerHeight * 0.4) window.scrollBy({ top: r.top - 8, behavior: 'smooth' });
+  }, [state.phase, state.index]);
 
   // Clear the input when a second try starts so the learner retypes.
   useEffect(() => {
@@ -260,7 +270,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
               onLocate={locate}
               signs={!noRepeat && (mode === 'practice' || !deferredIds?.has(task.itemId))}
             />
-            <div className="session-response" aria-live="polite">
+            <div className="session-response" aria-live="polite" ref={responseRef}>
               {readOnly?.key === task.key && !showFeedback && (
                 <p className="notice notice-accent">{t('session.meaningNotReading', { r: readOnly.value })}</p>
               )}
@@ -271,7 +281,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
               {showFeedback ? (
                 <Button key="next" variant="primary" block onClick={next} autoFocus={task.kind === 'choice' || task.kind === 'locate'}>
                   {t('session.continue')}
-                  <kbd>{t('session.enterHint')}</kbd>
+                  <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
                 </Button>
               ) : task.kind === 'choice' || task.kind === 'locate' ? (
                 <Button key="dont-know" variant="ghost" block onClick={dontKnow}>
@@ -281,7 +291,7 @@ export function SessionRunner({ courseId, index, tasks, mode, deps, deferredIds,
                 <>
                   <Button variant="primary" block onClick={submitTyped} disabled={!input.trim()}>
                     {t('session.check')}
-                    <kbd>{t('session.enterHint')}</kbd>
+                    <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
                   </Button>
                   <Button variant="ghost" block onClick={dontKnow}>
                     {t('session.dontKnow')}

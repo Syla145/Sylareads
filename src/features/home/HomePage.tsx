@@ -161,7 +161,7 @@ export function HomePage() {
             )}
           </>
         ) : (
-          <section className="course-grid" aria-label="Courses">
+          <section className="course-grid" aria-label={t('home.coursesLabel')}>
             {COURSES.map((c) => (
               <CourseCard key={c.id} meta={c} />
             ))}

@@ -1,4 +1,5 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { COURSES } from '../content/registry';
 import { dayKey } from '../domain/dates';
 import { displayedStreak, levelFromXp } from '../domain/gamification';
@@ -58,24 +59,54 @@ function ProfileIcon() {
   );
 }
 
+/** The course menu closes with Escape, when the focus leaves it and after a choice. */
+function CourseSwitch({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  const close = (refocus: boolean) => {
+    const d = ref.current;
+    if (!d?.open) return;
+    d.open = false;
+    if (refocus) d.querySelector('summary')?.focus();
+  };
+  return (
+    <details
+      ref={ref}
+      className="course-switch"
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          close(true);
+        }
+      }}
+      onBlur={(e) => {
+        if (!ref.current?.contains(e.relatedTarget as Node | null)) close(false);
+      }}
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest('a')) close(false);
+      }}
+    >
+      {children}
+    </details>
+  );
+}
+
 export function TopBar({ course }: { course?: CourseMeta }) {
   const t = useT();
   const lang = useLang();
   const profile = useProgress((s) => s.root.profile);
   const streak = displayedStreak(profile.streak, dayKey());
   const level = levelFromXp(profile.xp);
-  const available = COURSES.filter((c) => c.status === 'available');
 
   return (
     <header className="topbar">
       <div className="topbar-inner">
         <div className="topbar-left">
-          <Link to="/" className="wordmark" aria-label="Sylareads – Home">
+          <Link to="/" className="wordmark" aria-label={t('nav.home')}>
             <LogoMark />
             <span className="wordmark-text">Sylareads</span>
           </Link>
           {course && (
-            <details className="course-switch">
+            <CourseSwitch>
               <summary aria-label={`${course.name[lang]} – ${t('nav.switchCourse')}`}>
                 <span>{course.name[lang]}</span>
                 <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
@@ -94,19 +125,21 @@ export function TopBar({ course }: { course?: CourseMeta }) {
                     </span>
                   ),
                 )}
-                {available.length === 0 && null}
+                <Link to="/scripts">{t('scripts.title')}</Link>
               </div>
-            </details>
+            </CourseSwitch>
           )}
         </div>
         <div className="topbar-right">
           <OfflineChip />
           <span className={`chip chip-streak${streak > 0 ? ' is-on' : ''}`} title={t('chip.streak', { n: streak })}>
             <FlameIcon />
-            {streak}
+            <span aria-hidden="true">{streak}</span>
+            <span className="sr-only">{t('chip.streak', { n: streak })}</span>
           </span>
           <span className="chip" title={t('chip.level', { n: level })}>
-            Lv {level}
+            <span aria-hidden="true">Lv {level}</span>
+            <span className="sr-only">{t('chip.level', { n: level })}</span>
           </span>
           <LangToggle />
           <NavLink to="/profile" className="icon-btn" aria-label={t('nav.profile')} title={t('nav.profile')}>
@@ -122,9 +155,24 @@ export function TopBar({ course }: { course?: CourseMeta }) {
 export function CourseTabs({ course }: { course: CourseMeta }) {
   const t = useT();
   const base = `/${course.slug}`;
+  const lang = useLang();
+  const { pathname } = useLocation();
+  const inner = useRef<HTMLDivElement>(null);
+  const [scrollable, setScrollable] = useState(false);
+  // Narrow phones: the active tab is always scrolled into view.
+  useEffect(() => {
+    const el = inner.current;
+    if (!el) return;
+    const check = () => setScrollable(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const active = el.querySelector('a.active') as HTMLElement | null;
+    if (active && el.scrollWidth > el.clientWidth) el.scrollLeft = Math.max(0, active.offsetLeft - (el.clientWidth - active.offsetWidth) / 2);
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [pathname]);
   return (
-    <nav className="course-tabs" aria-label={course.name.en}>
-      <div className="course-tabs-inner">
+    <nav className="course-tabs" aria-label={t('nav.courseSections', { course: course.name[lang] })}>
+      <div className={`course-tabs-inner${scrollable ? ' is-scrollable' : ''}`} ref={inner}>
         <NavLink end to={base}>
           {t('nav.overview')}
         </NavLink>

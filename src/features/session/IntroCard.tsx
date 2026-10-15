@@ -71,10 +71,12 @@ export function IntroCard({ index, itemId, onNext }: { index: CourseIndex; itemI
 
       <NoteEditor courseId={index.content.id} itemId={item.id} suggestion={index.content.noteHints?.[item.id]?.[lang]} />
 
-      <Button ref={btn} variant="primary" className="intro-next" onClick={onNext}>
-        {t('session.gotIt')}
-        <kbd>{t('session.enterHint')}</kbd>
-      </Button>
+      <div className="session-actions">
+        <Button ref={btn} variant="primary" block onClick={onNext}>
+          {t('session.gotIt')}
+          <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
+        </Button>
+      </div>
     </div>
   );
 

@@ -41,6 +41,7 @@ import { useSignView } from '../signs/SignViewToggle';
 import { QuitDialog, type ResultAction, ResultActions } from '../session/SessionParts';
 import { ownsEnter, isTyping } from '../../ui/keys';
 import { useBackGuard, useGoBack } from '../../ui/useBackGuard';
+import { useScrollTop } from '../../ui/useScrollTop';
 
 interface TempoRequest {
   mode: TempoMode;
@@ -272,6 +273,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
   }, [last, mode, next, state.phase]);
 
   const task = currentTempoTask(state);
+  useScrollTop(task?.key);
   const hidden = mode === 'flash' && state.phase === 'answer' && revealedAt === state.index;
   const optionsShown = mode !== 'flash' || revealedAt === state.index || state.phase === 'feedback';
   const optionsRef = useRef(optionsShown);
@@ -427,7 +429,7 @@ function TempoRunner({ index, tasks, req, onDone, onQuit }: RunnerProps) {
           <div className="session-actions">
             <Button variant="primary" block onClick={next} autoFocus>
               {t('session.continue')}
-              <kbd>{t('session.enterHint')}</kbd>
+              <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
             </Button>
           </div>
         )}

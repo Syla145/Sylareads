@@ -31,6 +31,7 @@ import './scripts.css';
 import { QuitDialog, type ResultAction, ResultActions } from '../session/SessionParts';
 import { ownsEnter, isTyping } from '../../ui/keys';
 import { useBackGuard, useGoBack } from '../../ui/useBackGuard';
+import { useScrollTop } from '../../ui/useScrollTop';
 
 /** Route for /scripts/lesson/:lessonId and /scripts/practice (?ids=… for exactly these scripts). */
 export default function ScriptSessionRoute() {
@@ -141,6 +142,7 @@ function ScriptRunner({
   quitRef.current = quitOpen;
   const task = state.tasks[state.index];
   const leave = useBackGuard(state.phase !== 'done', () => setQuitOpen(true));
+  useScrollTop(task?.key);
   const newIds = useMemo(() => new Set(lesson?.newIds ?? []), [lesson]);
   const signView = useSignView();
 
@@ -237,7 +239,7 @@ function ScriptRunner({
             <div className="session-actions">
               <Button variant="primary" block onClick={next} autoFocus>
                 {t('session.continue')}
-                <kbd>{t('session.enterHint')}</kbd>
+                <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
               </Button>
             </div>
           </>
@@ -311,7 +313,7 @@ function ScriptRunner({
               <div className="session-actions">
                 <Button variant="primary" block onClick={next} autoFocus>
                   {t('session.continue')}
-                  <kbd>{t('session.enterHint')}</kbd>
+                  <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
                 </Button>
               </div>
             )}

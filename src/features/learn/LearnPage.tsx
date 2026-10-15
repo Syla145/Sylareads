@@ -6,7 +6,7 @@ import { placementScope } from '../../domain/placement';
 import type { Lesson, PhaseDef } from '../../domain/types';
 import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button, ButtonLink } from '../../ui/primitives';
+import { Button, ButtonLink, Modal } from '../../ui/primitives';
 import { useCourse } from '../course/useCourse';
 import { PlacementOptions } from '../placement/PlacementOptions';
 
@@ -111,22 +111,22 @@ export function LearnPage() {
         );
       })}
 
-      {placing && (
-        <div className="sheet placement-sheet" role="dialog" aria-label={t('placement.phaseTitle', { phase: placing.title[lang] })}>
-          <h2 className="card-title">{t('placement.phaseTitle', { phase: placing.title[lang] })}</h2>
-          <p className="muted">{t('placement.phaseBody')}</p>
-          <PlacementOptions scopeId={placing.id} />
-          <div className="actions">
-            <Button variant="ghost" onClick={() => setPlacing(null)}>
-              {t('common.cancel')}
-            </Button>
-          </div>
-        </div>
-      )}
+      <Modal open={!!placing} onClose={() => setPlacing(null)} title={placing ? t('placement.phaseTitle', { phase: placing.title[lang] }) : ''}>
+        {placing && (
+          <>
+            <p className="muted">{t('placement.phaseBody')}</p>
+            <PlacementOptions scopeId={placing.id} />
+            <div className="actions">
+              <Button variant="ghost" onClick={() => setPlacing(null)}>
+                {t('common.cancel')}
+              </Button>
+            </div>
+          </>
+        )}
+      </Modal>
 
-      {ahead && next && (
-        <div className="sheet" role="dialog" aria-label={t('learn.aheadHint', { n: next.number })}>
-          <p>{t('learn.aheadHint', { n: next.number })}</p>
+      <Modal open={!!(ahead && next)} onClose={() => setAhead(null)} title={next ? t('learn.aheadHint', { n: next.number }) : ''}>
+        {ahead && next && (
           <div className="actions">
             <ButtonLink variant="primary" to={`${base}/lesson/${next.id}`}>
               {t('learn.goRecommended', { n: next.number })}
@@ -136,8 +136,8 @@ export function LearnPage() {
               {t('common.cancel')}
             </Button>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

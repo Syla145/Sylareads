@@ -78,6 +78,13 @@
   margin-top: var(--s-4);
 }
 
+/* Phones: buttons stacked under each other are equally wide. */
+@media (max-width: 520px) {
+  .actions > .btn {
+    flex: 1 1 100%;
+  }
+}
+
 /* ---------- Top bar ---------- */
 .topbar {
   position: sticky;
@@ -277,6 +284,23 @@
   .wordmark {
     font-size: 17px;
   }
+  /* The course menu spans the bar instead of running off the right edge. */
+  .course-switch {
+    position: static;
+  }
+  .course-switch-menu {
+    top: calc(100% - 2px);
+    left: var(--gutter);
+    right: var(--gutter);
+    min-width: 0;
+  }
+}
+
+/* iPhone SE: the logo alone, so the course name has room. */
+@media (max-width: 374px) {
+  .wordmark-text {
+    display: none;
+  }
 }
 
 /* ---------- Course tabs ---------- */
@@ -325,6 +349,11 @@
   .course-tabs-inner {
     padding: 0 4px;
     gap: 0;
+  }
+  /* More tabs than room (iPhone SE): the edge fades out to show there is more. */
+  .course-tabs-inner.is-scrollable {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
   }
   .course-tabs a {
     flex: 1 0 auto;
@@ -873,9 +902,8 @@
 
 .course-row-name {
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
 .course-row-end {
@@ -1143,20 +1171,6 @@
     justify-items: start;
     text-align: left;
   }
-}
-
-.sheet {
-  position: fixed;
-  left: 50%;
-  bottom: var(--s-4);
-  transform: translateX(-50%);
-  width: min(560px, calc(100% - 2 * var(--gutter)));
-  z-index: 30;
-  background: var(--surface-1);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-float);
-  padding: var(--s-5);
 }
 
 /* ---------- Practice hub ---------- */
@@ -1585,7 +1599,8 @@
   position: absolute;
   left: 10px;
   top: 10px;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
+  opacity: 0.9; /* 4.5:1 and more on the tile */
 }
 
 .choice-latin {
@@ -1632,8 +1647,29 @@
 }
 
 .choice.is-out {
-  opacity: 0.4;
-  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+/* Right and wrong are marked with a sign, not only by colour (and never by
+   crossing out: a line through a letter makes it look like another letter). */
+.choice.is-out::after,
+.choice.is-wrong::after,
+.choice.is-correct::after {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+.choice.is-out::after,
+.choice.is-wrong::after {
+  content: '✗';
+  color: var(--error);
+}
+.choice.is-correct::after {
+  content: '✓';
+  color: var(--success);
 }
 
 .choice.is-correct {
@@ -1662,22 +1698,62 @@
   gap: var(--s-2);
 }
 
+/* The buttons stay in view on every screen: on the phone and on a laptop with
+   little height, a long feedback must never push "Weiter" off the screen. */
+.session-main {
+  padding-bottom: 0;
+}
+.session-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin: 0 calc(-1 * var(--gutter));
+  padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 75%, rgba(18, 20, 23, 0));
+}
+
 @media (max-width: 640px) {
-  .session-main {
-    padding-bottom: 0;
-  }
-  .session-actions {
-    position: sticky;
-    bottom: 0;
-    margin: 0 calc(-1 * var(--gutter));
-    padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
-    background: linear-gradient(to top, var(--bg) 75%, rgba(18, 20, 23, 0));
-  }
   .plate {
     min-height: 132px;
   }
   .session-response {
     min-height: 96px;
+  }
+}
+
+/* Little height (iPhone landscape, small laptop): a smaller plate, so the
+   character and the answers fit on one screen. After answering, the plate
+   shrinks further to make room for the feedback. */
+@media (max-height: 820px) {
+  .session .plate {
+    min-height: 120px;
+    padding: var(--s-3) var(--s-4);
+  }
+  .session .glyph-xl {
+    font-size: clamp(64px, 16vh, 120px);
+  }
+  .session-main:has(.feedback) .plate {
+    min-height: 0;
+  }
+  .session-main:has(.feedback) .glyph-xl {
+    font-size: clamp(56px, 11vh, 88px);
+  }
+  .session-response {
+    min-height: 0;
+  }
+}
+
+@media (max-height: 500px) {
+  .session .plate {
+    min-height: 0;
+    padding: var(--s-2) var(--s-4);
+  }
+  .session .glyph-xl {
+    font-size: clamp(48px, 18vh, 80px);
+  }
+  .session-main {
+    padding-top: var(--s-2);
+    gap: var(--s-3);
   }
 }
 
@@ -1833,11 +1909,6 @@
   margin: 0 auto;
 }
 
-.intro-next {
-  margin-top: var(--s-2);
-  justify-self: center;
-  min-width: 220px;
-}
 
 /* ---------- Complete ---------- */
 .session-done {
@@ -2208,6 +2279,13 @@
   fill: #4b5563;
 }
 
+.map-focus {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
 .map-area.is-target { fill: var(--accent); }
 .map-area.is-correct { fill: var(--success); }
 .map-area.is-wrong { fill: var(--error); }
@@ -2356,7 +2434,7 @@
   outline: 2px solid var(--accent-ring);
 }
 
-/* Touch screens: segmented toggles big enough to hit (44 px with the frame). */
+/* Touch screens: everything tappable is at least 44 px high. */
 @media (pointer: coarse) {
   .ltoggle-btn {
     min-height: 38px;
@@ -2366,9 +2444,53 @@
     height: 38px;
     padding: 0 14px;
   }
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .course-tabs a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .course-switch summary {
+    min-height: 44px;
+  }
+  .map-zoom-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .toggle,
+  .segmented button {
+    min-height: 44px;
+  }
+  .switch {
+    min-height: 44px;
+  }
 }
 
-/* Map page */
+/* Narrow phones (iPhone SE): segmented toggles wrap instead of widening the page. */
+@media (max-width: 400px) {
+  .ltoggle {
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: var(--r-md);
+  }
+  .ltoggle-label {
+    flex-basis: 100%;
+    padding: 4px var(--s-2) 2px;
+  }
+  .ltoggle-btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* Map page: wider than text pages, the map gets the room of a large screen. */
+.page:has(.map-page) {
+  max-width: 1240px;
+}
+
 .map-page-tools {
   display: flex;
   flex-wrap: wrap;
@@ -2984,13 +3106,7 @@
   }
 }
 
-.placement-sheet .card-title {
-  margin-bottom: var(--s-2);
-}
 
-.placement-sheet .actions {
-  margin-top: var(--s-3);
-}
 
 .placement-verdict {
   font-weight: 600;

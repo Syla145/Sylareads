@@ -29,7 +29,6 @@ export function FeedbackPanel({ index, task, state }: { index: CourseIndex; task
     <div className={`feedback ${ok ? 'is-correct' : 'is-wrong'}`}>
       <p className="feedback-title">
         <span aria-hidden="true">{ok ? '✓' : '✗'}</span> {title}
-        {!ok && typed && state.lastInput && <s className="feedback-input">{state.lastInput}</s>}
       </p>
 
       {item.kind === 'letter' && (

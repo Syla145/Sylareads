@@ -151,3 +151,21 @@
 .achievement-toast p + p {
   margin-top: 4px;
 }
+
+/* Narrow phones: the date moves under the text, the name keeps its width. */
+@media (max-width: 400px) {
+  .ach-card .achievement-list li {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+  .ach-card .achievement-list li > :nth-child(3) {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: -6px;
+  }
+  .achievement-list li {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+  .achievement-list li > :nth-child(3) {
+    grid-column: 2;
+  }
+}

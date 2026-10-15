@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react';
 import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 import { StorageBanner } from './ui/StorageBanner';
+import { RouteFocus } from './ui/RouteFocus';
 import { CourseGate } from './features/course/CourseLayout';
 import { DashboardPage } from './features/dashboard/DashboardPage';
 import { HomePage } from './features/home/HomePage';
@@ -62,6 +63,7 @@ export function App() {
   return (
     <HashRouter>
       <StorageBanner />
+      <RouteFocus />
       <Pages />
     </HashRouter>
   );

@@ -22,6 +22,8 @@ interface Props {
   /** Smallest framed width as a share of the whole map (context around small areas). */
   minFrame?: number;
   className?: string;
+  /** Areas are named for screen readers (explore map; never in a quiz). */
+  nameAreas?: boolean;
 }
 
 type Box = { x: number; y: number; w: number; h: number };
@@ -35,7 +37,7 @@ const CLICK_SLOP = 6;
  * parent group (division); borders of groups are drawn stronger. Labels follow
  * the chosen script and only appear where they fit at the current zoom.
  */
-export function MapView({ index, label, marks = {}, labels = 'none', hideLabels, onPick, zoomable = false, focus, minFrame = 0.38, className = '' }: Props) {
+export function MapView({ index, label, marks = {}, labels = 'none', hideLabels, onPick, zoomable = false, focus, minFrame = 0.38, className = '', nameAreas = false }: Props) {
   const map = index.map!;
   const full: Box = useMemo(() => ({ x: 0, y: 0, w: map.width, h: map.height }), [map]);
   const initial = useMemo(() => frameFor(map.width, map.height, full, (focus ?? []).map((id) => index.mapShapes.get(id)).filter(Boolean) as MapShape[], minFrame), [focus, full, index, map, minFrame]);
@@ -46,6 +48,7 @@ export function MapView({ index, label, marks = {}, labels = 'none', hideLabels,
   const moved = useRef(0);
   const pinch = useRef<{ dist: number; box: Box; mid: { x: number; y: number } } | null>(null);
   const [hover, setHover] = useState<string | null>(null);
+  const [focused, setFocused] = useState<string | null>(null);
 
   // Re-frame when the task changes.
   useEffect(() => setVb(initial), [initial]);
@@ -154,17 +157,53 @@ export function MapView({ index, label, marks = {}, labels = 'none', hideLabels,
       e.preventDefault();
       e.stopPropagation();
       onPick?.(id);
+      return;
     }
+    // Arrow keys jump to the nearest neighbour in that direction.
+    const dir = ARROWS[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    const next = neighbour(map.shapes, id, dir);
+    if (next) (svgRef.current?.querySelector(`[data-id="${CSS.escape(next)}"]`) as SVGPathElement | null)?.focus();
   };
 
   const zoom = vb.w ? full.w / vb.w : 1;
-  const labelText = (id: string) => {
-    const item = index.byId.get(id) as PlaceItem | undefined;
-    if (!item) return '';
-    return labels === 'native' ? item.native : item.translit;
-  };
   const fontUnits = 11.5 * unitsPerPx;
   const stroke = (n: number) => n * unitsPerPx;
+
+  // Labels that fit their area and do not run into a neighbour's label:
+  // marked areas first, then the larger ones.
+  const shownLabels = useMemo(() => {
+    if (labels === 'none') return [];
+    const placed: { x0: number; y0: number; x1: number; y1: number }[] = [];
+    const out: { s: MapShape; text: string }[] = [];
+    const cands = map.shapes
+      .filter((s) => !hideLabels?.has(s.id))
+      .map((s) => {
+        const item = index.byId.get(s.id) as PlaceItem | undefined;
+        const text = item ? (labels === 'native' ? item.native : item.translit) : '';
+        const boxPx = (s.box[2] - s.box[0]) / unitsPerPx;
+        const textPx = Array.from(text).length * (labels === 'native' ? 7.5 : 6.6);
+        return { s, text, boxPx, textPx, marked: !!marks[s.id], size: (s.box[2] - s.box[0]) * (s.box[3] - s.box[1]) };
+      })
+      .filter((c) => c.text && (c.marked || c.boxPx >= c.textPx * 0.85))
+      .sort((a, b) => Number(b.marked) - Number(a.marked) || b.size - a.size);
+    for (const c of cands) {
+      const cx = c.s.label[0] / unitsPerPx;
+      const cy = c.s.label[1] / unitsPerPx;
+      const r = { x0: cx - c.textPx / 2 - 2, y0: cy - 9, x1: cx + c.textPx / 2 + 2, y1: cy + 9 };
+      if (!c.marked && placed.some((p) => r.x0 < p.x1 && r.x1 > p.x0 && r.y0 < p.y1 && r.y1 > p.y0)) continue;
+      placed.push(r);
+      out.push({ s: c.s, text: c.text });
+    }
+    return out;
+  }, [hideLabels, index, labels, map, marks, unitsPerPx]);
+
+  const areaName = (s: MapShape, i: number) => {
+    if (!nameAreas) return `${label} ${i + 1}`;
+    const item = index.byId.get(s.id) as PlaceItem | undefined;
+    return item ? `${item.translit} (${item.native})` : `${label} ${i + 1}`;
+  };
 
   return (
     <div className={`map ${className}`}>
@@ -181,7 +220,7 @@ export function MapView({ index, label, marks = {}, labels = 'none', hideLabels,
         onPointerCancel={onPointerUp}
       >
         <path d={map.outline} className="map-sea-edge" strokeWidth={stroke(5)} />
-        {map.shapes.map((s) => {
+        {map.shapes.map((s, i) => {
           const mark = marks[s.id];
           const gi = s.group ? groupIndex.get(s.group) ?? 0 : 0;
           return (
@@ -193,9 +232,11 @@ export function MapView({ index, label, marks = {}, labels = 'none', hideLabels,
               strokeWidth={stroke(0.8)}
               tabIndex={onPick ? 0 : undefined}
               role={onPick ? 'button' : undefined}
-              aria-label={onPick ? `${label} ${map.shapes.indexOf(s) + 1}` : undefined}
+              aria-label={onPick ? areaName(s, i) : undefined}
               onClick={() => pick(s.id)}
               onKeyDown={onPick ? (e) => onKey(e, s.id) : undefined}
+              onFocus={onPick ? () => setFocused(s.id) : undefined}
+              onBlur={onPick ? () => setFocused((f) => (f === s.id ? null : f)) : undefined}
               onPointerEnter={onPick ? () => setHover(s.id) : undefined}
               onPointerLeave={onPick ? () => setHover((h) => (h === s.id ? null : h)) : undefined}
             />
@@ -209,33 +250,27 @@ export function MapView({ index, label, marks = {}, labels = 'none', hideLabels,
           .map((s) => (
             <path key={`m-${s.id}`} d={s.d} className={`map-mark is-${marks[s.id]}`} strokeWidth={stroke(2.4)} />
           ))}
+        {/* Keyboard focus: a bright outline above everything else. */}
+        {focused && index.mapShapes.get(focused) && <path d={index.mapShapes.get(focused)!.d} className="map-focus" strokeWidth={stroke(3)} />}
         {/* A ring makes small marked areas findable when zoomed out. */}
         {map.shapes
           .filter((s) => marks[s.id] && (s.box[2] - s.box[0]) / unitsPerPx < 26)
           .map((s) => (
             <circle key={`r-${s.id}`} cx={s.label[0]} cy={s.label[1]} r={stroke(15)} className={`map-ring is-${marks[s.id]}`} strokeWidth={stroke(2)} />
           ))}
-        {labels !== 'none' &&
-          map.shapes.map((s) => {
-            if (hideLabels?.has(s.id)) return null;
-            const text = labelText(s.id);
-            const boxPx = (s.box[2] - s.box[0]) / unitsPerPx;
-            const textPx = Array.from(text).length * (labels === 'native' ? 7.5 : 6.6);
-            if (!marks[s.id] && boxPx < textPx * 0.85) return null;
-            return (
-              <text
-                key={`l-${s.id}`}
-                x={s.label[0]}
-                y={s.label[1]}
-                className={`map-label${labels === 'native' ? ' is-native' : ''}${marks[s.id] ? ' is-marked' : ''}`}
-                fontSize={fontUnits}
-                strokeWidth={stroke(3)}
-                lang={labels === 'native' ? index.content.id : undefined}
-              >
-                {text}
-              </text>
-            );
-          })}
+        {shownLabels.map(({ s, text }) => (
+          <text
+            key={`l-${s.id}`}
+            x={s.label[0]}
+            y={s.label[1]}
+            className={`map-label${labels === 'native' ? ' is-native' : ''}${marks[s.id] ? ' is-marked' : ''}`}
+            fontSize={fontUnits}
+            strokeWidth={stroke(3)}
+            lang={labels === 'native' ? index.content.id : undefined}
+          >
+            {text}
+          </text>
+        ))}
       </svg>
       {zoomable && (
         <div className="map-zoom" aria-hidden={false}>
@@ -252,6 +287,30 @@ export function MapView({ index, label, marks = {}, labels = 'none', hideLabels,
       )}
     </div>
   );
+}
+
+const ARROWS: Record<string, [number, number]> = { ArrowRight: [1, 0], ArrowLeft: [-1, 0], ArrowDown: [0, 1], ArrowUp: [0, -1] };
+
+/** The nearest area in a direction (by label point), preferring ones straight ahead. */
+function neighbour(shapes: MapShape[], fromId: string, [dx, dy]: [number, number]): string | null {
+  const from = shapes.find((s) => s.id === fromId);
+  if (!from) return null;
+  let best: string | null = null;
+  let bestScore = Infinity;
+  for (const s of shapes) {
+    if (s.id === fromId) continue;
+    const vx = s.label[0] - from.label[0];
+    const vy = s.label[1] - from.label[1];
+    const ahead = vx * dx + vy * dy;
+    if (ahead <= 0) continue;
+    const side = Math.abs(vx * dy - vy * dx);
+    const score = ahead + side * 2;
+    if (score < bestScore) {
+      bestScore = score;
+      best = s.id;
+    }
+  }
+  return best;
 }
 
 /** Whole map, keeping the current aspect ratio of the view box. */

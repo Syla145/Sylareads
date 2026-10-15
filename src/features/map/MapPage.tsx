@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { COUNTRIES } from '../../content/registry';
 import { masteryState } from '../../domain/srs';
 import type { PlaceItem } from '../../domain/types';
@@ -21,6 +21,16 @@ export function MapPage() {
   const labels = useMapLabels('mapLabels');
   const items = useProgress((s) => s.root.courses[meta.id]?.items) ?? NO_ITEMS;
   const [selected, setSelected] = useState<string | null>(null);
+  // A wide map (Russia) on a phone starts zoomed in on its densest part (the
+  // group with the most areas: central Russia around Moscow); ⤢ shows it all.
+  const [narrow] = useState(() => typeof window !== 'undefined' && window.matchMedia?.('(max-width: 640px)').matches);
+  const focus = useMemo(() => {
+    if (!index.map || !narrow || !isWideMap(index)) return undefined;
+    const count = new Map<string, number>();
+    for (const s of index.map.shapes) if (s.group) count.set(s.group, (count.get(s.group) ?? 0) + 1);
+    const densest = [...count].sort((a, b) => b[1] - a[1])[0]?.[0];
+    return densest ? index.map.shapes.filter((s) => s.group === densest).map((s) => s.id) : undefined;
+  }, [index, narrow]);
   if (!index.map) return null;
 
   const layer = mapLayer(index);
@@ -46,6 +56,9 @@ export function MapPage() {
           marks={selected ? { [selected]: 'selected' } : undefined}
           onPick={(id) => setSelected((s) => (s === id ? null : id))}
           zoomable
+          focus={focus}
+          minFrame={0.2}
+          nameAreas
           className="map-explore"
         />
         <aside className="map-side">

@@ -6,6 +6,7 @@ import { formatSeconds, placeNameLine, useLang, useT } from '../../i18n';
 import { Button } from '../../ui/primitives';
 import { QuitDialog } from '../session/SessionParts';
 import { useBackGuard } from '../../ui/useBackGuard';
+import { useScrollTop } from '../../ui/useScrollTop';
 
 /**
  * One challenge: 10 names in the native script, the reading is typed, one
@@ -41,6 +42,7 @@ export function ChallengeRun({
   const leave = useBackGuard(true, () => setQuitOpen(true));
 
   const id = currentId(state);
+  useScrollTop(state.answers.length);
   const last = state.answers[state.answers.length - 1];
   const showing = id ? (index.byId.get(id) as PlaceItem) : null;
   const shownLast = !id && last ? (index.byId.get(last.id) as PlaceItem) : null;
@@ -119,7 +121,7 @@ export function ChallengeRun({
         <div className="session-actions">
           <Button variant="primary" block onClick={() => submit()} disabled={!!id && !input.trim()}>
             {id ? t('session.check') : isFinished(state) ? t('ch.toResult') : t('session.continue')}
-            <kbd>{t('session.enterHint')}</kbd>
+            <kbd aria-hidden="true">{t('session.enterHint')}</kbd>
           </Button>
           {id && (
             <Button variant="ghost" block onClick={() => submit(true)}>
