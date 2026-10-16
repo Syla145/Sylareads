@@ -1,3 +1,4 @@
+import { PassLink } from '../passport/PassParts';
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MissionsCard, ShieldCard, StreakCard } from '../streak/StreakParts';
@@ -82,6 +83,9 @@ export function ProfilePage() {
           <StreakCard />
           <ShieldCard />
           <MissionsCard />
+        </div>
+        <div className="profile-pass">
+          <PassLink />
         </div>
 
         <div className="profile-grid">

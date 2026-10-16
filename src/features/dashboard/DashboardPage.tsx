@@ -1,3 +1,4 @@
+import { PassMini } from '../passport/PassParts';
 import { MissionsCard } from '../streak/StreakParts';
 import { useNavigate } from 'react-router-dom';
 import { nativeOf } from '../../domain/courseIndex';
@@ -118,6 +119,7 @@ export function DashboardPage() {
         </div>
         <div className="dash-col">
           <MissionsCard compact />
+          <PassMini meta={meta} index={index} />
           <NextGoals courseId={meta.id} index={index} />
         </div>
 

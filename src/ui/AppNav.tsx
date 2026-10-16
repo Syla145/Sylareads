@@ -45,6 +45,13 @@ export function AppNav() {
             </Link>
           </li>
         ))}
+        {/* Only in the sidebar: on phones the pass is reached from the course page and the profile. */}
+        <li className="app-nav-wide">
+          <Link to="/pass" className={`app-nav-item${at('/pass') ? ' is-active' : ''}`} aria-current={at('/pass') ? 'page' : undefined}>
+            <PassIcon />
+            <span>{t('nav.pass')}</span>
+          </Link>
+        </li>
       </ul>
       <div className="app-nav-courses">
         <p className="app-nav-heading">{t('nav.courses')}</p>
@@ -126,6 +133,13 @@ const PathIcon = () => (
     <path d="M7 18.5c0-3.5 10-3 10-6.5S7 9 7 5.5" />
     <circle cx="7" cy="19" r="2.2" fill="currentColor" stroke="none" />
     <circle cx="7" cy="5" r="2.2" fill="currentColor" stroke="none" />
+  </Svg>
+);
+const PassIcon = () => (
+  <Svg>
+    <rect x="5" y="3" width="14" height="18" rx="2" />
+    <circle cx="12" cy="11" r="3" />
+    <path d="M9 17h6" />
   </Svg>
 );
 const BoltIcon = () => (

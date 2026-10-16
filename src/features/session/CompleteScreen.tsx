@@ -1,3 +1,4 @@
+import { NewStampsList } from '../passport/PassParts';
 import { useEffect, useState } from 'react';
 import { UnlockedList } from '../achievements/AchievementParts';
 import { RewardsList } from '../streak/StreakParts';
@@ -149,6 +150,7 @@ export function CompleteScreen({
         </section>
       )}
 
+      <NewStampsList index={index} before={data.before} after={data.after} />
       <RewardsList before={data.before} after={data.after} />
       <UnlockedList ids={data.unlocked} />
 

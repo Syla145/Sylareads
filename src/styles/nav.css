@@ -15,7 +15,8 @@
 }
 
 .app-nav-brand,
-.app-nav-courses {
+.app-nav-courses,
+.app-nav-wide {
   display: none;
 }
 
@@ -131,7 +132,8 @@
     }
   }
 
-  .app-nav-courses {
+  .app-nav-courses,
+  .app-nav-wide {
     display: block;
   }
 

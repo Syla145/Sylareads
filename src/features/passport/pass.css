@@ -1,0 +1,396 @@
+/* ---------- Reisepass ---------- */
+
+.pass-page {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 760px;
+}
+
+.pass-cover {
+  position: relative;
+  overflow: hidden;
+  padding: var(--s-5);
+  border-radius: 22px;
+  background: #2a1638;
+  color: #f5ecf8;
+}
+
+.pass-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 196, 110, 0.25);
+  pointer-events: none;
+}
+
+.pass-ring-1 {
+  right: -30px;
+  top: -30px;
+  width: 150px;
+  height: 150px;
+}
+
+.pass-ring-2 {
+  right: 2px;
+  top: 2px;
+  width: 86px;
+  height: 86px;
+  border-color: rgba(232, 196, 110, 0.4);
+}
+
+.pass-kicker {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #e8c46e;
+}
+
+.pass-holder {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.75rem;
+  overflow-wrap: anywhere;
+}
+
+.pass-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin: var(--s-3) 0 0;
+}
+
+.pass-stats div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.pass-stats dt {
+  font-size: 0.75rem;
+  color: #cdb8dc;
+}
+
+.pass-stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.pass-tabs {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--gutter));
+  padding: 2px var(--gutter);
+  scrollbar-width: none;
+}
+
+.pass-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.pass-tab {
+  flex: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pass-tab.is-active {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  .pass-tab:not(.is-active):hover {
+    color: var(--text-primary);
+    border-color: var(--text-tertiary);
+  }
+}
+
+/* The page: paper with ink stamps. */
+.pass-paper {
+  --ink-0: #1d6b4a;
+  --ink-1: #b5362c;
+  --ink-2: #2f4fa8;
+  --ink-3: #7a3e9d;
+  --ink-4: #8a5a12;
+  --ink-5: #0f6e7a;
+  --ink-6: #a0306b;
+  --ink-7: #4a5d23;
+  padding: var(--s-4) var(--s-4) var(--s-5);
+  border-radius: 20px;
+  background: #efe7d6;
+  color: #2b2418;
+}
+
+.pass-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.pass-section-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: #2b2418;
+}
+
+.pass-section-head span {
+  font-size: 0.8125rem;
+  color: #5f533e;
+}
+
+.pass-section-head.is-split {
+  margin-top: var(--s-5);
+  padding-top: var(--s-3);
+  border-top: 1px dashed #c9bda3;
+}
+
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 12px 10px;
+  justify-items: center;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stamp {
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  padding: 6px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.stamp.is-empty {
+  border: 2px dashed #b8ac93;
+  border-radius: 50%;
+  color: #6f634b;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+}
+
+.stamp-name {
+  font-size: 0.625rem;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.stamp-progress {
+  font-size: 0.625rem;
+  color: #6f634b;
+}
+
+.stamp.is-done {
+  color: var(--ink);
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  transform: rotate(var(--rot, 0deg));
+  mix-blend-mode: multiply;
+}
+
+.stamp.shape-square {
+  border-radius: 12px;
+}
+
+.stamp.shape-double {
+  border-style: double;
+  border-width: 5px;
+}
+
+.stamp.ink-0 { --ink: var(--ink-0); }
+.stamp.ink-1 { --ink: var(--ink-1); }
+.stamp.ink-2 { --ink: var(--ink-2); }
+.stamp.ink-3 { --ink: var(--ink-3); }
+.stamp.ink-4 { --ink: var(--ink-4); }
+.stamp.ink-5 { --ink: var(--ink-5); }
+.stamp.ink-6 { --ink: var(--ink-6); }
+.stamp.ink-7 { --ink: var(--ink-7); }
+
+.stamp-native {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stamp-latin {
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.stamp.is-new {
+  animation: stamp-in 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: rotate(calc(var(--rot, 0deg) - 12deg)) scale(1.8);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(var(--rot, 0deg)) scale(0.94);
+  }
+}
+
+.pass-dots {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 4px;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pass-dots li {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #d8cdb6;
+}
+
+.pass-dots li.is-sure.ink-0 { background: var(--ink-0); }
+.pass-dots li.is-sure.ink-1 { background: var(--ink-1); }
+.pass-dots li.is-sure.ink-2 { background: var(--ink-2); }
+.pass-dots li.is-sure.ink-3 { background: var(--ink-3); }
+.pass-dots li.is-sure.ink-4 { background: var(--ink-4); }
+.pass-dots li.is-sure.ink-5 { background: var(--ink-5); }
+.pass-dots li.is-sure.ink-6 { background: var(--ink-6); }
+.pass-dots li.is-sure.ink-7 { background: var(--ink-7); }
+
+@media (min-width: 640px) {
+  .pass-dots {
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+  }
+}
+
+.pass-rule {
+  margin: var(--s-3) 0 0;
+  font-size: 0.8125rem;
+  color: #5f533e;
+}
+
+.pass-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1f3f8f;
+}
+
+.pass-go:focus-visible {
+  outline-color: #1f3f8f;
+}
+
+.pass-loading {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+  color: #5f533e;
+}
+
+/* Course page: a small passport card */
+.pass-mini {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 64px;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-lg);
+  background: #2a1638;
+  color: #f5ecf8;
+  text-decoration: none;
+}
+
+.pass-mini-book {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(232, 196, 110, 0.14);
+  color: #e8c46e;
+}
+
+.pass-mini-text {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pass-mini-title {
+  font-weight: 700;
+}
+
+.pass-mini-sub {
+  font-size: 0.8125rem;
+  color: #cdb8dc;
+}
+
+.pass-mini-go {
+  font-size: 1.5rem;
+  color: #e8c46e;
+}
+
+@media (hover: hover) {
+  .pass-mini:hover {
+    background: #34204a;
+  }
+}
+
+.pass-gained ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pass-gained a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  background: #2a1638;
+  color: #e8c46e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.profile-pass {
+  margin: calc(-1 * var(--s-3)) 0 var(--s-6);
+}
