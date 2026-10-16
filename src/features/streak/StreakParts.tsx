@@ -5,6 +5,8 @@ import { missionsFinished, weekMissions, type MissionStatus } from '../../domain
 import type { ProgressRoot } from '../../domain/progress';
 import { SHIELD_MAX, streakAtRisk, streakView, type DayMark, type StreakView } from '../../domain/streak';
 import { useLang, useT, type TKey } from '../../i18n';
+import { levelFromXp } from '../../domain/gamification';
+import { levelsGained, rewardsAt } from '../../domain/rewards';
 import { useProgress } from '../../store/progressStore';
 import { ProgressBar } from '../../ui/primitives';
 import './streak.css';
@@ -214,15 +216,33 @@ export function MissionsCard({ compact = false, id }: { compact?: boolean; id?: 
 /** Result screens: missions finished and shields earned in this session. */
 export function RewardsList({ before, after }: { before: ProgressRoot; after: ProgressRoot }) {
   const t = useT();
+  const lang = useLang();
   const today = dayKey();
   const finished = missionsFinished(before.profile.daily, after.profile.daily, today);
   const gained = streakView(after.profile, today).shields > streakView(before.profile, today).shields;
   const shieldViaMission = finished.some((m) => m.def.xp === 0);
-  if (!finished.length && !gained) return null;
+  const levels = levelsGained(levelFromXp(before.profile.xp), levelFromXp(after.profile.xp));
+  if (!finished.length && !gained && !levels.length) return null;
   return (
     <section className="complete-block rewards">
       <h2 className="card-label">{t('mission.rewards')}</h2>
       <ul className="rewards-list">
+        {levels.map((l) => {
+          const r = rewardsAt(l);
+          const parts = [r.emoji, r.title && t('level.gainedTitle', { x: r.title[lang] }), r.frame && t('level.gainedFrame', { x: r.frame[lang] })].filter(Boolean).join(' · ');
+          return (
+            <li key={`level-${l}`}>
+              <span className="rewards-icon is-level" aria-hidden="true">
+                {r.emoji}
+              </span>
+              <span>
+                <Link to="/profile?s=level" className="rewards-link">
+                  {t('level.gained', { n: l, x: parts })}
+                </Link>
+              </span>
+            </li>
+          );
+        })}
         {finished.map((m) => (
           <li key={m.def.id}>
             <span className="rewards-icon" aria-hidden="true">

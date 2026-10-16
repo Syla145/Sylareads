@@ -1,3 +1,4 @@
+import type { Look } from '../domain/rewards';
 import type { ChallengeScore, DailyAnswer } from '../domain/challenge';
 import { cleanName, CONSENT_VERSION } from '../domain/presence';
 import { create } from 'zustand';
@@ -58,6 +59,8 @@ interface ProgressState {
   saveDaily: (courseId: string, day: string, score: ChallengeScore, done: boolean, ans?: DailyAnswer[]) => void;
   /** Opt-in public card for "Wer ist gerade da". */
   setShare: (on: boolean, name: string) => void;
+  /** Emoji, title or frame for the card; `undefined` = the newest unlocked one again. */
+  setLook: (key: 'emoji' | 'title' | 'frame', value: number | undefined) => void;
   /** Easter egg; true when it was new. */
   unlockSecret: () => boolean;
   /** Fills in achievements already earned (silently, e.g. when a course is opened). */
@@ -147,6 +150,14 @@ export const useProgress = create<ProgressState>((set, get) => {
       commit({ ...root, updatedAt: now, courses: { ...root.courses, [courseId]: { ...course, notes: withNote(course.notes, itemId, text, now) } } }, true);
     },
     saveDaily: (courseId, day, score, done, ans) => commit(recordDailyResult(get().root, courseId, day, score, done, Date.now(), ans), true, done),
+    setLook: (key, value) => {
+      const root = get().root;
+      const at = Date.now();
+      const look: Look = { ...root.profile.look, at };
+      if (value === undefined) delete look[key];
+      else look[key] = value;
+      commit({ ...root, updatedAt: at, profile: { ...root.profile, look } }, true);
+    },
     setShare: (on, name) => {
       const root = get().root;
       const share = { on, name: cleanName(name), at: Date.now(), c: CONSENT_VERSION };

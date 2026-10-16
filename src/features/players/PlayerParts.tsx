@@ -1,3 +1,5 @@
+import { emojiOf, titleOf } from '../../domain/rewards';
+import '../level/frames.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { COURSES } from '../../content/registry';
@@ -19,11 +21,22 @@ function hash(s: string): number {
   return h;
 }
 
-export function Avatar({ uid, name, size = 'm' }: { uid: string; name: string; size?: 's' | 'm' }) {
+/** Round avatar: the chosen emoji (or the first letter), in the chosen frame. */
+export function Avatar({ uid, name, size = 'm', emoji, frame }: { uid: string; name: string; size?: 's' | 'm' | 'l'; emoji?: number; frame?: number }) {
   const initial = [...name][0]?.toUpperCase() ?? '?';
+  const face = (
+    <span
+      className={`player-avatar is-${size}${emoji ? ' is-emoji' : ''}`}
+      style={{ ['--avatar' as string]: AVATAR_COLORS[hash(uid) % AVATAR_COLORS.length] }}
+      aria-hidden="true"
+    >
+      {emoji ? emojiOf(emoji) : initial}
+    </span>
+  );
+  if (!frame) return face;
   return (
-    <span className={`player-avatar is-${size}`} style={{ ['--avatar' as string]: AVATAR_COLORS[hash(uid) % AVATAR_COLORS.length] }} aria-hidden="true">
-      {initial}
+    <span className={`look-ring frame-${frame} is-${size}`} aria-hidden="true">
+      {face}
     </span>
   );
 }
@@ -57,6 +70,7 @@ function useCourseName() {
 /** One player: who, when, what they learn and how far. */
 export function PlayerCard({ card, me, now }: { card: Card; me: boolean; now: number }) {
   const t = useT();
+  const lang = useLang();
   const seenText = useSeenText();
   const courseName = useCourseName();
   const act = activityOf(card.seen, now);
@@ -64,14 +78,15 @@ export function PlayerCard({ card, me, now }: { card: Card; me: boolean; now: nu
   const c = card.courses[main];
   const others = Object.entries(card.courses).filter(([id]) => id !== main);
   return (
-    <article className={`player-card${me ? ' is-me' : ''}`}>
+    <article className={`player-card${me ? ' is-me' : ''}${card.frame ? ` has-frame frame-${card.frame}` : ''}`}>
       <header className="player-head">
-        <Avatar uid={card.uid} name={card.name} />
+        <Avatar uid={card.uid} name={card.name} emoji={card.emoji} frame={card.frame} />
         <span className="player-who">
           <span className="player-name-line">
             <span className="player-name">{card.name}</span>
             {me && <span className="badge badge-accent">{t('who.you')}</span>}
           </span>
+          {card.title && titleOf(card.title) && <span className="player-title">{titleOf(card.title)!.name[lang]}</span>}
           <span className={`player-seen${act === 'now' ? ' is-now' : ''}`}>
             {act === 'now' && <span className="player-dot" aria-hidden="true" />}
             {seenText(card.seen, now)}

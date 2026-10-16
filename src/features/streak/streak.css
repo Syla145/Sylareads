@@ -382,3 +382,15 @@
 .streak-area:focus {
   outline: none;
 }
+
+.rewards-icon.is-level {
+  background: var(--surface-3);
+  font-size: 1rem;
+}
+
+.rewards-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}

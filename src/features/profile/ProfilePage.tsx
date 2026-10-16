@@ -1,14 +1,14 @@
+import { LevelCard, LookCard } from '../level/LevelParts';
 import { PassLink } from '../passport/PassParts';
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MissionsCard, ShieldCard, StreakCard } from '../streak/StreakParts';
 import { AchievementsOverview } from '../achievements/AchievementParts';
-import { levelProgress } from '../../domain/gamification';
 import { formatDate, useLang, useT, type TKey } from '../../i18n';
 import { exportJson, parseImport, readBackup, wipeDevice, type ImportPreview } from '../../store/persistence';
 import { downloadText } from '../../ui/download';
 import { useProgress } from '../../store/progressStore';
-import { Button, Card, Modal, ProgressBar } from '../../ui/primitives';
+import { Button, Card, Modal } from '../../ui/primitives';
 import { LangToggle, TopBar } from '../../ui/TopBar';
 import { SyncCard } from '../../sync/SyncCard';
 import { ShareCard } from '../players/PlayerParts';
@@ -35,13 +35,13 @@ export function ProfilePage() {
   const [backup, setBackup] = useState(() => readBackup());
   const [wipeStep, setWipeStep] = useState(0);
 
-  const lp = levelProgress(root.profile.xp);
   const streakRef = useRef<HTMLDivElement>(null);
+  const levelRef = useRef<HTMLDivElement>(null);
   const [params] = useSearchParams();
-  // From the flame in the top bar: straight to streak and missions.
+  // From the flame in the top bar (serie) or a level-up (level): straight to that part.
   useEffect(() => {
-    if (params.get('s') !== 'serie') return;
-    const el = streakRef.current;
+    const s = params.get('s');
+    const el = s === 'serie' ? streakRef.current : s === 'level' ? levelRef.current : null;
     if (!el) return;
     el.scrollIntoView({ block: 'start' });
     el.focus({ preventScroll: true });
@@ -88,15 +88,9 @@ export function ProfilePage() {
           <PassLink />
         </div>
 
-        <div className="profile-grid">
-          <Card>
-            <h2 className="card-label">{t('profile.level', { n: lp.level })}</h2>
-            <p className="big-number small-big">{root.profile.xp} XP</p>
-            <ProgressBar value={lp.into / lp.span} label={t('profile.xpToNext', { n: lp.span - lp.into, l: lp.level + 1 })} />
-            <p className="muted small">
-              {t('profile.xpToNext', { n: lp.span - lp.into, l: lp.level + 1 })} · {t('profile.answers', { n: root.profile.totalAnswers })}
-            </p>
-          </Card>
+        <div className="level-area" id="level" ref={levelRef} tabIndex={-1}>
+          <LevelCard />
+          <LookCard />
         </div>
 
         <AchievementsOverview />

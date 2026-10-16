@@ -1,3 +1,4 @@
+import { mergeLook, type Look } from './rewards';
 import { mergeClaims, type MissionClaims } from './missions';
 import type { DayActivity, StreakState } from './gamification';
 import type { CourseProgress, LessonRecord, ProgressRoot } from './progress';
@@ -50,6 +51,7 @@ export function mergeRoots(local: ProgressRoot, remote: ProgressRoot): ProgressR
       tally,
       ...shareField(mergeShare(local.profile.share, remote.profile.share)),
       ...missionsField(mergeClaims(local.profile.missions, remote.profile.missions)),
+      ...lookField(mergeLook(local.profile.look, remote.profile.look)),
     },
     courses,
   };
@@ -107,6 +109,7 @@ function mergeDay(a: DayActivity, b: DayActivity): DayActivity {
   return out;
 }
 
+const lookField = (l: Look | undefined) => (l ? { look: l } : {});
 const missionsField = (m: MissionClaims | undefined) => (m ? { missions: m } : {});
 
 function mergeStreak(a: StreakState, b: StreakState): StreakState {

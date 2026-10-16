@@ -1,3 +1,4 @@
+import { lookOf } from '../domain/rewards';
 import { tallyFrom } from '../domain/tally';
 import { emptyCourse, emptyRoot, SCHEMA_VERSION, type MapLabels, type ProgressRoot, type TempoSettings } from '../domain/progress';
 import { clampFlash, clampSeconds } from '../domain/tempo';
@@ -125,6 +126,7 @@ export function migrate(raw: unknown): ProgressRoot {
   const share = shareOf(profile.share);
   const tally = tallyFrom(profile.tally);
   const missions = missionClaimsOf(profile.missions);
+  const look = lookOf(profile.look);
   return {
     ...base,
     settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}), ...(signView ? { signView } : {}), ...(settings.askMeaning === true ? { askMeaning: true } : {}) },
@@ -143,6 +145,7 @@ export function migrate(raw: unknown): ProgressRoot {
       ...(tally ? { tally } : {}),
       ...(share ? { share } : {}),
       ...(missions ? { missions } : {}),
+      ...(look ? { look } : {}),
     },
     courses,
   };

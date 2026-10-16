@@ -5,6 +5,7 @@ import { dayKey } from './dates';
 import { xpForResult, XP, type DayActivity, type StreakState } from './gamification';
 import { addClaims, unclaimedMissions, type MissionClaims } from './missions';
 import { streakState, streakView } from './streak';
+import type { Look } from './rewards';
 import { logAnswer, type MistakeLog } from './mistakes';
 import type { PlacementOutcome } from './placement';
 import { applyAnswer, introduce, raiseTo, settleNewItem, type ItemProgress, type Result } from './srs';
@@ -69,6 +70,8 @@ export interface Profile {
   share?: ShareSetting;
   /** Wochenmissionen whose XP was paid out, per week (missions.ts). */
   missions?: MissionClaims;
+  /** Chosen emoji, title and frame for the "Wer ist da" card (rewards.ts). */
+  look?: Look;
 }
 
 /** How places are labelled on maps: native script, Latin script, or not at all. */

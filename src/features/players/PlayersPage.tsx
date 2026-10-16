@@ -100,7 +100,7 @@ export function PlayersStrip() {
           {shown.map((c) => (
             <li key={c.uid}>
               <Link to="/players" className="players-strip-item">
-                <Avatar uid={c.uid} name={c.name} size="s" />
+                <Avatar uid={c.uid} name={c.name} size="s" emoji={c.emoji} frame={c.frame} />
                 <span className="players-strip-name">{c.name}</span>
                 {groupOf(c, now) === 'now' && <span className="player-dot" aria-hidden="true" />}
               </Link>

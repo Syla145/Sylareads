@@ -21,14 +21,19 @@ export function xpForLevel(level: number): number {
   return 25 * level * (level - 1);
 }
 
+/** Level 100 is the last one (247 500 XP). */
+export const LEVEL_CAP = 100;
+
 export function levelFromXp(xp: number): number {
   let level = 1;
-  while (xpForLevel(level + 1) <= xp) level++;
+  while (level < LEVEL_CAP && xpForLevel(level + 1) <= xp) level++;
   return level;
 }
 
+/** Progress inside the current level; at level 100 the bar stays full (`span` 0 = done). */
 export function levelProgress(xp: number): { level: number; into: number; span: number } {
   const level = levelFromXp(xp);
+  if (level >= LEVEL_CAP) return { level, into: 0, span: 0 };
   const base = xpForLevel(level);
   const next = xpForLevel(level + 1);
   return { level, into: xp - base, span: next - base };

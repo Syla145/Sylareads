@@ -29,6 +29,14 @@ service cloud.firestore {
       return v is int && v >= lo && v <= hi;
     }
 
+    // Belohnungen auf der Karte (src/domain/rewards.ts): Emoji je Level, Titel bei Level 1
+    // und alle 5 Level, Rahmen alle 10 Level – nur, was das Level schon freigeschaltet hat.
+    function goodLook(d) {
+      return (!('emoji' in d) || (intIn(d.emoji, 1, 100) && d.emoji <= d.level))
+        && (!('title' in d) || (intIn(d.title, 1, 100) && (d.title == 1 || d.title % 5 == 0) && d.title <= d.level))
+        && (!('frame' in d) || (intIn(d.frame, 10, 100) && d.frame % 10 == 0 && d.frame <= d.level));
+    }
+
     // Fortschritt: nur der Besitzer, höchstens alle 10 Sekunden, unter 900 KB.
     match /sylareads/{uid} {
       allow read, delete: if isOwner(uid);
@@ -50,7 +58,7 @@ service cloud.firestore {
       allow delete: if isOwner(uid)
         || (request.auth != null && resource.data.seen < request.time - duration.value(30, 'd'));
       allow create, update: if isOwner(uid)
-        && request.resource.data.keys().hasOnly(['v', 'name', 'seen', 'course', 'courses', 'streak', 'level', 'xp', 'tempo'])
+        && request.resource.data.keys().hasOnly(['v', 'name', 'seen', 'course', 'courses', 'streak', 'level', 'xp', 'tempo', 'emoji', 'title', 'frame'])
         && request.resource.data.v == 2
         && goodName(request.resource.data.name)
         && request.resource.data.seen == request.time
@@ -63,7 +71,8 @@ service cloud.firestore {
         && intIn(request.resource.data.level, 1, 999)
         && intIn(request.resource.data.xp, 0, 100000000)
         && (!('tempo' in request.resource.data)
-            || (request.resource.data.tempo is map && request.resource.data.tempo.keys().hasOnly(cardCourses())));
+            || (request.resource.data.tempo is map && request.resource.data.tempo.keys().hasOnly(cardCourses())))
+        && goodLook(request.resource.data);
     }
   }
 }

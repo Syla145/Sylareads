@@ -2,6 +2,7 @@ import type { CourseIndex } from './courseIndex';
 import { dayKey } from './dates';
 import { levelFromXp } from './gamification';
 import { streakView } from './streak';
+import { effectiveLook, lookOf, type EffectiveLook } from './rewards';
 import type { ProgressRoot } from './progress';
 import { courseStats } from './stats';
 import { cleanName, nameProblem } from './names';
@@ -54,6 +55,10 @@ export interface PublicPlayer {
   xp: number;
   /** Latest finished Daily Challenge per course (Firestore field `tempo`). */
   tempo?: Record<string, PublicDaily>;
+  /** Look (rewards.ts): emoji and title as unlock levels, frame level (absent = none). */
+  emoji?: number;
+  title?: number;
+  frame?: number;
 }
 
 export interface PublicDaily {
@@ -174,8 +179,17 @@ export function publicSnapshot(root: ProgressRoot, name: string, courses: Record
     streak: Math.min(CARD_LIMITS.streak, streakView(root.profile, today).current),
     level: Math.min(CARD_LIMITS.level, levelFromXp(root.profile.xp)),
     xp: Math.min(CARD_LIMITS.xp, Math.max(0, Math.round(root.profile.xp))),
+    ...lookFields(effectiveLook(root.profile.look, levelFromXp(root.profile.xp))),
   };
 }
+
+/** Look of a stored card: only rewards its level really unlocks; no frame field = no frame. */
+function cardLook(raw: Record<string, unknown>, level: number) {
+  const l = effectiveLook(lookOf({ at: 0, emoji: raw.emoji, title: raw.title, frame: raw.frame ?? 0 }), level);
+  return lookFields(l);
+}
+
+const lookFields = (l: EffectiveLook) => ({ emoji: l.emoji, title: l.title, ...(l.frame ? { frame: l.frame } : {}) });
 
 /** Same card content (ignoring order), so an unchanged card is not written again. */
 export const sameCard = (a: PublicPlayer | null, b: PublicPlayer) => !!a && stable(a) === stable(b);
@@ -242,6 +256,7 @@ export function cardOf(uid: string, raw: Record<string, unknown>, seen: number):
     tempo[id] = { d: r.d, c: Math.min(num(r.c, 10), n), n, ms: num(r.ms, 3_600_000) };
   }
   const course = typeof raw.course === 'string' && isCardCourse(raw.course) ? raw.course : '';
+  const level = Math.max(1, num(raw.level, CARD_LIMITS.level));
   return {
     ...(Object.keys(tempo).length ? { tempo } : {}),
     v: 2,
@@ -251,7 +266,8 @@ export function cardOf(uid: string, raw: Record<string, unknown>, seen: number):
     course,
     courses,
     streak: num(raw.streak, CARD_LIMITS.streak),
-    level: Math.max(1, num(raw.level, CARD_LIMITS.level)),
+    level,
     xp: num(raw.xp, CARD_LIMITS.xp),
+    ...cardLook(raw, level),
   };
 }

@@ -1,0 +1,95 @@
+/* ---------- Frames (rewards every 10 levels) and emoji avatars ---------- */
+
+.player-avatar.is-emoji {
+  background: var(--surface-3);
+  color: var(--text-primary);
+  font-size: 1.375rem;
+  line-height: 1;
+}
+
+.player-avatar.is-emoji.is-s {
+  font-size: 0.9375rem;
+}
+
+.player-avatar.is-l {
+  width: 64px;
+  height: 64px;
+  font-size: 1.5rem;
+}
+
+.player-avatar.is-emoji.is-l {
+  font-size: 2.125rem;
+}
+
+.look-ring {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  padding: 3px;
+  border-radius: 50%;
+  background: var(--frame-paint, var(--frame));
+}
+
+.look-ring.is-s {
+  padding: 2px;
+}
+
+.look-ring.is-l {
+  padding: 4px;
+}
+
+/* A thin dark gap between ring and face, so the ring reads as a frame. */
+.look-ring > .player-avatar {
+  box-shadow: 0 0 0 2px var(--surface-1);
+}
+
+.frame-10 { --frame: #c0814a; --frame-paint: linear-gradient(135deg, #8a5428, #e2a46b 45%, #b0703a 70%, #6e4220); }
+.frame-20 { --frame: #b9c1ca; --frame-paint: linear-gradient(135deg, #7d8590, #eef2f6 45%, #a4adb7 70%, #6b737d); }
+.frame-30 { --frame: #e3b43a; --frame-paint: linear-gradient(135deg, #a87a10, #ffe08a 45%, #d4a020 70%, #8a6408); }
+.frame-40 { --frame: #3fb68b; --frame-paint: linear-gradient(135deg, #14684c, #7fe0b8 45%, #2a9a72 70%, #0e5038); }
+.frame-50 { --frame: #e0465f; --frame-paint: linear-gradient(135deg, #7d1428, #ff8a9c 45%, #c8304a 70%, #5c0e1d); }
+.frame-60 { --frame: #4f84ff; --frame-paint: linear-gradient(135deg, #163a8a, #8fb4ff 45%, #2f63d6 70%, #102a66); }
+.frame-70 { --frame: #a173f0; --frame-paint: linear-gradient(135deg, #4f2687, #d5b5ff 45%, #8150cf 70%, #3a1b66); }
+.frame-80 { --frame: #0e6b47; --frame-paint: #0e6b47; }
+.frame-90 { --frame: #5cc8ff; --frame-paint: conic-gradient(from 0deg, #3ccb7f, #5cc8ff, #9b87f5, #ff6bd5, #ffd23f, #3ccb7f); }
+.frame-100 { --frame: #ffd23f; --frame-paint: conic-gradient(from var(--spin, 0deg), #ffd23f, #fff1b8, #ff8a3d, #ffd23f, #fff1b8, #e6b800, #ffd23f); }
+
+/* Road sign: green with the white inner line of a real sign. */
+.look-ring.frame-80 > .player-avatar {
+  box-shadow: 0 0 0 2px #e8f5ee;
+}
+
+/* Legend: the gold slowly turns (not with reduced motion). */
+@property --spin {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.look-ring.frame-100 {
+  animation: legend-spin 6s linear infinite;
+}
+
+@keyframes legend-spin {
+  to {
+    --spin: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .look-ring.frame-100 {
+    animation: none;
+  }
+}
+
+/* The card on "Wer ist da" takes the frame colour. */
+.player-card.has-frame {
+  border-color: var(--frame);
+  box-shadow: inset 0 3px 0 var(--frame);
+}
+
+.player-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent);
+}
