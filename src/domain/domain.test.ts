@@ -3,7 +3,8 @@ import ru from '../content/ru';
 import { buildIndex } from './courseIndex';
 import { addDays, diffDays } from './dates';
 import { accepts, evaluateTyped } from './evaluate';
-import { levelFromXp, updateStreak, xpForLevel } from './gamification';
+import { levelFromXp, xpForLevel } from './gamification';
+import { streakView } from './streak';
 import { buildLesson, finalRoundTasks } from './lessonBuilder';
 import { matchSegments } from './match';
 import { normalize } from './normalize';
@@ -118,15 +119,18 @@ describe('dates and gamification', () => {
     expect(levelFromXp(149)).toBe(2);
     expect(levelFromXp(150)).toBe(3);
   });
-  it('continues and restarts the streak', () => {
-    let s = { current: 0, longest: 0, lastDay: null as string | null };
-    s = updateStreak(s, '2026-10-05', { lessons: 1, answers: 0, xp: 0 });
-    s = updateStreak(s, '2026-10-06', { lessons: 0, answers: 10, xp: 0 });
-    expect(s.current).toBe(2);
-    s = updateStreak(s, '2026-10-09', { lessons: 1, answers: 0, xp: 0 });
-    expect(s.current).toBe(1);
-    expect(s.longest).toBe(2);
-    expect(updateStreak(s, '2026-10-10', { lessons: 0, answers: 9, xp: 0 }).current).toBe(1);
+  it('continues and restarts the streak (days before the shields)', () => {
+    const daily = {
+      '2026-10-05': { lessons: 1, answers: 0, xp: 0 },
+      '2026-10-06': { lessons: 0, answers: 10, xp: 0 },
+    };
+    const streak = { current: 0, longest: 0, lastDay: null };
+    expect(streakView({ daily, streak }, '2026-10-06').current).toBe(2);
+    const later = { ...daily, '2026-10-09': { lessons: 1, answers: 0, xp: 0 } };
+    expect(streakView({ daily: later, streak }, '2026-10-09')).toMatchObject({ current: 1, longest: 2 });
+    // 9 answers do not count yet: the streak of yesterday is still shown
+    const more = { ...later, '2026-10-10': { lessons: 0, answers: 9, xp: 0 } };
+    expect(streakView({ daily: more, streak }, '2026-10-10')).toMatchObject({ current: 1, todayDone: false });
   });
 });
 

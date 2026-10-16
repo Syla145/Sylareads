@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { SCRIPT_LESSONS, type ScriptLesson } from '../../content/scripts/data';
 import { UnlockedList } from '../achievements/AchievementParts';
+import { RewardsList } from '../streak/StreakParts';
 import { levelFromXp } from '../../domain/gamification';
 import type { ProgressRoot } from '../../domain/progress';
 import {
@@ -416,6 +417,7 @@ function ScriptResult({
           </ul>
         </section>
       )}
+      <RewardsList before={done.before} after={done.after} />
       <UnlockedList ids={done.unlocked} />
       <ResultActions actions={actions} />
     </div>

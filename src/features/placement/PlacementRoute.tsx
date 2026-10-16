@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { UnlockedList } from '../achievements/AchievementParts';
+import { RewardsList } from '../streak/StreakParts';
 import { letterGlyphs, nativeOf, type CourseIndex } from '../../domain/courseIndex';
 import { LETTERS_SCOPE, passMark, PLACEMENT, placementOutcome, placementScope, placementTasks, type PlacementMode, type PlacementOutcome, type PlacementScope } from '../../domain/placement';
 import type { ProgressRoot } from '../../domain/progress';
@@ -174,6 +175,7 @@ function PlacementResult({
         </section>
       )}
 
+      <RewardsList before={done.before} after={done.after} />
       <UnlockedList ids={done.unlocked} />
 
       <ResultActions actions={actions} />

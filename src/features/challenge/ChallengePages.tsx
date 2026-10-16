@@ -1,3 +1,5 @@
+import { RewardsList } from '../streak/StreakParts';
+import type { ProgressRoot } from '../../domain/progress';
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -53,6 +55,7 @@ export function DailyRoute() {
   const [stage, setStage] = useState<'intro' | 'run' | 'done'>(record && !paused ? 'done' : 'intro');
   const [finished, setFinished] = useState<ChallengeState | null>(null);
   const [initial, setInitial] = useState<ChallengeState | undefined>(undefined);
+  const [roots, setRoots] = useState<{ before: ProgressRoot; after: ProgressRoot } | null>(null);
   const back = () => navigate(`/${meta.slug}`);
   const goBack = useGoBack(`/${meta.slug}`);
   const start = () => {
@@ -70,7 +73,9 @@ export function DailyRoute() {
         title={t('ch.dailyTitle')}
         onAnswer={(s) => saveDaily(meta.id, today, scoreOf(s), false, dailyAnswers(s))}
         onDone={(s) => {
+          const before = useProgress.getState().root;
           saveDaily(meta.id, today, scoreOf(s), true);
+          setRoots({ before, after: useProgress.getState().root });
           void reportNow();
           setFinished(s);
           setStage('done');
@@ -115,6 +120,7 @@ export function DailyRoute() {
         <h1 className="complete-title">{t('ch.dailyTitle')}</h1>
         <p className="muted">{finished ? t('ch.dailyDone') : t('ch.dailyAlready')}</p>
         <ScoreLine score={score} />
+        {roots && <RewardsList before={roots.before} after={roots.after} />}
         {finished && <AnswerList index={index} state={finished} />}
         <DailyBoard meta={meta} day={today} own={score} />
         <ResultActions

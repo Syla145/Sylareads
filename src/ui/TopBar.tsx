@@ -2,7 +2,8 @@ import { useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { COURSES } from '../content/registry';
 import { dayKey } from '../domain/dates';
-import { displayedStreak, levelFromXp } from '../domain/gamification';
+import { levelFromXp } from '../domain/gamification';
+import { streakView } from '../domain/streak';
 import type { CourseMeta } from '../domain/types';
 import { useLang, useT } from '../i18n';
 import { useProgress } from '../store/progressStore';
@@ -87,7 +88,8 @@ export function TopBar({ course }: { course?: CourseMeta }) {
   const t = useT();
   const lang = useLang();
   const profile = useProgress((s) => s.root.profile);
-  const streak = displayedStreak(profile.streak, dayKey());
+  const sv = streakView(profile, dayKey());
+  const streak = sv.current;
   const level = levelFromXp(profile.xp);
 
   return (
@@ -126,11 +128,20 @@ export function TopBar({ course }: { course?: CourseMeta }) {
         </div>
         <div className="topbar-right">
           <OfflineChip />
-          <span className={`chip chip-streak${streak > 0 ? ' is-on' : ''}`} title={t('chip.streak', { n: streak })}>
+          <Link to="/profile?s=serie" className={`chip chip-streak${streak > 0 ? ' is-on' : ''}${sv.todayDone ? ' is-done' : ''}`} title={t('chip.streak', { n: streak })}>
             <FlameIcon />
             <span aria-hidden="true">{streak}</span>
             <span className="sr-only">{t('chip.streak', { n: streak })}</span>
-          </span>
+            {sv.shields > 0 && (
+              <span className="chip-shields">
+                <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" />
+                </svg>
+                <span aria-hidden="true">{sv.shields}</span>
+                <span className="sr-only">, {t('streak.shields', { n: sv.shields })}</span>
+              </span>
+            )}
+          </Link>
           <span className="chip" title={t('chip.level', { n: level })}>
             <span aria-hidden="true">Lv {level}</span>
             <span className="sr-only">{t('chip.level', { n: level })}</span>

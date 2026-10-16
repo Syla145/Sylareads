@@ -1,3 +1,4 @@
+import { MissionsCard } from '../streak/StreakParts';
 import { useNavigate } from 'react-router-dom';
 import { nativeOf } from '../../domain/courseIndex';
 import { courseStats } from '../../domain/stats';
@@ -116,6 +117,7 @@ export function DashboardPage() {
           {(readyForCities || mapStarted) && <MapGoal />}
         </div>
         <div className="dash-col">
+          <MissionsCard compact />
           <NextGoals courseId={meta.id} index={index} />
         </div>
 

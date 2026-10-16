@@ -53,6 +53,15 @@
   --info: #4c8dff;
   --shield: #5cc8ff;
   --flame: #ff8a3d;
+  /* Streak (flame) and streak shields */
+  --flame-bg: #2a1508;
+  --flame-line: #4a2610;
+  --flame-soft: #f3c9a8;
+  --flame-dim: #3a2214;
+  --shield-bg: #0f1d28;
+  --shield-line: #1d3a52;
+  --shield-soft: #a9cde6;
+  --shield-dim: #2d5470;
   /* Feedback sheet after an answer */
   --sheet-correct: #11241a;
   --sheet-correct-line: #1f4a33;

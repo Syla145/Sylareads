@@ -1,6 +1,7 @@
 import type { CourseIndex } from './courseIndex';
 import { dayKey } from './dates';
-import { displayedStreak, levelFromXp } from './gamification';
+import { levelFromXp } from './gamification';
+import { streakView } from './streak';
 import type { ProgressRoot } from './progress';
 import { courseStats } from './stats';
 import { cleanName, nameProblem } from './names';
@@ -170,7 +171,7 @@ export function publicSnapshot(root: ProgressRoot, name: string, courses: Record
     name: cleanName(name),
     course: isCardCourse(currentCourse(root)) ? currentCourse(root) : '',
     courses: Object.fromEntries(Object.entries(courses).filter(([id]) => isCardCourse(id))),
-    streak: Math.min(CARD_LIMITS.streak, displayedStreak(root.profile.streak, today)),
+    streak: Math.min(CARD_LIMITS.streak, streakView(root.profile, today).current),
     level: Math.min(CARD_LIMITS.level, levelFromXp(root.profile.xp)),
     xp: Math.min(CARD_LIMITS.xp, Math.max(0, Math.round(root.profile.xp))),
   };

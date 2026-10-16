@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { UnlockedList } from '../achievements/AchievementParts';
+import { RewardsList } from '../streak/StreakParts';
 import type { CourseIndex } from '../../domain/courseIndex';
 import { levelFromXp } from '../../domain/gamification';
 import type { ProgressRoot } from '../../domain/progress';
@@ -530,6 +531,7 @@ function TempoResult({
         </section>
       )}
 
+      <RewardsList before={done.before} after={done.after} />
       <UnlockedList ids={done.unlocked} />
 
       <ResultActions actions={actions} />

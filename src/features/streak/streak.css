@@ -1,0 +1,384 @@
+/* ---------- Serie, Schilde, Wochenmissionen ---------- */
+
+.streak-card {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--flame-bg);
+  border: 1px solid var(--flame-line);
+  color: var(--text-primary);
+}
+
+.streak-top {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.streak-flame {
+  display: grid;
+  color: var(--flame-dim);
+}
+
+.streak-card.is-on .streak-flame {
+  color: var(--flame);
+}
+
+.streak-n {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.75rem;
+  line-height: 1;
+}
+
+.streak-sub {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--flame-soft);
+}
+
+.streak-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.streak-week li {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--flame-soft);
+}
+
+.streak-dot {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--flame-dim);
+}
+
+.streak-week .is-done .streak-dot {
+  background: var(--flame);
+  color: var(--flame-bg);
+}
+
+.streak-week .is-shield .streak-dot {
+  background: var(--shield-bg);
+  border: 2px solid var(--shield);
+  color: var(--shield);
+}
+
+.streak-week .is-today .streak-dot {
+  background: none;
+  border: 2px dashed var(--flame);
+}
+
+.streak-week .is-missed .streak-dot {
+  background: none;
+  border: 2px solid var(--flame-dim);
+}
+
+.streak-week :is(.is-future, .is-none) .streak-dot {
+  opacity: 0.45;
+}
+
+.streak-hint {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #f7dcc6;
+}
+
+.shield-card {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--shield-bg);
+  border: 1px solid var(--shield-line);
+}
+
+.shield-icons {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.shield-icons .shield-full {
+  color: var(--shield);
+}
+
+.shield-icons .shield-empty {
+  color: var(--shield-dim);
+}
+
+.shield-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.shield-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.shield-text p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--shield-soft);
+}
+
+.shield-text .shield-next {
+  color: var(--shield);
+  font-weight: 600;
+}
+
+@media (max-width: 420px) {
+  .shield-card {
+    align-items: flex-start;
+  }
+  .shield-icons svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Missions */
+.missions-card {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.missions-card.is-compact {
+  padding: var(--s-4) var(--s-5) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+}
+
+.missions-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.missions-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 800;
+}
+
+.missions-card.is-compact .card-label {
+  margin: 0;
+}
+
+.missions-meta {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+.missions-streak {
+  display: flex;
+  gap: var(--s-4);
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.missions-streak > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.missions-flame {
+  color: var(--text-tertiary);
+}
+
+.missions-flame.is-on {
+  color: var(--flame);
+}
+
+.missions-shields {
+  color: var(--shield);
+}
+
+.missions-list {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mission {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+}
+
+.missions-card.is-compact .mission {
+  background: var(--surface-2);
+}
+
+.mission.is-done {
+  background: var(--success-subtle);
+  border-color: rgba(60, 203, 127, 0.35);
+}
+
+.mission-check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #06140d;
+}
+
+.mission-body {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mission-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.mission-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.mission-reward {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.mission-reward.is-shield {
+  background: rgba(92, 200, 255, 0.12);
+  color: var(--shield);
+}
+
+.mission-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.mission-progress .bar {
+  flex: 1;
+}
+
+.mission-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.mission-done {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #8fd3ae;
+}
+
+.missions-more {
+  justify-self: start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Result screens */
+.rewards-list {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rewards-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.rewards-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #06140d;
+}
+
+.rewards-icon.is-shield {
+  background: var(--shield-bg);
+  border: 2px solid var(--shield);
+  color: var(--shield);
+}
+
+.rewards-gain {
+  color: var(--accent);
+}
+
+/* Profile: streak and shields side by side on wide screens */
+.streak-area {
+  display: grid;
+  gap: var(--s-3);
+  margin-bottom: var(--s-6);
+  scroll-margin-top: 80px;
+}
+
+@media (min-width: 900px) {
+  .streak-area {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .streak-area .missions-card {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* Focus is set by code (from the flame in the top bar), only for screen readers. */
+.streak-area:focus {
+  outline: none;
+}

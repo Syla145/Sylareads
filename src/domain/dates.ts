@@ -23,3 +23,9 @@ export function addDays(day: string, n: number): string {
   const d = String(t.getUTCDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
+
+/** Monday of the week of `day` (weeks run Monday to Sunday). */
+export function weekStart(day: string): string {
+  const dow = new Date(toUtc(day)).getUTCDay(); // 0 = Sunday
+  return addDays(day, -((dow + 6) % 7));
+}

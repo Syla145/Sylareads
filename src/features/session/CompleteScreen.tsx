@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UnlockedList } from '../achievements/AchievementParts';
+import { RewardsList } from '../streak/StreakParts';
 import type { CourseIndex } from '../../domain/courseIndex';
 import { levelFromXp } from '../../domain/gamification';
 import type { ProgressRoot } from '../../domain/progress';
@@ -148,6 +149,7 @@ export function CompleteScreen({
         </section>
       )}
 
+      <RewardsList before={data.before} after={data.after} />
       <UnlockedList ids={data.unlocked} />
 
       <ResultActions actions={actions} />

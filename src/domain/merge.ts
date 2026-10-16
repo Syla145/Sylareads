@@ -1,3 +1,4 @@
+import { mergeClaims, type MissionClaims } from './missions';
 import type { DayActivity, StreakState } from './gamification';
 import type { CourseProgress, LessonRecord, ProgressRoot } from './progress';
 import type { ItemProgress } from './srs';
@@ -48,6 +49,7 @@ export function mergeRoots(local: ProgressRoot, remote: ProgressRoot): ProgressR
       totalAnswers: t.answers,
       tally,
       ...shareField(mergeShare(local.profile.share, remote.profile.share)),
+      ...missionsField(mergeClaims(local.profile.missions, remote.profile.missions)),
     },
     courses,
   };
@@ -97,8 +99,15 @@ function mergeLesson(a: LessonRecord, b: LessonRecord): LessonRecord {
 }
 
 function mergeDay(a: DayActivity, b: DayActivity): DayActivity {
-  return { lessons: Math.max(a.lessons, b.lessons), answers: Math.max(a.answers, b.answers), xp: Math.max(a.xp, b.xp) };
+  const out: DayActivity = { lessons: Math.max(a.lessons, b.lessons), answers: Math.max(a.answers, b.answers), xp: Math.max(a.xp, b.xp) };
+  for (const k of ['perfect', 'places', 'tempo', 'challenge'] as const) {
+    const n = Math.max(a[k] ?? 0, b[k] ?? 0);
+    if (n > 0) out[k] = n;
+  }
+  return out;
 }
+
+const missionsField = (m: MissionClaims | undefined) => (m ? { missions: m } : {});
 
 function mergeStreak(a: StreakState, b: StreakState): StreakState {
   const da = a.lastDay ?? '';

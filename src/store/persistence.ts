@@ -5,7 +5,7 @@ import type { Lang } from '../domain/types';
 import { shareOf } from '../domain/presence';
 import { dailyOf } from '../domain/challenge';
 import { notesOf } from '../domain/notes';
-import { dayActivityOf, isObj, itemOf, lessonOf, mistakesOf, numberOf, practiceConfigOf, recordOf, tempoOf } from './validate';
+import { dayActivityOf, missionClaimsOf, isObj, itemOf, lessonOf, mistakesOf, numberOf, practiceConfigOf, recordOf, tempoOf } from './validate';
 
 /**
  * Persistence: one versioned JSON document in localStorage (a year of daily
@@ -124,6 +124,7 @@ export function migrate(raw: unknown): ProgressRoot {
   const signView = settings.signView === 'off' || settings.signView === 'mixed' || settings.signView === 'always' ? settings.signView : undefined;
   const share = shareOf(profile.share);
   const tally = tallyFrom(profile.tally);
+  const missions = missionClaimsOf(profile.missions);
   return {
     ...base,
     settings: { uiLang, mapLabels: labels(settings.mapLabels), taskMapLabels: labels(settings.taskMapLabels), ...(tempo ? { tempo } : {}), ...(signView ? { signView } : {}), ...(settings.askMeaning === true ? { askMeaning: true } : {}) },
@@ -141,6 +142,7 @@ export function migrate(raw: unknown): ProgressRoot {
       totalAnswers: numberOf(profile.totalAnswers) ?? 0,
       ...(tally ? { tally } : {}),
       ...(share ? { share } : {}),
+      ...(missions ? { missions } : {}),
     },
     courses,
   };

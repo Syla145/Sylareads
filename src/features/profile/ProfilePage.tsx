@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { MissionsCard, ShieldCard, StreakCard } from '../streak/StreakParts';
 import { AchievementsOverview } from '../achievements/AchievementParts';
-import { dayKey } from '../../domain/dates';
-import { displayedStreak, levelProgress } from '../../domain/gamification';
+import { levelProgress } from '../../domain/gamification';
 import { formatDate, useLang, useT, type TKey } from '../../i18n';
 import { exportJson, parseImport, readBackup, wipeDevice, type ImportPreview } from '../../store/persistence';
 import { downloadText } from '../../ui/download';
@@ -34,7 +35,16 @@ export function ProfilePage() {
   const [wipeStep, setWipeStep] = useState(0);
 
   const lp = levelProgress(root.profile.xp);
-  const streak = displayedStreak(root.profile.streak, dayKey());
+  const streakRef = useRef<HTMLDivElement>(null);
+  const [params] = useSearchParams();
+  // From the flame in the top bar: straight to streak and missions.
+  useEffect(() => {
+    if (params.get('s') !== 'serie') return;
+    const el = streakRef.current;
+    if (!el) return;
+    el.scrollIntoView({ block: 'start' });
+    el.focus({ preventScroll: true });
+  }, [params]);
 
   const doExport = () => {
     downloadText('sylareads-progress.json', exportJson(root));
@@ -68,6 +78,12 @@ export function ProfilePage() {
           <h1 className="page-title">{t('profile.title')}</h1>
         </header>
 
+        <div className="streak-area" id="serie" ref={streakRef} tabIndex={-1}>
+          <StreakCard />
+          <ShieldCard />
+          <MissionsCard />
+        </div>
+
         <div className="profile-grid">
           <Card>
             <h2 className="card-label">{t('profile.level', { n: lp.level })}</h2>
@@ -76,14 +92,6 @@ export function ProfilePage() {
             <p className="muted small">
               {t('profile.xpToNext', { n: lp.span - lp.into, l: lp.level + 1 })} · {t('profile.answers', { n: root.profile.totalAnswers })}
             </p>
-          </Card>
-          <Card>
-            <h2 className="card-label">{t('profile.streak')}</h2>
-            <p className="big-number small-big">{t('profile.streakDays', { n: streak })}</p>
-            <p className="muted small">
-              {t('profile.streakLongest', { n: t('profile.streakDays', { n: root.profile.streak.longest }) })}
-            </p>
-            <p className="muted small">{t('profile.streakRule')}</p>
           </Card>
         </div>
 

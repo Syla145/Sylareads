@@ -2,7 +2,9 @@ import { bump, tallyOf, totals, type Tally } from './tally';
 import type { ShareSetting } from './presence';
 import { recordDaily, type ChallengeScore, type DailyAnswer, type DailyLog } from './challenge';
 import { dayKey } from './dates';
-import { updateStreak, xpForResult, XP, type DayActivity, type StreakState } from './gamification';
+import { xpForResult, XP, type DayActivity, type StreakState } from './gamification';
+import { addClaims, unclaimedMissions, type MissionClaims } from './missions';
+import { streakState, streakView } from './streak';
 import { logAnswer, type MistakeLog } from './mistakes';
 import type { PlacementOutcome } from './placement';
 import { applyAnswer, introduce, raiseTo, settleNewItem, type ItemProgress, type Result } from './srs';
@@ -65,6 +67,8 @@ export interface Profile {
   tally?: Tally;
   /** Opt-in public card for "Wer ist gerade da" (absent = never chosen). */
   share?: ShareSetting;
+  /** Wochenmissionen whose XP was paid out, per week (missions.ts). */
+  missions?: MissionClaims;
 }
 
 /** How places are labelled on maps: native script, Latin script, or not at all. */
@@ -123,19 +127,24 @@ function withCourse(root: ProgressRoot, courseId: string, now: number, fn: (c: C
   return { ...root, updatedAt: now, courses: { ...root.courses, [courseId]: fn(course) } };
 }
 
+const DAY_FIELDS = ['lessons', 'answers', 'xp', 'perfect', 'places', 'tempo', 'challenge'] as const;
+
 function addDaily(profile: Profile, today: string, delta: Partial<DayActivity>): Profile {
   const d = profile.daily[today] ?? { lessons: 0, answers: 0, xp: 0 };
-  const next: DayActivity = {
-    lessons: d.lessons + (delta.lessons ?? 0),
-    answers: d.answers + (delta.answers ?? 0),
-    xp: d.xp + (delta.xp ?? 0),
-  };
+  const next: DayActivity = { ...d };
+  for (const k of DAY_FIELDS) if (delta[k]) next[k] = (d[k] ?? 0) + delta[k];
   const daily = { ...profile.daily, [today]: next };
   // keep the last 400 days
   const keys = Object.keys(daily).sort();
   if (keys.length > 400) for (const k of keys.slice(0, keys.length - 400)) delete daily[k];
-  const streak = updateStreak(profile.streak, today, next);
-  return { ...profile, daily, streak };
+  let out: Profile = { ...profile, daily };
+  // Wochenmissionen: a finished XP mission pays out once (its XP counts for today).
+  const due = unclaimedMissions(daily, profile.missions, today);
+  if (due.ids.length) {
+    out = count(out, due.xp, 0);
+    out = { ...out, daily: { ...daily, [today]: { ...next, xp: next.xp + due.xp } }, missions: addClaims(profile.missions, due.week, due.ids) };
+  }
+  return { ...out, streak: streakState(streakView(out, today)) };
 }
 
 /** XP and answers of this device: kept in its own counter, the totals follow (tally.ts). */
@@ -178,7 +187,7 @@ export function recordAnswer(root: ProgressRoot, courseId: string, a: AnswerInpu
     return { ...c, items, confusions, recent: (c.recent + a.result).slice(-200), lastSessionAt: now, ...(mistakes ? { mistakes } : {}) };
   });
   next = { ...next, profile: count(next.profile, 0, 1) };
-  return addXp(next, courseId, xpForResult(a.result), today, { answers: 1 });
+  return addXp(next, courseId, xpForResult(a.result), today, { answers: 1, places: a.result === 'C' && isPlaceId(a.itemId) ? 1 : 0 });
 }
 
 /** End of a lesson: settle new items (box 2 if their last answer was right, else 1) and add the bonus. */
@@ -204,7 +213,7 @@ export function completeLesson(
     return { ...c, items, lessons: { ...c.lessons, [lessonId]: record }, lastSessionAt: now };
   });
   const perfect = info.total > 0 && info.correct === info.total;
-  next = addXp(next, courseId, XP.lessonComplete + (perfect ? XP.lessonPerfect : 0), today, { lessons: 1 });
+  next = addXp(next, courseId, XP.lessonComplete + (perfect ? XP.lessonPerfect : 0), today, { lessons: 1, perfect: perfect ? 1 : 0 });
   return next;
 }
 
@@ -243,8 +252,9 @@ export function recordTempo(
   });
   next = { ...next, profile: count(next.profile, 0, answered) };
   const correct = s.answers.filter((a) => a.correct).length;
+  const places = s.answers.filter((a) => a.correct && isPlaceId(a.itemId)).length;
   const xp = correct * XP.tempoCorrect + (answered >= 10 ? XP.practiceComplete : 0);
-  return { root: addXp(next, courseId, xp, today, { answers: answered }), newBest, prevBest };
+  return { root: addXp(next, courseId, xp, today, { answers: answered, places, tempo: answered >= 10 ? 1 : 0 }), newBest, prevBest };
 }
 
 /**
@@ -287,5 +297,12 @@ export function confusedTwiceSet(c: CourseProgress | undefined): Set<string> {
 
 /** Saves the daily challenge of `day` after every answer (one attempt: leaving early keeps what was answered). */
 export function recordDailyResult(root: ProgressRoot, courseId: string, day: string, score: ChallengeScore, done: boolean, now = Date.now(), ans?: DailyAnswer[]): ProgressRoot {
-  return withCourse(root, courseId, now, (c) => ({ ...c, lastSessionAt: now, daily: recordDaily(c.daily, day, score, done, now, ans) }));
+  const wasDone = !!root.courses[courseId]?.daily?.[day]?.done;
+  const next = withCourse(root, courseId, now, (c) => ({ ...c, lastSessionAt: now, daily: recordDaily(c.daily, day, score, done, now, ans) }));
+  // Finished for the first time: counts for the Wochenmissionen (no XP, as before).
+  if (!done || wasDone) return next;
+  return { ...next, profile: addDaily(next.profile, dayKey(new Date(now)), { challenge: 1, places: score.c }) };
 }
+
+/** Cities and regions: the place names of a course. */
+const isPlaceId = (id: string) => /:(city|region):/.test(id);

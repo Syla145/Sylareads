@@ -1,3 +1,4 @@
+import { MISSION_IDS, type MissionClaims, type MissionId } from '../domain/missions';
 import type { DayActivity } from '../domain/gamification';
 import type { MistakeEntry, MistakeLog } from '../domain/mistakes';
 import type { LessonRecord, PracticeConfigStored } from '../domain/progress';
@@ -75,7 +76,23 @@ export const numberOf =(v: unknown): number | undefined => (typeof v === 'number
 
 export function dayActivityOf(v: unknown): DayActivity | undefined {
   if (!isObj(v)) return undefined;
-  return { lessons: num(v.lessons), answers: num(v.answers), xp: num(v.xp) };
+  const out: DayActivity = { lessons: num(v.lessons), answers: num(v.answers), xp: num(v.xp) };
+  for (const k of ['perfect', 'places', 'tempo', 'challenge'] as const) {
+    const n = num(v[k]);
+    if (n > 0) out[k] = n;
+  }
+  return out;
+}
+
+/** Claimed Wochenmissionen: week (YYYY-MM-DD) → known mission ids. */
+export function missionClaimsOf(v: unknown): MissionClaims | undefined {
+  if (!isObj(v)) return undefined;
+  const out: MissionClaims = {};
+  for (const [week, ids] of Object.entries(v)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(week) || !Array.isArray(ids)) continue;
+    out[week] = ids.filter((id): id is MissionId => MISSION_IDS.includes(id as MissionId));
+  }
+  return Object.keys(out).length ? out : undefined;
 }
 
 function mistakeOf(v: unknown): MistakeEntry | undefined {
