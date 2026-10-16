@@ -129,29 +129,6 @@ export function PassMini({ meta, index }: { meta: CourseMeta; index: CourseIndex
   );
 }
 
-/** Profile: the way to the pass (counts need every course, they are on the pass itself). */
-export function PassLink() {
-  const t = useT();
-  return (
-    <Link to="/pass" className="pass-mini">
-      <span className="pass-mini-book" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-          <rect x="5" y="3" width="14" height="18" rx="2" />
-          <circle cx="12" cy="11" r="3" />
-          <path d="M9 17h6" />
-        </svg>
-      </span>
-      <span className="pass-mini-text">
-        <span className="pass-mini-title">{t('pass.title')}</span>
-        <span className="pass-mini-sub">{t('pass.linkSub')}</span>
-      </span>
-      <span className="pass-mini-go" aria-hidden="true">
-        ›
-      </span>
-    </Link>
-  );
-}
-
 /** Result screens: stamps earned in this session. */
 export function NewStampsList({ index, before, after }: { index: CourseIndex; before: ProgressRoot; after: ProgressRoot }) {
   const t = useT();

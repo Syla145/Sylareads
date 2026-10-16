@@ -1,0 +1,222 @@
+/* ---------- Profile: hero, this week, collections ---------- */
+
+.profile {
+  display: grid;
+  gap: var(--s-6);
+  max-width: 720px;
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding-top: var(--s-2);
+}
+
+.profile-who {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profile-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.profile-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.profile-level {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+  max-width: 340px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.8125rem;
+}
+
+.profile-level-line {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+@media (hover: hover) {
+  .profile-level:hover {
+    color: var(--text-primary);
+  }
+}
+
+.profile-gear {
+  flex: none;
+  align-self: flex-start;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+@media (hover: hover) {
+  .profile-gear:hover {
+    color: var(--text-primary);
+    background: var(--surface-2);
+  }
+}
+
+.profile-section-title {
+  margin: 0 0 var(--s-3);
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 800;
+}
+
+.profile-week {
+  display: grid;
+  gap: var(--s-3);
+  scroll-margin-top: 80px;
+}
+
+.profile-week:focus {
+  outline: none;
+}
+
+.profile-week .profile-section-title {
+  margin-bottom: 0;
+}
+
+/* The missions sit in the flow of the week: their own heading is smaller here. */
+.profile-week .missions-title {
+  font-size: 1.0625rem;
+}
+
+.collection-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+
+.collection-tile {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  min-height: 120px;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: transform var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+
+@media (hover: hover) {
+  .collection-tile:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.tile-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--s-2);
+  border-radius: 12px;
+}
+
+.tile-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.tile-title {
+  font-weight: 700;
+}
+
+.tile-value {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.collection-tile.is-pass {
+  background: #2a1638;
+  border-color: #3d2251;
+}
+
+.collection-tile.is-pass .tile-icon {
+  background: rgba(232, 196, 110, 0.14);
+  color: #e8c46e;
+}
+
+.collection-tile.is-pass .tile-value {
+  color: #cdb8dc;
+}
+
+.collection-tile.is-ach .tile-icon {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.collection-tile.is-level .tile-icon {
+  background: var(--surface-3);
+}
+
+@media (max-width: 480px) {
+  .collection-tiles {
+    gap: var(--s-2);
+  }
+  .collection-tile {
+    min-height: 112px;
+    padding: var(--s-3);
+  }
+  .tile-title {
+    font-size: 0.875rem;
+  }
+  .tile-value {
+    font-size: 0.75rem;
+  }
+}
+
+/* ---------- Settings ---------- */
+.settings-page {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 720px;
+}
+
+.settings-page > .section-head {
+  margin-bottom: var(--s-2);
+}
+
+.settings-label {
+  margin: var(--s-4) 0 0 var(--s-1);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.settings-label.is-danger {
+  color: var(--error);
+}
+
+.danger-card .danger-zone {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}

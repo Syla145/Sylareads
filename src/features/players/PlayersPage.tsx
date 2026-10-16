@@ -37,7 +37,7 @@ export default function PlayersPage() {
           <Card>
             <p>{t('who.signedOut')}</p>
             <div className="actions">
-              <Button variant="primary" onClick={() => navigate('/profile')}>
+              <Button variant="primary" onClick={() => navigate('/settings')}>
                 {t('who.toProfile')}
               </Button>
             </div>

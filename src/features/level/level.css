@@ -352,3 +352,9 @@
 .level-area:focus {
   outline: none;
 }
+
+.level-page {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 760px;
+}

@@ -169,3 +169,174 @@
     grid-column: 2;
   }
 }
+
+/* ---------- Achievements page ---------- */
+.ach-page {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 900px;
+}
+
+.ach-filter {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--gutter));
+  padding: 2px var(--gutter);
+  scrollbar-width: none;
+}
+
+.ach-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.ach-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.ach-chip.is-active {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.ach-chip-count {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.ach-section {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.ach-section-title {
+  margin: var(--s-3) 0 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ach-badge {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  justify-items: start;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+}
+
+.ach-badge.is-complete {
+  border-color: rgba(255, 210, 63, 0.4);
+}
+
+.ach-big-medal {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-tertiary);
+}
+
+.ach-big-medal.tier-1 {
+  background: rgba(192, 129, 74, 0.18);
+  color: #e2a46b;
+}
+
+.ach-big-medal.tier-2 {
+  background: rgba(185, 193, 202, 0.16);
+  color: #dfe5eb;
+}
+
+.ach-big-medal.tier-3 {
+  background: rgba(255, 210, 63, 0.18);
+  color: var(--accent);
+}
+
+.ach-badge-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.ach-badge:not(.is-on) .ach-badge-title {
+  color: var(--text-secondary);
+}
+
+.ach-tiers {
+  display: flex;
+  gap: 4px;
+}
+
+.ach-tier-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+}
+
+.ach-tier-dot.is-on.tier-1 {
+  background: #c0814a;
+  border-color: #c0814a;
+}
+
+.ach-tier-dot.is-on.tier-2 {
+  background: #c9d0d7;
+  border-color: #c9d0d7;
+}
+
+.ach-tier-dot.is-on.tier-3 {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.ach-tier-dot.is-on.tier-0 {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.ach-badge-line {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.ach-badge-date {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 420px) {
+  .ach-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-2);
+  }
+  .ach-badge {
+    padding: var(--s-3);
+  }
+}

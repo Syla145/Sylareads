@@ -236,7 +236,7 @@ export function RewardsList({ before, after }: { before: ProgressRoot; after: Pr
                 {r.emoji}
               </span>
               <span>
-                <Link to="/profile?s=level" className="rewards-link">
+                <Link to="/level" className="rewards-link">
                   {t('level.gained', { n: l, x: parts })}
                 </Link>
               </span>

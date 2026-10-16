@@ -27,7 +27,7 @@ export function AppNav() {
     course.hasMap
       ? { to: `${base}/map`, label: t('nav.map'), icon: <MapIcon />, active: at(`${base}/map`) }
       : { to: `${base}/script`, label: t('nav.script'), icon: <GlyphIcon />, active: at(`${base}/script`) },
-    { to: '/profile', label: t('nav.profile'), icon: <PersonIcon />, active: at('/profile') },
+    { to: '/profile', label: t('nav.profile'), icon: <PersonIcon />, active: at('/profile', '/level', '/achievements') },
   ];
 
   return (
@@ -39,7 +39,11 @@ export function AppNav() {
       <ul className="app-nav-items">
         {items.map((it) => (
           <li key={it.to}>
-            <Link to={it.to} className={`app-nav-item${it.active ? ' is-active' : ''}`} aria-current={it.active ? 'page' : undefined}>
+            <Link
+              to={it.to}
+              className={`app-nav-item${it.active ? ' is-active' : ''}${it.to === '/profile' && at('/settings') ? ' is-parent' : ''}`}
+              aria-current={it.active ? 'page' : undefined}
+            >
               {it.icon}
               <span>{it.label}</span>
             </Link>
@@ -84,6 +88,11 @@ export function AppNav() {
           </li>
         </ul>
       </div>
+      {/* Sidebar only: settings at the bottom (on phones they open from the profile). */}
+      <Link to="/settings" className={`app-nav-item app-nav-settings${at('/settings') ? ' is-active' : ''}`} aria-current={at('/settings') ? 'page' : undefined}>
+        <GearIcon />
+        <span>{t('nav.settings')}</span>
+      </Link>
     </nav>
   );
 }
@@ -133,6 +142,12 @@ const PathIcon = () => (
     <path d="M7 18.5c0-3.5 10-3 10-6.5S7 9 7 5.5" />
     <circle cx="7" cy="19" r="2.2" fill="currentColor" stroke="none" />
     <circle cx="7" cy="5" r="2.2" fill="currentColor" stroke="none" />
+  </Svg>
+);
+const GearIcon = () => (
+  <Svg>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7" />
   </Svg>
 );
 const PassIcon = () => (

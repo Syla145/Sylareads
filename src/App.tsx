@@ -30,6 +30,9 @@ const CreditsPage = named(legal, 'CreditsPage');
 const ProfilePage = named(() => import('./features/profile/ProfilePage'), 'ProfilePage');
 const PlayersPage = lazy(() => import('./features/players/PlayersPage'));
 const PassPage = lazy(() => import('./features/passport/PassPage'));
+const SettingsPage = lazy(() => import('./features/settings/SettingsPage'));
+const AchievementsPage = lazy(() => import('./features/achievements/AchievementsPage'));
+const LevelPage = lazy(() => import('./features/level/LevelPage'));
 const TempoPage = named(() => import('./features/tempo/TempoPage'), 'TempoPage');
 const TempoRoute = named(() => import('./features/tempo/TempoRun'), 'TempoRoute');
 const PlacementRoute = named(() => import('./features/placement/PlacementRoute'), 'PlacementRoute');
@@ -89,6 +92,9 @@ function Pages() {
         <Route path="/profile" element={lazyPage(<ProfilePage />)} />
         <Route path="/players" element={lazyPage(<PlayersPage />)} />
         <Route path="/pass" element={lazyPage(<PassPage />)} />
+        <Route path="/settings" element={lazyPage(<SettingsPage />)} />
+        <Route path="/achievements" element={lazyPage(<AchievementsPage />)} />
+        <Route path="/level" element={lazyPage(<LevelPage />)} />
         <Route path="/about" element={lazyPage(<AboutPage />)} />
         <Route path="/privacy" element={lazyPage(<PrivacyPage />)} />
         <Route path="/impressum" element={lazyPage(<ImpressumPage />)} />

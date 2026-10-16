@@ -1,203 +1,118 @@
-import { LevelCard, LookCard } from '../level/LevelParts';
-import { PassLink } from '../passport/PassParts';
-import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { MissionsCard, ShieldCard, StreakCard } from '../streak/StreakParts';
-import { AchievementsOverview } from '../achievements/AchievementParts';
-import { formatDate, useLang, useT, type TKey } from '../../i18n';
-import { exportJson, parseImport, readBackup, wipeDevice, type ImportPreview } from '../../store/persistence';
-import { downloadText } from '../../ui/download';
+import { useEffect, useRef, type ReactNode } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ACHIEVEMENTS } from '../../domain/achievements';
+import { levelProgress } from '../../domain/gamification';
+import { effectiveLook, emojiOf, MAX_LEVEL, titleOf } from '../../domain/rewards';
+import { useLang, useT } from '../../i18n';
 import { useProgress } from '../../store/progressStore';
-import { Button, Card, Modal } from '../../ui/primitives';
-import { LangToggle, TopBar } from '../../ui/TopBar';
-import { SyncCard } from '../../sync/SyncCard';
-import { ShareCard } from '../players/PlayerParts';
 import { useSync } from '../../sync/syncStore';
-import { AppCard } from '../../pwa/PwaParts';
+import { ProgressBar } from '../../ui/primitives';
+import { TopBar } from '../../ui/TopBar';
 import { SiteFooter } from '../legal/SiteFooter';
+import { Avatar } from '../players/PlayerParts';
+import { MissionsCard, ShieldCard, StreakCard } from '../streak/StreakParts';
+import './profile.css';
 
+/** Profile: who you are (level, title), this week (streak, missions) and your collections. */
 export function ProfilePage() {
   const t = useT();
   const lang = useLang();
-  const root = useProgress((s) => s.root);
-  const replaceAll = useProgress((s) => s.replaceAll);
-  const markExported = useProgress((s) => s.markExported);
-  const reset = useProgress((s) => s.reset);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<ImportPreview | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [resetStep, setResetStep] = useState(0);
-  // Reset and import replace the online copy too (a merge would bring the old progress back).
-  const overwriteCloud = useSync((s) => s.overwriteCloud);
-  const signedIn = useSync((s) => !!s.user);
-  const signOut = useSync((s) => s.signOut);
-  const restoreBackup = useProgress((s) => s.restoreBackup);
-  const [backup, setBackup] = useState(() => readBackup());
-  const [wipeStep, setWipeStep] = useState(0);
+  const profile = useProgress((s) => s.root.profile);
+  const uid = useSync((s) => s.user?.uid ?? 'me');
+  const lp = levelProgress(profile.xp);
+  const look = effectiveLook(profile.look, lp.level);
+  const name = profile.share?.name || t('profile.title');
+  const got = ACHIEVEMENTS.filter((a) => profile.achievements[a.id]).length;
 
-  const streakRef = useRef<HTMLDivElement>(null);
-  const levelRef = useRef<HTMLDivElement>(null);
+  const weekRef = useRef<HTMLElement>(null);
   const [params] = useSearchParams();
-  // From the flame in the top bar (serie) or a level-up (level): straight to that part.
+  // From the flame in the top bar: straight to the streak.
   useEffect(() => {
-    const s = params.get('s');
-    const el = s === 'serie' ? streakRef.current : s === 'level' ? levelRef.current : null;
+    if (params.get('s') !== 'serie') return;
+    const el = weekRef.current;
     if (!el) return;
     el.scrollIntoView({ block: 'start' });
     el.focus({ preventScroll: true });
   }, [params]);
 
-  const doExport = () => {
-    downloadText('sylareads-progress.json', exportJson(root));
-    markExported();
-  };
-
-  const wipe = () => {
-    if (signedIn) void signOut(true);
-    else {
-      wipeDevice();
-      window.location.reload();
-    }
-  };
-
-  const onFile = async (file: File | undefined) => {
-    setMessage(null);
-    if (!file) return;
-    try {
-      setPreview(parseImport(await file.text()));
-    } catch (e) {
-      setMessage(t(`profile.importError.${(e as Error).message}` as TKey));
-    }
-    if (fileRef.current) fileRef.current.value = '';
-  };
-
   return (
     <div className="app-shell">
       <TopBar />
       <main className="page profile">
-        <header className="section-head">
-          <h1 className="page-title">{t('profile.title')}</h1>
+        <header className="profile-hero">
+          <Avatar uid={uid} name={name} size="l" emoji={look.emoji} frame={look.frame} />
+          <div className="profile-who">
+            <h1 className="profile-name">{name}</h1>
+            <p className="profile-title">{titleOf(look.title)?.name[lang]}</p>
+            <Link to="/level" className="profile-level">
+              <span className="profile-level-line">
+                <span>{t('level.of', { n: lp.level, total: MAX_LEVEL })}</span>
+                <span className="tabular">{lp.span ? t('profile.xpShort', { n: lp.span - lp.into }) : t('level.max')}</span>
+              </span>
+              <ProgressBar value={lp.span ? lp.into / lp.span : 1} size="sm" label={t('level.of', { n: lp.level, total: MAX_LEVEL })} />
+            </Link>
+          </div>
+          <Link to="/settings" className="profile-gear" aria-label={t('settings.title')} title={t('settings.title')}>
+            <GearIcon />
+          </Link>
         </header>
 
-        <div className="streak-area" id="serie" ref={streakRef} tabIndex={-1}>
+        <section className="profile-week" ref={weekRef} tabIndex={-1} aria-labelledby="week-title">
+          <h2 id="week-title" className="profile-section-title">
+            {t('profile.week')}
+          </h2>
           <StreakCard />
           <ShieldCard />
           <MissionsCard />
-        </div>
-        <div className="profile-pass">
-          <PassLink />
-        </div>
+        </section>
 
-        <div className="level-area" id="level" ref={levelRef} tabIndex={-1}>
-          <LevelCard />
-          <LookCard />
-        </div>
-
-        <AchievementsOverview />
-
-        <Card>
-          <h2 className="card-label">{t('profile.language')}</h2>
-          <LangToggle />
-          <p className="muted small">{t('profile.languageNote')}</p>
-        </Card>
-
-        <SyncCard />
-        <ShareCard withLink />
-        <AppCard />
-
-        <Card>
-          <h2 className="card-label">{t('profile.data')}</h2>
-          <p className="muted">{signedIn ? t('profile.dataNoteOnline') : t('profile.dataNote')}</p>
-          <p className="small">{root.lastExportAt ? t('profile.lastExport', { d: formatDate(root.lastExportAt, lang) }) : t('profile.neverExported')}</p>
-          <div className="actions">
-            <Button variant="primary" onClick={doExport}>
-              {t('profile.export')}
-            </Button>
-            <Button onClick={() => fileRef.current?.click()}>{t('profile.import')}</Button>
-            <input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={(e) => onFile(e.target.files?.[0])} />
+        <section aria-labelledby="collections-title">
+          <h2 id="collections-title" className="profile-section-title">
+            {t('profile.collections')}
+          </h2>
+          <div className="collection-tiles">
+            <Tile to="/pass" tone="pass" icon={<PassIcon />} title={t('pass.title')} value={t('profile.passValue')} />
+            <Tile to="/achievements" tone="ach" icon={<MedalIcon />} title={t('profile.achievements')} value={t('pass.of', { n: got, total: ACHIEVEMENTS.length })} />
+            <Tile to="/level" tone="level" icon={<span className="tile-emoji">{emojiOf(look.emoji)}</span>} title={t('profile.levelTile')} value={t('pass.of', { n: lp.level, total: MAX_LEVEL })} />
           </div>
-          {message && (
-            <p className="notice" role="status">
-              {message}
-            </p>
-          )}
-          {backup && (
-            <div className="backup-line">
-              <p className="small muted">
-                {t('profile.backup', {
-                  d: formatDate(backup.at, lang),
-                  x: backup.root.profile.xp,
-                  l: Object.values(backup.root.courses).reduce((n, c) => n + Object.keys(c.lessons).length, 0),
-                })}
-              </p>
-              <Button
-                onClick={() => {
-                  if (restoreBackup()) {
-                    if (signedIn) void overwriteCloud();
-                    setBackup(readBackup());
-                    setMessage(t('profile.backupDone'));
-                  }
-                }}
-              >
-                {t('profile.backupRestore')}
-              </Button>
-            </div>
-          )}
-          <div className="danger-zone">
-            {resetStep === 0 ? (
-              <button type="button" className="link-danger" onClick={() => setResetStep(1)}>
-                {t('profile.reset')}
-              </button>
-            ) : (
-              <div className="notice notice-error">
-                <p>{t('profile.resetConfirm')}</p>
-                <div className="actions">
-                  <Button variant="danger" onClick={() => { reset(); if (signedIn) void overwriteCloud(); setResetStep(0); setBackup(readBackup()); setMessage(t('profile.resetDone')); }}>
-                    {t('profile.resetFinal')}
-                  </Button>
-                  <Button variant="ghost" onClick={() => setResetStep(0)}>
-                    {t('common.cancel')}
-                  </Button>
-                </div>
-              </div>
-            )}
-            {wipeStep === 0 ? (
-              <button type="button" className="link-danger" onClick={() => setWipeStep(1)}>
-                {t('profile.wipe')}
-              </button>
-            ) : (
-              <div className="notice notice-error">
-                <p>{t('profile.wipeConfirm')}</p>
-                <div className="actions">
-                  <Button variant="danger" onClick={wipe}>
-                    {t('profile.wipeFinal')}
-                  </Button>
-                  <Button variant="ghost" onClick={() => setWipeStep(0)}>
-                    {t('common.cancel')}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </Card>
-
-        <Modal open={!!preview} onClose={() => setPreview(null)} title={t('profile.import')}>
-          {preview && (
-            <>
-              <p>{t('profile.importPreview', { c: preview.courses, l: preview.lessons, x: preview.xp })}</p>
-              <div className="actions">
-                <Button variant="primary" onClick={() => { replaceAll(preview.root); if (signedIn) void overwriteCloud(); setPreview(null); setBackup(readBackup()); setMessage(t('profile.importDone')); }}>
-                  {t('profile.importConfirm')}
-                </Button>
-                <Button variant="ghost" onClick={() => setPreview(null)}>
-                  {t('common.cancel')}
-                </Button>
-              </div>
-            </>
-          )}
-        </Modal>
+        </section>
       </main>
       <SiteFooter />
     </div>
   );
 }
+
+function Tile({ to, tone, icon, title, value }: { to: string; tone: string; icon: ReactNode; title: string; value: string }) {
+  return (
+    <Link to={to} className={`collection-tile is-${tone}`}>
+      <span className="tile-icon" aria-hidden="true">
+        {icon}
+      </span>
+      <span className="tile-title">{title}</span>
+      <span className="tile-value tabular">{value}</span>
+    </Link>
+  );
+}
+
+const GearIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+  </svg>
+);
+
+const PassIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <rect x="5" y="3" width="14" height="18" rx="2" />
+    <circle cx="12" cy="11" r="3" />
+    <path d="M9 17h6" />
+  </svg>
+);
+
+const MedalIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+    <path d="M8 3h8l-2 6h-4z" />
+    <circle cx="12" cy="15" r="5" />
+    <path d="M12 12.5l.8 1.6 1.7.2-1.2 1.2.3 1.7-1.6-.8-1.6.8.3-1.7-1.2-1.2 1.7-.2z" fill="currentColor" stroke="none" />
+  </svg>
+);

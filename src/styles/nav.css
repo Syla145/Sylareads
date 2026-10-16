@@ -16,8 +16,14 @@
 
 .app-nav-brand,
 .app-nav-courses,
-.app-nav-wide {
+.app-nav-wide,
+.app-nav .app-nav-settings {
   display: none;
+}
+
+/* Phones: settings belong to the profile tab. */
+.app-nav-item.is-parent {
+  color: var(--accent);
 }
 
 .app-nav-items {
@@ -135,6 +141,15 @@
   .app-nav-courses,
   .app-nav-wide {
     display: block;
+  }
+
+  .app-nav-item.is-parent:not(.is-active) {
+    color: var(--text-tertiary);
+  }
+
+  .app-nav .app-nav-settings {
+    display: flex;
+    margin-top: auto;
   }
 
   .app-nav-heading {

@@ -1,0 +1,177 @@
+import { useRef, useState } from 'react';
+import { formatDate, useLang, useT, type TKey } from '../../i18n';
+import { exportJson, parseImport, readBackup, wipeDevice, type ImportPreview } from '../../store/persistence';
+import { downloadText } from '../../ui/download';
+import { useProgress } from '../../store/progressStore';
+import { Button, Card, Modal } from '../../ui/primitives';
+import { LangToggle, TopBar } from '../../ui/TopBar';
+import { SyncCard } from '../../sync/SyncCard';
+import { useSync } from '../../sync/syncStore';
+import { AppCard } from '../../pwa/PwaParts';
+import { SiteFooter } from '../legal/SiteFooter';
+import '../profile/profile.css';
+
+/** Einstellungen: language, account and online saving, app, data and the danger zone. */
+export default function SettingsPage() {
+  const t = useT();
+  const lang = useLang();
+  const root = useProgress((s) => s.root);
+  const replaceAll = useProgress((s) => s.replaceAll);
+  const markExported = useProgress((s) => s.markExported);
+  const reset = useProgress((s) => s.reset);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<ImportPreview | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [resetStep, setResetStep] = useState(0);
+  // Reset and import replace the online copy too (a merge would bring the old progress back).
+  const overwriteCloud = useSync((s) => s.overwriteCloud);
+  const signedIn = useSync((s) => !!s.user);
+  const signOut = useSync((s) => s.signOut);
+  const restoreBackup = useProgress((s) => s.restoreBackup);
+  const [backup, setBackup] = useState(() => readBackup());
+  const [wipeStep, setWipeStep] = useState(0);
+
+  const doExport = () => {
+    downloadText('sylareads-progress.json', exportJson(root));
+    markExported();
+  };
+
+  const wipe = () => {
+    if (signedIn) void signOut(true);
+    else {
+      wipeDevice();
+      window.location.reload();
+    }
+  };
+
+  const onFile = async (file: File | undefined) => {
+    setMessage(null);
+    if (!file) return;
+    try {
+      setPreview(parseImport(await file.text()));
+    } catch (e) {
+      setMessage(t(`profile.importError.${(e as Error).message}` as TKey));
+    }
+    if (fileRef.current) fileRef.current.value = '';
+  };
+
+  return (
+    <div className="app-shell">
+      <TopBar />
+      <main className="page settings-page">
+        <header className="section-head">
+          <h1 className="page-title">{t('settings.title')}</h1>
+        </header>
+
+        <h2 className="settings-label">{t('settings.general')}</h2>
+        <Card>
+          <h3 className="card-label">{t('profile.language')}</h3>
+          <LangToggle />
+          <p className="muted small">{t('profile.languageNote')}</p>
+        </Card>
+        <AppCard />
+
+        <h2 className="settings-label">{t('settings.account')}</h2>
+        <SyncCard />
+
+        <h2 className="settings-label">{t('settings.data')}</h2>
+        <Card>
+          <h3 className="card-label">{t('profile.data')}</h3>
+          <p className="muted">{signedIn ? t('profile.dataNoteOnline') : t('profile.dataNote')}</p>
+          <p className="small">{root.lastExportAt ? t('profile.lastExport', { d: formatDate(root.lastExportAt, lang) }) : t('profile.neverExported')}</p>
+          <div className="actions">
+            <Button variant="primary" onClick={doExport}>
+              {t('profile.export')}
+            </Button>
+            <Button onClick={() => fileRef.current?.click()}>{t('profile.import')}</Button>
+            <input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={(e) => onFile(e.target.files?.[0])} />
+          </div>
+          {message && (
+            <p className="notice" role="status">
+              {message}
+            </p>
+          )}
+          {backup && (
+            <div className="backup-line">
+              <p className="small muted">
+                {t('profile.backup', {
+                  d: formatDate(backup.at, lang),
+                  x: backup.root.profile.xp,
+                  l: Object.values(backup.root.courses).reduce((n, c) => n + Object.keys(c.lessons).length, 0),
+                })}
+              </p>
+              <Button
+                onClick={() => {
+                  if (restoreBackup()) {
+                    if (signedIn) void overwriteCloud();
+                    setBackup(readBackup());
+                    setMessage(t('profile.backupDone'));
+                  }
+                }}
+              >
+                {t('profile.backupRestore')}
+              </Button>
+            </div>
+          )}
+        </Card>
+
+        <h2 className="settings-label is-danger">{t('settings.danger')}</h2>
+        <Card className="danger-card">
+          <div className="danger-zone">
+            {resetStep === 0 ? (
+              <button type="button" className="link-danger" onClick={() => setResetStep(1)}>
+                {t('profile.reset')}
+              </button>
+            ) : (
+              <div className="notice notice-error">
+                <p>{t('profile.resetConfirm')}</p>
+                <div className="actions">
+                  <Button variant="danger" onClick={() => { reset(); if (signedIn) void overwriteCloud(); setResetStep(0); setBackup(readBackup()); setMessage(t('profile.resetDone')); }}>
+                    {t('profile.resetFinal')}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setResetStep(0)}>
+                    {t('common.cancel')}
+                  </Button>
+                </div>
+              </div>
+            )}
+            {wipeStep === 0 ? (
+              <button type="button" className="link-danger" onClick={() => setWipeStep(1)}>
+                {t('profile.wipe')}
+              </button>
+            ) : (
+              <div className="notice notice-error">
+                <p>{t('profile.wipeConfirm')}</p>
+                <div className="actions">
+                  <Button variant="danger" onClick={wipe}>
+                    {t('profile.wipeFinal')}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setWipeStep(0)}>
+                    {t('common.cancel')}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+
+        <Modal open={!!preview} onClose={() => setPreview(null)} title={t('profile.import')}>
+          {preview && (
+            <>
+              <p>{t('profile.importPreview', { c: preview.courses, l: preview.lessons, x: preview.xp })}</p>
+              <div className="actions">
+                <Button variant="primary" onClick={() => { replaceAll(preview.root); if (signedIn) void overwriteCloud(); setPreview(null); setBackup(readBackup()); setMessage(t('profile.importDone')); }}>
+                  {t('profile.importConfirm')}
+                </Button>
+                <Button variant="ghost" onClick={() => setPreview(null)}>
+                  {t('common.cancel')}
+                </Button>
+              </div>
+            </>
+          )}
+        </Modal>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
