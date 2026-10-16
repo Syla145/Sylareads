@@ -92,7 +92,9 @@
     border-right: 1px solid var(--border);
     background: var(--bg);
     backdrop-filter: none;
-    overflow-y: auto;
+    /* The sidebar itself never scrolls: brand, areas and settings always stay
+       in view; only the course list scrolls on very low screens. */
+    overflow: hidden;
   }
 
   .app-nav-brand {
@@ -141,6 +143,14 @@
   .app-nav-courses,
   .app-nav-wide {
     display: block;
+  }
+
+  .app-nav-courses {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
 
   .app-nav-item.is-parent:not(.is-active) {
@@ -195,6 +205,42 @@
     color: var(--accent);
     font-size: 0.9375rem;
     font-weight: 600;
+  }
+
+  .app-nav .app-nav-settings,
+  .app-nav-brand,
+  .app-nav-items {
+    flex: none;
+  }
+
+  /* Laptops with little height: a tighter sidebar, so everything fits without scrolling. */
+  @media (max-height: 820px) {
+    .app-nav {
+      padding: 14px 12px;
+      gap: var(--s-3);
+    }
+    .app-nav-brand {
+      font-size: 1.125rem;
+    }
+    .app-nav-item {
+      min-height: 38px;
+    }
+    .app-nav-course {
+      min-height: 34px;
+    }
+    .app-nav-glyph {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  @media (max-height: 640px) {
+    .app-nav-item {
+      min-height: 34px;
+    }
+    .app-nav-course {
+      min-height: 30px;
+    }
   }
 
   /* The brand lives in the sidebar now; the top bar keeps course, streak and level. */

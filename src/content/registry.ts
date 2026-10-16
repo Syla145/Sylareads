@@ -34,7 +34,9 @@ export const COURSES: CourseMeta[] = [
     sampleGlyphs: 'Α Β Γ Δ Ε',
     fontClass: 'font-native-latin',
     status: 'available',
+    hasMap: true,
     load: () => import('./el').then((m) => m.default),
+    loadMap: () => import('./el/map.json').then((m) => m.default as unknown as CourseMap),
   },
   {
     id: 'bn',

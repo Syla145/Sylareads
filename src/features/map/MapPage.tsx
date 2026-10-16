@@ -108,10 +108,21 @@ export function MapPage() {
           </ul>
           <p className="muted small map-source">
             {t('map.source')}{' '}
-            <a href="https://www.geoboundaries.org" target="_blank" rel="noreferrer">
-              geoBoundaries
-            </a>{' '}
-            (CC BY 4.0)
+            {map.source.startsWith('Natural Earth') ? (
+              <>
+                <a href="https://www.naturalearthdata.com" target="_blank" rel="noreferrer">
+                  Natural Earth
+                </a>{' '}
+                ({t('map.publicDomain')})
+              </>
+            ) : (
+              <>
+                <a href="https://www.geoboundaries.org" target="_blank" rel="noreferrer">
+                  geoBoundaries
+                </a>{' '}
+                (CC BY 4.0)
+              </>
+            )}
           </p>
         </aside>
       </div>

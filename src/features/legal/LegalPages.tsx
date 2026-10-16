@@ -209,7 +209,7 @@ export function CreditsPage() {
       licence: <Ext href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</Ext>,
     },
     {
-      what: de ? 'Lage der Regionen' : 'Region label points',
+      what: de ? 'Lage der Regionen, Grenzen der Regionen Griechenlands' : 'Region label points, boundaries of the regions of Greece',
       who: <Ext href="https://www.naturalearthdata.com">Natural Earth</Ext>,
       licence: de ? 'gemeinfrei' : 'public domain',
     },

@@ -17,7 +17,7 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - 100 Level (XP für Level n: 25 · n · (n − 1), Level 100 bei 247 500 XP). Jedes Level schaltet ein Emoji frei, Level 1 und jedes 5. einen Titel, jedes 10. einen Rahmen. Seite „Level & Belohnungen“ (`#/level`, aus dem Profil): Übersicht aller 100 Level, Auswahl von Emoji, Titel und Rahmen für die „Wer ist da“-Karte (ohne Auswahl immer das neueste). Inhalte in `src/domain/rewards.ts`, Rahmen-Aussehen in `src/features/level/frames.css`.
 - Reisepass (`#/pass`): Stempel für alles, was du sicher liest (Stufe 3 oder höher). Pro Land eine Seite mit einem Stempel je Division, Föderationskreis, Landesteil bzw. Region (Griechenland: Regionen mit ihren Städten) und einem Punkt je Distrikt/Provinz/Region/Stadt; dazu die Seite „Schriften“ mit Alphabet-Stempeln der Kurse und einem Stempel je Schrift aus „Schriften erkennen“. Neue Stempel werden beim nächsten Öffnen einmal „aufgedrückt“. Logik in `src/domain/passport.ts` (getestet); erreichbar über die Seitenleiste, die Kursseite, das Profil (Sammlungen) und die Ergebnisseite einer Lektion.
 - DE/EN-Oberfläche, dunkles Design (Signalgelb, Karten im grünen Schilder-Look, Schriften Geist und Bricolage Grotesque), Desktop und Mobile, komplett per Tastatur bedienbar
-- Navigation: auf dem Handy eine Tab-Leiste unten (Start, Lernen, Üben, Karte bzw. Zeichen, Profil), ab 1024 px eine Seitenleiste links mit denselben Bereichen und allen Kursen. Lernpfad/Zeichen und Üben/Tempo wechselt man über die Umschalter oben auf der Seite. In Lektionen und Übungen ist die Navigation ausgeblendet.
+- Navigation: auf dem Handy eine Tab-Leiste unten (Start, Lernen, Üben, Karte, Profil; bei Kursen ohne Karte Zeichen), ab 1024 px eine Seitenleiste links mit denselben Bereichen, dem Reisepass, allen Kursen und unten den Einstellungen. Die Seitenleiste scrollt nie: Auf niedrigen Bildschirmen rückt sie enger zusammen, im Notfall scrollt nur die Kursliste. Lernpfad/Zeichen und Üben/Tempo wechselt man über die Umschalter oben auf der Seite. In Lektionen und Übungen ist die Navigation ausgeblendet.
 - Profil (`#/profile`): oben Emoji im Rahmen, Name, Titel und Level-Leiste, daneben das Zahnrad zu den Einstellungen; darunter „Diese Woche“ (Serie, Schilde, Wochenmissionen) und „Sammlungen“ (Reisepass, Erfolge, Level & Belohnungen). Einstellungen (`#/settings`, am PC auch unten in der Seitenleiste): Sprache, App, Konto, Daten und getrennt „Zurücksetzen und löschen“.
 - Lernpfad als Weg: eine Station pro Lektion auf einer gewundenen Straße (fertig = gelb mit Haken, empfohlen = groß und hell, nichts gesperrt). Fertige Abschnitte klappen zu einem grünen Meilenstein-Schild zusammen. Geometrie in `src/features/learn/wayLayout.ts` (getestet).
 - Rückmeldung nach jeder Antwort als Fenster, das von unten hochfährt (grün = richtig, rot = falsch, neutral = zweiter Versuch). Es sitzt über der Handy-Tastatur (`useSheetSpace`) und lässt Platz, damit die Aufgabe darüber lesbar bleibt.
@@ -44,13 +44,14 @@ Stand: **Meilenstein M3 + Orte-Ausbau** – vollständige Engine und vier Kurse:
 - 100 Städte (alle 64 Distrikthauptstädte plus 36 große Orte wie Savar, Sreemangal, Teknaf, Benapole), alle 8 Divisionen und alle 64 Distrikte, 32 Schilderbegriffe (viele englische Lehnwörter wie রোড, স্টেশন, কলেজ)
 - Englische Namen nach der offiziellen Schreibweise von 2018 (Chattogram, Cumilla, Barishal, Jashore, Bogura); die älteren Formen (Chittagong, Comilla, Barisal, Jessore, Bogra) gelten ebenfalls. Ligaturen sind eigene Leseeinheiten, weil man sie als Ganzes erkennt.
 
-### Karten (Bengali, Russian Cyrillic, Thai)
+### Karten (Bengali, Griechisch, Russian Cyrillic, Thai)
 
-Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungsebene:
+Alle vier Sprachkurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungsebene:
 
 | Kurs | Gebiete | Gruppiert nach | Lektionen |
 |------|---------|----------------|-----------|
 | Bengali | 64 Distrikte | 8 Divisionen | 10 |
+| Griechisch | 13 Regionen (Mount Athos gehört hier zu Zentralmakedonien) | 7 dezentrale Verwaltungen | 3 (dazu 2 Insellektionen ohne Karte) |
 | Russian Cyrillic | 83 Föderationssubjekte (ohne Krim und Sewastopol) | 8 Föderationskreise | 13 |
 | Thai | 77 Provinzen | 6 Landesteile | 11 |
 
@@ -58,7 +59,7 @@ Drei Kurse haben eine klickbare Karte mit allen Gebieten der ersten Verwaltungse
 - Aufgaben: **Wo liegt …?** (Namen in Originalschrift lesen, Gebiet anklicken), **Welche/r … ist markiert?** (markierte Fläche, Auswahl aus vier Nachbarn in Originalschrift) und das Tippen des Namens.
 - Tab **Karte** zum Erkunden mit Zoom (Mausrad, Ziehen, zwei Finger, +/−) und Beschriftung in Originalschrift, Latein oder aus. In Kartenaufgaben ist die Beschriftung standardmäßig aus; das gesuchte Gebiet ist nie beschriftet.
 - Zielkarte auf der Übersicht („Ziel: alle 64 Distrikte“ usw.) und „… üben“ startet eine Übung nur mit Kartengebieten (`?layer=map`).
-- Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand und Bangladesch eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets.
+- Grenzen: [geoBoundaries](https://www.geoboundaries.org) gbOpen ADM1/ADM2 (CC BY 4.0), vereinfacht und vorprojiziert in `src/content/<kurs>/map.json` (je ≈ 100 KB, wird nur mit dem jeweiligen Kurs geladen). Griechenland: [Natural Earth](https://www.naturalearthdata.com) admin-1 (gemeinfrei), ≈ 45 KB. Russland nutzt eine flächentreue Kegelprojektion (Albers), Thailand, Bangladesch und Griechenland eine einfache Zylinderprojektion. Jede der 100 Städte jedes Kurses liegt geprüft innerhalb ihres Gebiets (Griechenland: einige Küstenorte liegen wegen der gröberen Küstenlinie knapp außerhalb).
 
 ### Kurs „Schriften erkennen“ (`#/scripts`)
 

@@ -2,12 +2,13 @@ import type { CourseIndex } from '../../domain/courseIndex';
 import type { ItemProgress } from '../../domain/srs';
 import type { Item, L10n } from '../../domain/types';
 
-/** What the clickable areas of a map are called: districts (BD), provinces (TH) or regions (RU). */
-export type MapLayer = 'district' | 'province' | 'region';
+/** What the clickable areas of a map are called: districts (BD), provinces (TH), regions (RU) or the regions of Greece (periphereies). */
+export type MapLayer = 'district' | 'province' | 'region' | 'periphery';
 
 export function layerOfItem(item: Item | undefined): MapLayer {
   if (item?.kind === 'region' && item.regionType === 'district') return 'district';
   if (item?.kind === 'region' && item.regionType === 'province') return 'province';
+  if (item?.kind === 'region' && item.regionType === 'periphery') return 'periphery';
   return 'region';
 }
 

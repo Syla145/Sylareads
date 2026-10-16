@@ -725,4 +725,8 @@ export const de: Record<MessageKey, string> = {
   'ach.secretHint': 'Ein Geheimnis. Vielleicht verrät es jemand.',
   'ach.allTiers': 'Alle Stufen geschafft',
   'ach.tiersOf': '{n} von {total} Stufen',
+  'map.what.periphery': 'Regionen',
+  'map.practice.periphery': 'Regionen üben',
+  'map.group.periphery': 'Verwaltungsbezirk',
+  'map.publicDomain': 'gemeinfrei',
 };

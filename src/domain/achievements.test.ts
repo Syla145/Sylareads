@@ -15,7 +15,7 @@ describe('achievements', () => {
       for (const f of ['alphabet', 'cities', 'path', 'blitz', 'flawless']) for (const t of [1, 2, 3]) expect(achievementById(`${c}:${f}:${t}`), `${c}:${f}:${t}`).toBeTruthy();
       expect(achievementById(`${c}:special`)).toBeTruthy();
     }
-    expect(achievementById('el:map:1')).toBeUndefined();
+    expect(achievementById('el:map:1')).toBeTruthy(); // Griechenland hat seit der Regionskarte auch Karten-Erfolge
     expect(achievementById('bn:map:3')).toBeTruthy();
   });
 

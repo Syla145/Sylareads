@@ -115,16 +115,46 @@ const cityLessons: Omit<Lesson, 'number'>[] = chunk(byTier(CITIES), 9).map((grou
   newIds: group.map((p) => p.id),
 }));
 
-const regionLessons: Omit<Lesson, 'number'>[] = chunk(byTier(REGIONS), 9).map((group, i) => ({
-  id: `el-region-${i + 1}`,
-  phaseId: 'regions',
-  type: 'places',
-  title: { de: `Regionen & Inseln ${i + 1}`, en: `Regions & Islands ${i + 1}` },
-  goal: {
-    de: 'Die 13 Regionen Griechenlands und die großen Inseln.',
-    en: 'Greece’s 13 regions and the large islands.',
+const rid = (slug: string) => `el:region:${slug}`;
+const ISLANDS = REGIONS.filter((r) => r.regionType === 'island');
+
+/**
+ * The 13 regions on the map (north first, then the south and the seas), then
+ * the large islands. Region lessons are map lessons: read the name, click the region.
+ */
+const regionLessons: Omit<Lesson, 'number'>[] = [
+  {
+    id: 'el-region-1',
+    phaseId: 'regions',
+    type: 'places',
+    title: { de: 'Regionen im Norden', en: 'Regions in the North' },
+    goal: { de: 'Makedonien, Thrakien, Epirus, Thessalien: auf der Karte finden.', en: 'Macedonia, Thrace, Epirus, Thessaly: find them on the map.' },
+    newIds: ['kentriki-makedonia', 'anatoliki-makedonia-thraki', 'dytiki-makedonia', 'ipeiros', 'thessalia'].map(rid),
   },
-  newIds: group.map((p) => p.id),
-}));
+  {
+    id: 'el-region-2',
+    phaseId: 'regions',
+    type: 'places',
+    title: { de: 'Regionen in der Mitte und im Süden', en: 'Regions in the Centre and South' },
+    goal: { de: 'Attika, Mittel- und Westgriechenland, Peloponnes.', en: 'Attica, Central and Western Greece, the Peloponnese.' },
+    newIds: ['attiki', 'sterea-ellada', 'dytiki-ellada', 'peloponnisos'].map(rid),
+  },
+  {
+    id: 'el-region-3',
+    phaseId: 'regions',
+    type: 'places',
+    title: { de: 'Regionen auf den Inseln', en: 'Island Regions' },
+    goal: { de: 'Ionische Inseln, Nördliche und Südliche Ägäis, Kreta.', en: 'Ionian Islands, North and South Aegean, Crete.' },
+    newIds: ['ionia-nisia', 'voreio-aigaio', 'notio-aigaio', 'kriti'].map(rid),
+  },
+  ...chunk(byTier(ISLANDS), 7).map((group, i) => ({
+    id: `el-island-${i + 1}`,
+    phaseId: 'regions',
+    type: 'places' as const,
+    title: { de: `Große Inseln ${i + 1}`, en: `Large Islands ${i + 1}` },
+    goal: { de: 'Inselnamen auf Fährschildern und Wegweisern.', en: 'Island names on ferry and direction signs.' },
+    newIds: group.map((p) => p.id),
+  })),
+];
 
 export const LESSONS: Lesson[] = [...core, ...cityLessons, ...regionLessons].map((l, i) => ({ ...l, number: i + 1 }));

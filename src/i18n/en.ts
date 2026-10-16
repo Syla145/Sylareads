@@ -723,6 +723,10 @@ export const en = {
   'ach.secretHint': 'A secret. Maybe someone tells you.',
   'ach.allTiers': 'All tiers done',
   'ach.tiersOf': '{n} of {total} tiers',
+  'map.what.periphery': 'regions',
+  'map.practice.periphery': 'Practise regions',
+  'map.group.periphery': 'Administration',
+  'map.publicDomain': 'public domain',
 } as const;
 
 export type MessageKey = keyof typeof en;

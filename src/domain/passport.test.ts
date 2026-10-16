@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import bn from '../content/bn';
 import bnMap from '../content/bn/map.json';
 import el from '../content/el';
+import elMap from '../content/el/map.json';
 import ru from '../content/ru';
 import ruMap from '../content/ru/map.json';
 import th from '../content/th';
@@ -14,7 +15,7 @@ import type { CourseMap } from './types';
 const bnIndex = attachMap(buildIndex(bn), bnMap as unknown as CourseMap);
 const ruIndex = attachMap(buildIndex(ru), ruMap as unknown as CourseMap);
 const thIndex = attachMap(buildIndex(th), thMap as unknown as CourseMap);
-const elIndex = buildIndex(el);
+const elIndex = attachMap(buildIndex(el), elMap as unknown as CourseMap);
 
 const box = (n: number) => ({ box: n }) as ItemProgress;
 const items = (ids: string[], b = SURE_BOX) => Object.fromEntries(ids.map((id) => [id, box(b)]));

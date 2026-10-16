@@ -41,9 +41,20 @@ export interface CountryPage {
   areas: { id: string; sure: boolean; group: number }[];
 }
 
+/**
+ * Greece: the map areas are the 13 regions themselves, so the pass keeps one
+ * stamp per region with its towns as dots (more to collect than 7 groups).
+ */
+function townMode(index: CourseIndex): boolean {
+  const first = index.mapShapes.keys().next().value;
+  if (!first) return true;
+  const item = index.byId.get(first);
+  return item?.kind === 'region' && item.regionType === 'periphery';
+}
+
 function groupKindOf(index: CourseIndex): GroupKind {
   const first = index.mapShapes.values().next().value;
-  if (!first) return 'periphery';
+  if (!first || townMode(index)) return 'periphery';
   if (first.group?.startsWith('ru:')) return 'federal';
   if (first.group?.startsWith('th:')) return 'thaiRegion';
   return 'division';
@@ -51,7 +62,7 @@ function groupKindOf(index: CourseIndex): GroupKind {
 
 function areaKindOf(index: CourseIndex): AreaKind {
   const first = index.mapShapes.keys().next().value;
-  if (!first) return 'city';
+  if (!first || townMode(index)) return 'city';
   const item = index.byId.get(first);
   if (item?.kind === 'region' && item.regionType === 'district') return 'district';
   if (item?.kind === 'region' && item.regionType === 'province') return 'province';
@@ -64,7 +75,7 @@ export function countryPage(index: CourseIndex, items: Items): CountryPage {
   const countryId = places[0]?.countryId ?? '';
   const groups: { id: string; native?: string; name: L10n; members: string[] }[] = [];
 
-  if (index.map && index.mapShapes.size) {
+  if (index.map && index.mapShapes.size && !townMode(index)) {
     // Areas of the course map, grouped as on the map.
     const byGroup = new Map<string, string[]>();
     for (const shape of index.mapShapes.values()) {
